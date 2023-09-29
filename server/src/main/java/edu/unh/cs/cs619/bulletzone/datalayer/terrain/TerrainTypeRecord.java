@@ -17,7 +17,7 @@ class TerrainTypeRecord {
     TerrainTypeRecord(ResultSet terrainTypeResult) {
         try {
             terrainTypeID = terrainTypeResult.getInt("TerrainTypeID");
-            resourceTypeID = terrainTypeResult.getInt("ResourceTypeID");
+            //resourceTypeID = terrainTypeResult.getInt("ResourceTypeID");
             name = terrainTypeResult.getString("Name");
             solid = terrainTypeResult.getBoolean("Solid");
             liquid = terrainTypeResult.getBoolean("Liquid");

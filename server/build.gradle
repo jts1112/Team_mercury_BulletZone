@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.5.5.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.5.5'
     }
 }
 
@@ -18,12 +18,10 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'bullet-zone-server'
-    version = '2.0'
     jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Implementation-Title': 'Bullet Zone Server',
-                'Implementation-Version': version,
+                'Implementation-Version': '2.0',
                 'Main-Class': 'edu.unh.cs.cs619.bulletzone.BulletZoneServer'
     }
     from {
@@ -46,6 +44,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.guava:guava:24.1-jre'
     implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation 'com.h2database:h2:1.4.194'
     extraLibs group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     extraLibs group: 'com.google.guava', name: 'guava', version: '24.1-jre'
     extraLibs group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'

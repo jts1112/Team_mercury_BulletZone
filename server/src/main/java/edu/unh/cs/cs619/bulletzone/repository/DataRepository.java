@@ -40,11 +40,12 @@ public class DataRepository {
 
     DataRepository() {
         //TODO: Replace database name, username, and password with what's appropriate for your group
-        String url = "jdbc:mysql://stman1.cs.unh.edu:3306/cs6190";
-        String username = "mdp";
-        String password = "Drag56kes";
-
-        bzdata = new BulletZoneData(url, username, password);
+//        String url = "jdbc:mysql://stman1.cs.unh.edu:3306/cs6190";
+//        String username = "mdp";
+//        String password = "Drag56kes";
+//
+//        bzdata = new BulletZoneData(url, username, password);
+        bzdata = new BulletZoneData(); //just use in-memory database
     }
 
     /**
