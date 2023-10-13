@@ -4,7 +4,6 @@ before_script:
   - chmod u+x gradlew
   - apt update
   - apt install -y openjdk-17-jdk
-  # - apt install -y gradle
 
 test:
   script:
