@@ -2,6 +2,7 @@ image: "androidsdk/android-31:latest"
 
 before_script:
   - chmod u+x gradlew
+  - sudo apt-get install openjdk-17 -y
 
 test:
   script:
