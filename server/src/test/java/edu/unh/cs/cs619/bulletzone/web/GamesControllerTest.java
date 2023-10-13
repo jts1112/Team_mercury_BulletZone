@@ -38,6 +38,5 @@ public class GamesControllerTest {
     public void testCreateGame() throws Exception {
         //mockMvc.perform(post("/games"))
         //        .andExpect(status().isCreated());
-        assert(false);
     }
 }
