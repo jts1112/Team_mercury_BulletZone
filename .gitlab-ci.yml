@@ -4,11 +4,10 @@ before_script:
   - chmod u+x gradlew
   - apt update
   - apt install -y openjdk-17-jdk
-  - apt install -y gradle
+  # - apt install -y gradle
 
 test:
   script:
-    # - ./gradlew test
-    - gradle test
+    - ./gradlew test
   tags:
     - 619android
