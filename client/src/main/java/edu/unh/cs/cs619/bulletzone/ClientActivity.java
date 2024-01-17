@@ -19,9 +19,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.Rest;
 import org.androidannotations.rest.spring.annotations.RestService;
-import org.androidannotations.rest.spring.api.RestClientHeaders;
 import org.androidannotations.api.BackgroundExecutor;
 
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
