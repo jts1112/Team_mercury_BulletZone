@@ -8,7 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
-import com.squareup.otto.Subscribe;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -23,7 +24,6 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.androidannotations.rest.spring.api.RestClientHeaders;
 import org.androidannotations.api.BackgroundExecutor;
 
-import edu.unh.cs.cs619.bulletzone.events.BusProvider;
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
@@ -41,9 +41,6 @@ public class ClientActivity extends Activity {
 
     @ViewById
     protected GridView gridView;
-
-    @Bean
-    BusProvider busProvider;
 
     @NonConfigurationInstance
     @Bean
@@ -68,7 +65,7 @@ public class ClientActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        busProvider.getEventBus().unregister(gridEventHandler);
+        EventBus.getDefault().unregister(gridEventHandler);
     }
 
     /**
@@ -100,7 +97,7 @@ public class ClientActivity extends Activity {
     @AfterInject
     void afterInject() {
         restClient.setRestErrorHandler(bzRestErrorhandler);
-        busProvider.getEventBus().register(gridEventHandler);
+        EventBus.getDefault().register(gridEventHandler);
     }
 
     @Background

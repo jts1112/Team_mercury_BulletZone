@@ -12,7 +12,7 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.androidannotations.rest.spring.api.RestClientHeaders;
 
 import edu.unh.cs.cs619.bulletzone.ClientActivity;
-import edu.unh.cs.cs619.bulletzone.events.BusProvider;
+import org.greenrobot.eventbus.EventBus;
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 
 /**
@@ -21,10 +21,6 @@ import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 @EBean
 public class GridPollerTask {
     private static final String TAG = "PollServer";
-
-    // Injected object
-    @Bean
-    BusProvider busProvider;
 
     @RestService
     BulletZoneRestClient restClient;
@@ -44,6 +40,6 @@ public class GridPollerTask {
 
     @UiThread
     public void onGridUpdate(GridWrapper gw) {
-        busProvider.getEventBus().post(new GridUpdateEvent(gw));
+        EventBus.getDefault().post(new GridUpdateEvent(gw));
     }
 }
