@@ -23,6 +23,8 @@ public abstract class FieldEntity {
         this.parent = parent;
     }
 
+    public int getPosition() { return parent.getPosition(); }
+
     public abstract FieldEntity copy();
 
     public void hit(int damage) {

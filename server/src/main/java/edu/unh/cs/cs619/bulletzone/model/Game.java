@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.greenrobot.eventbus.EventBus;
+
+import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
+
 public final class Game {
     /**
      * Field dimensions
@@ -40,6 +44,7 @@ public final class Game {
             tanks.put(tank.getId(), tank);
             playersIP.put(ip, tank.getId());
         }
+        EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
     }
 
     public Tank getTank(int tankId) {

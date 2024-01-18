@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import org.greenrobot.eventbus.EventBus;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -16,6 +17,8 @@ import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.Wall;
+import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
+import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -163,9 +166,12 @@ public class InMemoryGameRepository implements GameRepository {
                     Thread.currentThread().interrupt();
                 }*/
 
+                int oldPos = tank.getPosition();
                 parent.clearField();
                 nextField.setFieldEntity(tank);
                 tank.setParent(nextField);
+                int newPos = tank.getPosition();
+                EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
 
                 isCompleted = true;
             } else {
@@ -224,6 +230,7 @@ public class InMemoryGameRepository implements GameRepository {
             // This should be only a one way reference.
             bullet.setParent(parent);
             bullet.setBulletId(bulletId);
+            EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
 
             // TODO make it nicer
             timer.schedule(new TimerTask() {
@@ -275,8 +282,11 @@ public class InMemoryGameRepository implements GameRepository {
                                 currentField.clearField();
                             }
 
+                            int oldPos = bullet.getPosition();
                             nextField.setFieldEntity(bullet);
                             bullet.setParent(nextField);
+                            int newPos = bullet.getPosition();
+                            EventBus.getDefault().post(new MoveEvent(bullet.getIntValue(), oldPos, newPos));
                         }
                     }
                 }
@@ -357,7 +367,7 @@ public class InMemoryGameRepository implements GameRepository {
         synchronized (this.monitor) {
             game.getHolderGrid().clear();
             for (int i = 0; i < FIELD_DIM * FIELD_DIM; i++) {
-                game.getHolderGrid().add(new FieldHolder());
+                game.getHolderGrid().add(new FieldHolder(i));
             }
 
             FieldHolder targetHolder;
