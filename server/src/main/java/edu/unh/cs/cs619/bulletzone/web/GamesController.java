@@ -60,14 +60,6 @@ class GamesController {
         return null;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public
-    @ResponseBody
-    ResponseEntity<GridWrapper> grid() {
-        return new ResponseEntity<GridWrapper>(new GridWrapper(gameRepository.getGrid()), HttpStatus.OK);
-    }
-
     @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/turn/{direction}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> turn(@PathVariable long tankId, @PathVariable byte direction)

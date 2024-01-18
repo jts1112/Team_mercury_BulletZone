@@ -92,13 +92,13 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public int[][] getGrid() {
+    public Game getGame() {
         synchronized (this.monitor) {
             if (game == null) {
                 this.create();
             }
         }
-        return game.getGrid2D();
+        return game;
     }
 
     @Override

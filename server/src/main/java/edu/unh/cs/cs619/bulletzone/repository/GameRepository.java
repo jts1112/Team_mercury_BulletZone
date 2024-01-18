@@ -4,13 +4,14 @@ import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 
 public interface GameRepository {
 
     Tank join(String ip);
 
-    int[][] getGrid();
+    Game getGame();
 
     boolean turn(long tankId, Direction direction)
             throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException;
