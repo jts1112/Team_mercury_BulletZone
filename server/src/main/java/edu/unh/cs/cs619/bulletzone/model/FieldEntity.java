@@ -1,9 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
-import com.google.common.eventbus.EventBus;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public abstract class FieldEntity {
     //protected static final EventBus eventBus = new EventBus();
     protected FieldHolder parent;

@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class GameEvent {
     private long timeStamp;
     private GameEventType eventType;
-    private static Object lock = new Object();
+    private final static Object lock = new Object();
 
     /**
      * Default constructor that constructs a "null" event

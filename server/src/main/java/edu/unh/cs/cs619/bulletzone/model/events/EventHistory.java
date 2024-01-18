@@ -9,10 +9,9 @@ import java.util.Collection;
 
 //This class is adapted from group Alpha's project from 2020, courtesy Gersi Doko
 public class EventHistory {
-    private int millisToKeepHistory = 30000; //30 seconds
-    private ArrayList<GameEvent> history;
+    private final int millisToKeepHistory = 30000; //30 seconds
+    private final ArrayList<GameEvent> history;
     private static EventHistory instance = null;
-    private static Object lock = new Object();
 
     public static EventHistory getInstance() {
         if (instance == null) {
@@ -40,7 +39,6 @@ public class EventHistory {
     public Collection<GameEvent> getHistory(long timeStampQueried) {
         this.trimHistory();
         Collection<GameEvent> ret = (Collection<GameEvent>) history.clone();
-        long curTime = System.currentTimeMillis();
         ret.removeIf(e -> e.getTime() <= timeStampQueried);
         return ret;
     }
@@ -53,7 +51,7 @@ public class EventHistory {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventNotification(GameEvent e) {
         history.add(e);
-        history.sort(GameEvent.eventComparator);
+        //history.sort(GameEvent.eventComparator);
     }
 
     public void clearHistory() {
@@ -67,7 +65,7 @@ public class EventHistory {
 
     //---------------------END-OF-PUBLIC-METHODS-------------------------
     private EventHistory() {
-        history = new ArrayList<GameEvent>();
+        history = new ArrayList<>();
         EventBus.getDefault().register(this);
 
     }

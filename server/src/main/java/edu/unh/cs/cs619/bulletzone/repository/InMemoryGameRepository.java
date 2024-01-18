@@ -48,9 +48,9 @@ public class InMemoryGameRepository implements GameRepository {
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
     private Game game = null;
-    private int bulletDamage[]={10,30,50};
-    private int bulletDelay[]={500,1000,1500};
-    private int trackActiveBullets[]={0,0};
+    private final int[] bulletDamage = {10, 30, 50};
+    private final int[] bulletDelay = {500, 1000, 1500};
+    private final int[] trackActiveBullets = {0, 0};
 
     @Override
     public Tank join(String ip) {
@@ -103,7 +103,7 @@ public class InMemoryGameRepository implements GameRepository {
 
     @Override
     public boolean turn(long tankId, Direction direction)
-            throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException {
+            throws TankDoesNotExistException {
         synchronized (this.monitor) {
             checkNotNull(direction);
 
@@ -134,7 +134,7 @@ public class InMemoryGameRepository implements GameRepository {
 
     @Override
     public boolean move(long tankId, Direction direction)
-            throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException {
+            throws TankDoesNotExistException {
         synchronized (this.monitor) {
             // Find tank
 
@@ -184,7 +184,7 @@ public class InMemoryGameRepository implements GameRepository {
 
     @Override
     public boolean fire(long tankId, int bulletType)
-            throws TankDoesNotExistException, LimitExceededException {
+            throws TankDoesNotExistException {
         synchronized (this.monitor) {
 
             // Find tank

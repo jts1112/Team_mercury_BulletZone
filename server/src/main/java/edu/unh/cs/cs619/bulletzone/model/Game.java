@@ -23,8 +23,6 @@ public final class Game {
     private final ConcurrentMap<Long, Tank> tanks = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Long> playersIP = new ConcurrentHashMap<>();
 
-    private final Object monitor = new Object();
-
     public Game() {
         this.id = 0;
     }
@@ -47,7 +45,7 @@ public final class Game {
         EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
     }
 
-    public Tank getTank(int tankId) {
+    public Tank getTank(Long tankId) {
         return tanks.get(tankId);
     }
 
@@ -57,7 +55,7 @@ public final class Game {
 
     public List<Optional<FieldEntity>> getGrid() {
         synchronized (holderGrid) {
-            List<Optional<FieldEntity>> entities = new ArrayList<Optional<FieldEntity>>();
+            List<Optional<FieldEntity>> entities = new ArrayList<>();
 
             FieldEntity entity;
             for (FieldHolder holder : holderGrid) {
@@ -65,9 +63,9 @@ public final class Game {
                     entity = holder.getEntity();
                     entity = entity.copy();
 
-                    entities.add(Optional.<FieldEntity>of(entity));
+                    entities.add(Optional.of(entity));
                 } else {
-                    entities.add(Optional.<FieldEntity>empty());
+                    entities.add(Optional.empty());
                 }
             }
             return entities;

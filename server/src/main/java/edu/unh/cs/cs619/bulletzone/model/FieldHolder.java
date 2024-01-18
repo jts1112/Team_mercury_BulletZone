@@ -9,9 +9,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class FieldHolder {
 
-    private final Map<Direction, FieldHolder> neighbors = new HashMap<Direction, FieldHolder>();
+    private final Map<Direction, FieldHolder> neighbors = new HashMap<>();
     private Optional<FieldEntity> entityHolder = Optional.empty();
-    private int position;
+    private final int position;
 
     public FieldHolder(int pos) {
         this.position = pos;
