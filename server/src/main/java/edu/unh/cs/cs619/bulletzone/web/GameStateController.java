@@ -15,20 +15,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
 import edu.unh.cs.cs619.bulletzone.model.events.GameEvent;
 import edu.unh.cs.cs619.bulletzone.repository.GameRepository;
+import edu.unh.cs.cs619.bulletzone.util.GameEventCollectionWrapper;
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 
 @RestController
 @RequestMapping(value = "/games")
 class GameStateController {
     private static final Logger log = LoggerFactory.getLogger(edu.unh.cs.cs619.bulletzone.web.GameStateController.class);
-    private static final Gson gson = new Gson();
+//    private static final Gson gson = new Gson();
     private final Game game;
+    private final EventHistory eventHistory = EventHistory.getInstance();
 
     @Autowired
     public GameStateController(GameRepository gameRepository) {
@@ -46,10 +48,13 @@ class GameStateController {
     @RequestMapping(method = RequestMethod.GET, value = "/events/{timeSince}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<String> getHistory(@PathVariable long timeSince) {
-        Collection<GameEvent> events = EventHistory.getInstance().getHistory(timeSince);
-
-        return new ResponseEntity<>(gson.toJson(events), HttpStatus.ACCEPTED);
+    public ResponseEntity<GameEventCollectionWrapper> getHistory(@PathVariable long timeSince) {
+        Collection<GameEvent> events = eventHistory.getHistory(timeSince);
+        for (GameEvent event : events) {
+            System.out.println("Sending " + event.toString());
+        }
+        return new ResponseEntity<>(new GameEventCollectionWrapper(events), HttpStatus.ACCEPTED);
+        //return new ResponseEntity<>(gson.toJson(events), HttpStatus.ACCEPTED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

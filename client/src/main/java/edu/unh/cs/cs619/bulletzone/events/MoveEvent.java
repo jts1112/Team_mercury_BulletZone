@@ -1,8 +1,8 @@
-package edu.unh.cs.cs619.bulletzone.model.events;
+package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MoveEvent extends GameEvent{
+public class MoveEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
     @JsonProperty

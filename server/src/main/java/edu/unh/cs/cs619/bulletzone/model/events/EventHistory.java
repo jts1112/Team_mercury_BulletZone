@@ -39,7 +39,7 @@ public class EventHistory {
     public Collection<GameEvent> getHistory(long timeStampQueried) {
         this.trimHistory();
         Collection<GameEvent> ret = (Collection<GameEvent>) history.clone();
-        ret.removeIf(e -> e.getTime() <= timeStampQueried);
+        ret.removeIf(e -> e.getTimeStamp() <= timeStampQueried);
         return ret;
     }
 
@@ -75,7 +75,7 @@ public class EventHistory {
      */
     private void trimHistory() {
         long curTime = System.currentTimeMillis();
-        history.removeIf(n -> (curTime - n.getTime()) >= millisToKeepHistory);
+        history.removeIf(n -> (curTime - n.getTimeStamp()) >= millisToKeepHistory);
     }
 
 }
