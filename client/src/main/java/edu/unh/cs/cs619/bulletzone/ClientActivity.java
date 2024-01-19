@@ -22,6 +22,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.androidannotations.api.BackgroundExecutor;
 
+import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
@@ -36,6 +37,9 @@ public class ClientActivity extends Activity {
 
     @Bean
     protected GridAdapter mGridAdapter;
+
+    @Bean
+    protected GameEventProcessor eventProcessor;
 
     @ViewById
     protected GridView gridView;
@@ -109,6 +113,18 @@ public class ClientActivity extends Activity {
 
     public void updateGrid(GridWrapper gw) {
         mGridAdapter.updateList(gw.getGrid());
+    }
+
+    @Click (R.id.eventSwitch)
+    protected void onEventSwitch() {
+        if (gridPollTask.toggleEventUsage()) {
+            Log.d("EventSwitch", "ON");
+            eventProcessor.setBoard(mGridAdapter.getBoard()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.start();
+        } else {
+            Log.d("EventSwitch", "OFF");
+            eventProcessor.stop();
+        }
     }
 
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})

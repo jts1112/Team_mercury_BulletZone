@@ -12,11 +12,9 @@ public class MoveEvent extends GameEvent {
 
     public MoveEvent() {}
 
-    public MoveEvent(int rawServerValue, int oldPos, int newPos) {
-        //super(GameEventType.Move);
-        this.rawServerValue = rawServerValue;
-        this.oldPosition = oldPos;
-        this.newPosition = newPos;
+    void applyTo(int [][]board) {
+        board[oldPosition / 16][oldPosition % 16] = 0; //clear old position
+        board[newPosition / 16][newPosition % 16] = rawServerValue;
     }
 
     @Override

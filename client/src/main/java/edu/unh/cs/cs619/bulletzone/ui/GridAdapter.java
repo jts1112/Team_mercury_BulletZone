@@ -6,10 +6,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SystemService;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.events.UpdateBoardEvent;
 
 @EBean
 public class GridAdapter extends BaseAdapter {
@@ -25,6 +30,18 @@ public class GridAdapter extends BaseAdapter {
             this.notifyDataSetChanged();
         }
     }
+
+    @AfterInject
+    protected void afterInject() {
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleUpdate(UpdateBoardEvent event) {
+        this.notifyDataSetChanged();
+    }
+
+    public int[][] getBoard() { return mEntities; }
 
     @Override
     public int getCount() {

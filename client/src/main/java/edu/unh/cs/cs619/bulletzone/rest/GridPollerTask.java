@@ -1,7 +1,10 @@
 package edu.unh.cs.cs619.bulletzone.rest;
 
 import android.os.SystemClock;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
+
+import edu.unh.cs.cs619.bulletzone.events.UpdateBoardEvent;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
@@ -26,21 +29,35 @@ public class GridPollerTask {
     BulletZoneRestClient restClient;
 
     private long previousTimeStamp = -1;
+    private boolean updateUsingEvents = false;
+
+    public boolean toggleEventUsage() {
+        updateUsingEvents = !updateUsingEvents;
+        return updateUsingEvents;
+    }
 
     @Background(id = "grid_poller_task")
     public void doPoll() {
         while (true) {
 
-            GridWrapper grid = restClient.grid();
-            onGridUpdate(grid);
-            if (previousTimeStamp < 0)
+            if (previousTimeStamp < 0 || !updateUsingEvents) {
+                //Log.d("Poller", "Updating whole grid");
+                GridWrapper grid = restClient.grid();
+                onGridUpdate(grid);
                 previousTimeStamp = grid.getTimeStamp();
+            }
             else {
+                //Log.d("Poller", "Updating using events");
                 GameEventCollectionWrapper events = restClient.events(previousTimeStamp);
+                boolean haveEvents = false;
                 for (GameEvent event : events.getEvents()) {
-                    Log.d("Event-check", event.toString());
+                    //Log.d("Event-check", event.toString());
+                    EventBus.getDefault().post(event);
                     previousTimeStamp = event.getTimeStamp();
+                    haveEvents = true;
                 }
+                if (haveEvents)
+                    EventBus.getDefault().post(new UpdateBoardEvent());
             }
 
             // poll server every 100ms

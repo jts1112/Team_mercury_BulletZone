@@ -13,7 +13,6 @@ public class MoveEvent extends GameEvent{
     public MoveEvent() {}
 
     public MoveEvent(int rawServerValue, int oldPos, int newPos) {
-        //super(GameEventType.Move);
         this.rawServerValue = rawServerValue;
         this.oldPosition = oldPos;
         this.newPosition = newPos;

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-//import com.google.gson.Gson;
 
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
@@ -28,7 +27,7 @@ import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 @RequestMapping(value = "/games")
 class GameStateController {
     private static final Logger log = LoggerFactory.getLogger(edu.unh.cs.cs619.bulletzone.web.GameStateController.class);
-//    private static final Gson gson = new Gson();
+
     private final Game game;
     private final EventHistory eventHistory = EventHistory.getInstance();
 
@@ -54,7 +53,6 @@ class GameStateController {
             System.out.println("Sending " + event.toString());
         }
         return new ResponseEntity<>(new GameEventCollectionWrapper(events), HttpStatus.ACCEPTED);
-        //return new ResponseEntity<>(gson.toJson(events), HttpStatus.ACCEPTED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
