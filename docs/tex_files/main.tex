@@ -1,0 +1,107 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+\usepackage{tcolorbox}
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\newcommand{\gersi}[1]{\textcolor{red}{[#1]}}
+
+\title{How to Login and deploy your server.jar file on stman1}
+\author{CS619 Team}
+
+\begin{document}
+\maketitle
+
+\section{Acquiring your login info from Agate}
+\label{sec:get_login_info}
+\begin{itemize}
+	\item Ensure that you are in the US, please temporarily disable any VPNs not issued by UNH.
+	\item Login on Agate using your UNHID. If your email is unh1866@usnh.edu then use the following command to log in to Agate (your password is the same as for your email)
+	      \begin{tcolorbox}
+		      ssh unh1866@agate.cs.unh.edu
+	      \end{tcolorbox}
+	\item There should be a cs619.info file or similar that contains the username and password, its format should be similar to the following (we are currently interested in the bold line)
+	      \begin{tcolorbox}
+		      -bash-5.2\$ cat cs619.info \\
+		      unh1866 edCerk \\
+		      \\
+		      stman1 access to Databases\\
+		      ==========================\\
+		      \textbf{account :    username='USERNAME'    pw='PASSWORD';}\\
+		      databases:   cs\underline{PORTNUMBER} cs\underline{PORTNUMBER}dev\\
+		      access from: 'localhost' and '132.177.0.0/16'\\
+	      \end{tcolorbox}
+\end{itemize}
+
+\section{Deploying on stman1}
+\begin{itemize}
+	\item Please see Section \ref{sec:get_login_info} to retrieve your USERNAME and PASSWORD for stman1. Also take note of the \underline{PORTNUMBER}.
+	\item Please build your server.jar file locally using Android Studio with JDK 17, and use something like \href{https://winscp.net/eng/index.php}{WinSCP (Windows)} or \href{https://filezilla-project.org/}{FileZilla (Mac and Linux)} to drag and drop the server.jar file into your home dir on stman1. Alternatively, the use of command line interfaces is also possible.
+	      \begin{itemize}
+		      \item \textbf{If you are having trouble with getting your server.jar file to stman1 reach out to your TA either over Discord or Email.}
+	      \end{itemize}
+	\item ssh into stman1, either from your local shell, or the agate shell (note the agate shell is more likely to work).
+	      \begin{tcolorbox}
+		      ssh unh1866@stman1.cs.unh.edu
+	      \end{tcolorbox}
+	\item Then you are free to deploy your server! Below there are a couple of different styles of deploying along with descriptions of what they do.
+	      \begin{itemize}
+		      \item Start the server in continuous foreground mode and can be killed with CTRL-C.
+		            \begin{tcolorbox}
+			            java -jar server.jar \mbox{-}\mbox{-}server.port=\underline{PORTNUMBER}
+		            \end{tcolorbox}
+		      \item Start the server in continuous background mode, which can only be killed with the \textbf{kill -9 PID} command. To get the PID (Process ID) see section \ref{sec:PID}.
+		            \begin{tcolorbox}
+			            nohup java -jar server.jar \mbox{-}\mbox{-}server.port=\underline{PORTNUMBER} \&
+		            \end{tcolorbox}
+		      \item Please ensure that the running server process is indeed killed using the ps command as outlined in \ref{sec:PID}.
+	      \end{itemize}
+\end{itemize}
+
+\section{Tips and Tricks}
+\label{sec:tips}
+\subsection{Finding PID}
+\label{sec:PID}
+\begin{itemize}
+	\item The \textbf{ps -au} command on Linux lists all running processes (-a) for all users (-u), the format of the output is as follows
+	      \begin{tcolorbox}
+		      -bash-5.2\$ ps -au\\
+		      USER\quad\textbf{PID}\quad \quad TTY\quad\;TIME \quad\;CMD\\
+		      team1\quad1412087\quad pts/1\quad    00:00:00\quad bash\\
+		      team1\quad412223\;\;\;\; pts/1\quad    00:00:00\quad ps -au\\
+	      \end{tcolorbox}
+	\item The \textbf{grep} command reads from stdin and finds a pattern of text, combining the two commands leads to output that tells you the PID of your running process. \\
+	      \textbf{\gersi{WARNING: Ensure your username is in the USER column before trying to kill a process!}}
+	      \begin{tcolorbox}
+		      ps -au \textbar\; grep server.jar
+	      \end{tcolorbox}
+\end{itemize}
+
+\subsection{Tired of entering your password? Try using SSH key auth!}
+\quad This section is more of a PSA than an actual guide on how to stop Agate from asking for your password, the same technique can be used on stman1 to keep you from having to enter your password each time.
+\begin{tcolorbox}
+	\textbf{Goal:} We want to have agate recognize our laptop when we try to ssh rather than entering our password each time.\\
+	\\
+	\textbf{Method:} SSH public key authentication.
+\end{tcolorbox}
+For those of you who have yet to take IT666, SSH won't ask you for a password if the server and account you are trying to login to have a copy of your public key in their authorized keys file. \\
+\\
+\textbf{\gersi{WARNING: The following process is 100\% OPTIONAL and a large rabbit hole that can take a week to successfully work, please don't annoy UNH IT.}}\\
+
+With that really annoying red and bold text out of the way here are some links that can explain how you might be able to generate ssh keypairs and upload them to a remote server. These links are sorted
+in order of your understanding of SSH keypair authentication.
+\begin{itemize}
+	\item \href{https://www.ssh.com/academy/ssh/public-key-authentication}{Wait what is this?}
+	\item \href{https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server}{I know a bit, but HOW.}
+	\item \href{https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement}{Yep I understand, but Windows is annoying.}
+	\item \href{https://stackoverflow.com/}{I have been trying for a week now, for the love of all that is good in this world. I have forsaken my CS degree. May Dr. Matt Plumlee have mercy on my soul.}
+\end{itemize}
+\end{document}
