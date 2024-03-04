@@ -36,5 +36,3 @@ Client -- Server
 Server -- Server_DB
 @enduml
 ```
-
-- [ ] Do #4

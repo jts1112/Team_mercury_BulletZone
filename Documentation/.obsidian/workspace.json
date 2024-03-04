@@ -8,12 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "e233f9acb6593b1d",
+            "id": "79b12d1deb57b342",
             "type": "leaf",
             "state": {
               "type": "image",
               "state": {
-                "file": "Meeting 2/Team_Mercury_Domain_Model_Diagram.png"
+                "file": "Milestone 0/ViewingBankGarage.drawio.png"
               }
             }
           }
@@ -83,7 +83,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Meeting 2/Team_Mercury_Domain_Model_Diagram.png",
+                "file": "Milestone 0/ViewingBankGarage.drawio.png",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +100,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Meeting 2/Team_Mercury_Domain_Model_Diagram.png",
+                "file": "Milestone 0/ViewingBankGarage.drawio.png",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -123,7 +123,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Meeting 2/Team_Mercury_Domain_Model_Diagram.png"
+                "file": "Milestone 0/ViewingBankGarage.drawio.png"
               }
             }
           }
@@ -145,25 +145,32 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "e233f9acb6593b1d",
+  "active": "79b12d1deb57b342",
   "lastOpenFiles": [
+    "Milestone 0/Team Mercury Milestone 0.pdf",
+    "Milestone 0/Team_Mercury_Domain_Model_Diagram.png",
+    "Milestone 0/MovingAndTurningSeqDiagram.png",
+    "Milestone 0/Movement and turning Diagram.md",
+    "Milestone 0/JoinSequenceDiagram.png",
+    "Milestone 0/Client UML class diagram.png",
+    "Milestone 0/Domain Diagram Base.md",
+    "Milestone 0/ViewingBankGarage.drawio.png",
+    "Milestone 0/View Bank and Garage Main Success Scenario.md",
+    "Initial Design/Requirements.md",
+    "Milestone 0/Use case diagram.excalidraw 1.md",
+    "Initial Design/Team_Mercury_Requirements.pdf",
+    "Initial Design/Use case diagram.excalidraw.md",
     "Team_Mercury_Requirements.pdf",
-    "Meeting 2/Diagrams.md",
-    "Meeting 2/Team_Mercury_Domain_Model_Diagram.png~",
+    "Milestone 0/Team_Mercury_Domain_Model_Diagram.png~",
     "Meeting 2/Team_Mercury_Domain_Model_Diagram.png-autosave.kra",
-    "Meeting 2/Team_Mercury_Domain_Model_Diagram.png",
     "Excalidraw/Drawing 2024-02-29 17.49.20.excalidraw.md",
     "Excalidraw",
-    "Meeting 1/Team_Mercury_Requirements.pdf",
-    "Meeting 2",
+    "Milestone 0",
     "Untitled 1",
-    "Meeting 1",
+    "Initial Design",
     "lu89416am9wl.tmp",
     "lu89416am9w7.tmp",
-    "lu89416am9p7.tmp",
-    "Meeting 1/Requirements.md",
-    "Meeting 1/Use_Case_Diagram.png",
-    "Meeting 1/Use case diagram.excalidraw.md",
+    "Initial Design/Use_Case_Diagram.png",
     "BulletZone/Documentation/Use case diagram.excalidraw.md",
     "BulletZone/Documentation/Use_Case_Diagram.png",
     "BulletZone/Documentation/Requirements.md"
