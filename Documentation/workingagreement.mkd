@@ -1,0 +1,38 @@
+### INITIAL WORKING AGREEMENT As of 3/5/24 ###
+
+1. What a healthy team looks like to you, covering things such as mutual respect, communicating when a commitment is missed, expectations of helping each other (and limits to that?), etc.
+```
+ Good communication with group on discord and other platforms. Humourous flexibilities to provide comical releif from work environment but also the willingness to do tasks. 
+```
+2. How meetings will be scheduled and attended (in many companies, there are daily 15-minute meetings to cover progress-made and progress-being-blocked... you may want to establish regular weekly meetings and a protocol for quick discussion on a chat client, etc.)
+```
+Stick to a strict necessary meeting schedule of meeting Tuesday and Thursday starting at 5:30 in the Computer Science Lounge. Other meetings can be scheduled as needed. Communication of a newly schduled meeting should be discussed on discord
+ ```
+
+3. How commits/pushes to the shared repository should be handled (and branching strategy, if any). Who will make sure it's tagged properly for grading?
+``` 
+Have a main and development branch. When wanting to add branch from dev branch and test it properly. When completed group will look at the implemented component/feature and decide if it should be pushed up to the main branch. Commit messages should be clear and concise and in imperitive language.
+```
+
+4. Any coding, naming, or commenting conventions
+Who's responsible for testing what (including own changes and testing for milestones, etc.)
+```
+Document each parameters puprose and the overall functions purpose aswell. following similar to JavaDoc. not needed for self explanatory methods. Comment at the top of the file going over the overall function of the file.
+```
+
+5. Who's responsible for updating project documents (especially UML design class diagrams)
+```
+Updating documents like the UML design class diagram during group meetings with updated merge main branch. 
+```
+
+6. Time expectations
+Commitment expected of each team member (perhaps a range of hours per week/day/etc. or amount of code, etc.)
+Expectations surrounding completion time of work (particularly with respect to the next upcoming milestone)--in other words, when is work expected to be made available to the group, and at what point might others start taking over missing work, etc.
+```
+A good minimum of 6-10 hours per week or how long it takes. If unable to get in contact within 2 days assume person is MIA and group members will take over the workload of that person.
+```
+
+7. How should questions on requirements be handled (who will ask instructor and on what timeline, etc.)
+```
+If a group member has a question ask in local discord and if multiple members agree cant answer then ask the message in the cs619 discord or reach out to the professor.
+```
