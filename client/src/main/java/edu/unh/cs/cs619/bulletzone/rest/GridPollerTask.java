@@ -39,28 +39,22 @@ public class GridPollerTask {
     @Background(id = "grid_poller_task")
     public void doPoll() {
         while (true) {
-
-            if (previousTimeStamp < 0 || !updateUsingEvents) {
-                //Log.d("Poller", "Updating whole grid");
+            if (previousTimeStamp < 0) {
+                // Initial grid update
                 GridWrapper grid = restClient.grid();
                 onGridUpdate(grid);
                 previousTimeStamp = grid.getTimeStamp();
-            }
-            else {
-                //Log.d("Poller", "Updating using events");
+            } else if (updateUsingEvents) {
+                // Update using events
                 GameEventCollectionWrapper events = restClient.events(previousTimeStamp);
-                boolean haveEvents = false;
-                for (GameEvent event : events.getEvents()) {
-                    //Log.d("Event-check", event.toString());
-                    EventBus.getDefault().post(event);
-                    previousTimeStamp = event.getTimeStamp();
-                    haveEvents = true;
-                }
-                if (haveEvents)
-                    EventBus.getDefault().post(new UpdateBoardEvent());
+                if (events != null && !events.getEvents().isEmpty()) {
+                    for (GameEvent event : events.getEvents()) {
+                        processEvent(event);
+                        previousTimeStamp = Math.max(previousTimeStamp, event.getTimeStamp());
+                    }
+                    EventBus.getDefault().post(new UpdateBoardEvent());                 }
             }
 
-            // poll server every 100ms
             SystemClock.sleep(100);
         }
     }
@@ -68,5 +62,32 @@ public class GridPollerTask {
     @UiThread
     public void onGridUpdate(GridWrapper gw) {
         EventBus.getDefault().post(new GridUpdateEvent(gw));
+    }
+
+    private void processEvent(GameEvent event) {
+        switch (event.getType()) {
+            case MOVEMENT:
+                updateTankPosition(event.getTankId(), event.getNewPositionX(), event.getNewPositionY());
+                break;
+            case FIRING:
+                addBullet(event.getTankId(), event.getBulletId(), event.getPositionX(), event.getPositionY(), event.getDirection());
+                break;
+            case DAMAGE:
+            case DESTRUCTION:
+                handleDamageOrDestruction(event.getTargetType(), event.getTargetId());
+                break;
+            default:
+                System.out.println("Unhandled event type: " + event.getType());
+                break;
+        }
+    }
+
+    private void updateTankPosition(int tankId, int newX, int newY) {
+    }
+
+    private void addBullet(int tankId, int bulletId, int startX, int startY, byte direction) {
+    }
+
+    private void handleDamageOrDestruction(String targetType, int targetId) {
     }
 }
