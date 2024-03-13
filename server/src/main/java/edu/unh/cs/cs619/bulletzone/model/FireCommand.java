@@ -74,16 +74,11 @@ public class FireCommand implements Command{
         }
 
         // Create a new bullet to fire
-        // TODO Removed With BulletBuilder
-//            final Bullet bullet = new Bullet(tankId, direction, bulletDamage[bulletType-1]);
-        // TODO Added with BulletBuilder
-        final Bullet bullet = new BulletBuilder().setTankId(tankId).setDirection(direction)
-                .setBulletDamage(bulletDamage[bulletType-1]).setParent(parent)
-                .setBulletID(bulletId).build();
+        final Bullet bullet = new Bullet(tankId, direction, bulletDamage[bulletType-1]);
         // Set the same parent for the bullet.
         // This should be only a one way reference.
-//            bullet.setParent(parent); // TODO Removed With BulletBuilder
-//            bullet.setBulletId(bulletId); // TODO Removed With BulletBuilder
+        bullet.setParent(parent);
+        bullet.setBulletId(bulletId);
         EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
 
         // TODO make it nicer
