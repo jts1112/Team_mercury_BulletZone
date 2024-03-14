@@ -12,7 +12,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import javax.xml.crypto.Data;
+
+import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
+import edu.unh.cs.cs619.bulletzone.datalayer.core.Entity;
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.repository.DataRepository;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
@@ -26,6 +33,7 @@ public class AccountControllerTest {
     @Mock
     DataRepository dataRepository;
 
+
     @InjectMocks
     AccountController controller;
 
@@ -35,7 +43,20 @@ public class AccountControllerTest {
      * This Will test how the server behaves when a user successfully logs in.
      */
     public void test_AccountController_Login_Success() {
+        BulletZoneData database = new BulletZoneData();
 
+        GameUser validUser = database.users.createUser("Jack","username","password");
+
+        when(dataRepository.validateUser("username","password",true)).thenReturn(validUser);
+
+        // Invoke the login method
+        ResponseEntity<LongWrapper> responseEntity = controller.login("username", "password");
+
+        // Verify the response status code
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Verify the response body (assuming LongWrapper contains the user ID)
+        assertEquals(validUser.getId(), responseEntity.getBody().getResult());
     }
 
 
