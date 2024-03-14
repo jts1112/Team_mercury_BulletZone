@@ -157,13 +157,15 @@ public class InMemoryGameRepository implements GameRepository {
 
             this.game = new Game();
 
-            createFieldHolderGrid(game);
+//            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
             //TODO added
-            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());
+//            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
+            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
 
         }
     }
 
+    // TODO Removed since implemented in GameBoardBuilder
     private void createFieldHolderGrid(Game game) {
         synchronized (this.monitor) {
             game.getHolderGrid().clear();

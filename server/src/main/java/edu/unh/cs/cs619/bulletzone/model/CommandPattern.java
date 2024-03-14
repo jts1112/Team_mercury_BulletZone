@@ -22,6 +22,12 @@ public class CommandPattern {
     public  void addFireCommand(long tankId, int bulletType){
         commandstoExecute.add(new FireCommand(tankId,bulletType));
     }
+
+    /**
+     * Adds a MoveCommand to the CommandPattern stack to be executed later
+     * @param tankId passed in tank ID
+     * @param direction the direction object being passed in.
+     */
     public void addMoveCommand(long tankId, Direction direction){
         commandstoExecute.add(new MoveCommand(tankId,direction));
     }
