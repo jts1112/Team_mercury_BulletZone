@@ -1,5 +1,9 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.account.BankAccount;
+import edu.unh.cs.cs619.bulletzone.web.AccountController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -37,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 //created and used for the Controller classes in the "web" package.
 @Component
 public class DataRepository {
+    private static final Logger log = LoggerFactory.getLogger(AccountController.class);
     private BulletZoneData bzdata;
 
     DataRepository() {
@@ -64,6 +69,20 @@ public class DataRepository {
         if (create) {
             GameUser returnedUser = bzdata.users.createUser(username, username, password);
             if (returnedUser != null) {
+                if (!setupInitialBankAccount(returnedUser)) {
+                    log.warn("Failed to perform initial bank account for user: " + returnedUser.getUsername());
+                    if (!setupInitialBankAccount(returnedUser)) {
+                        // we've failed initial setup on the user's bank account too many times and have thus failed to
+                        // create the user, attempting to delete the user and returning nothing
+                        String tempUsername = returnedUser.getUsername();
+                        if (bzdata.users.delete(returnedUser.getId())) {
+                            log.warn("Failed to create user: " + tempUsername + ", successfully deleted");
+                        } else {
+                            log.error("Failed to create and cleanup user: " + tempUsername);
+                        };
+                        return Optional.empty();
+                    }
+                }
                 return Optional.of(returnedUser);
             } else {
                 return Optional.empty();
@@ -75,6 +94,40 @@ public class DataRepository {
             } else {
                 return Optional.empty();
             }
+        }
+    }
+
+    /**
+     * Only for use during user creation
+     * steps:
+     *   1) creates a bank account
+     *   2) sets the user as account owner
+     *   3) sets account balance to 1000
+     * on failing any of the above steps the bank account is deleted and the method returns false to indicate failure
+     * @param user GameUser receiving their first account
+     * @return boolean indicating success
+     */
+    private boolean setupInitialBankAccount(GameUser user) {
+        // As duplicate users won't make it to this step of account creation we don't need to check that the user has no
+        // bank accounts as long as this method is only used here which is important as checking all accounts is expensive
+        BankAccount bankAccount = bzdata.accounts.create();
+        if (bankAccount != null) {
+            bankAccount.setOwner(user);
+            boolean balanceSet = bzdata.accounts.modifyBalance(bankAccount, 1000);
+            if (balanceSet) {
+                log.debug("successfully initialized user's bank account with id: " + bankAccount.getId());
+                return true;
+            } else {
+                if (bzdata.accounts.delete(bankAccount.getId())) {
+                    log.warn("Failed to initialize bank account for user: " + user.getUsername() + ", successfully deleted");
+                } else {
+                    log.error("Failed to initialize and cleanup bank account " + bankAccount.getId() + " for user: " + bankAccount);
+                };
+                return false;
+            }
+        } else {
+            log.error("Failed to create bank account for user: " + user.getUsername());
+            return false;
         }
     }
 }
