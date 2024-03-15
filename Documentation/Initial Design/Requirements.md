@@ -8,7 +8,7 @@
 - Player should be able to see their account balance and items in their garage.
 ## client
 - Client should have entities (Tank, wall or bullet).
-- Client should keep track of account information.
+- Client should keep track of account information.Join
 - Client should provide interface to user.
 - Client should show game state.
 - Client should support player login.
