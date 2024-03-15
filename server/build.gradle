@@ -44,21 +44,21 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.guava:guava:24.1-jre'
     implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation 'com.h2database:h2:1.4.194'
+    implementation 'com.h2database:h2:2.2.224'
     implementation 'org.greenrobot:eventbus-java:3.3.1'
-    extraLibs group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.1'
+    extraLibs group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.3'
     extraLibs group: 'com.google.guava', name: 'guava', version: '24.1-jre'
-    extraLibs group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'
+    extraLibs group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.3.3'
 
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-library:2.2'
     //testImplementation 'org.mockito:mockito-all:1.9.5'
 
-    testImplementation 'com.h2database:h2:1.4.194'
+    testImplementation 'com.h2database:h2:2.2.224'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude(group: 'commons-logging', module: 'commons-logging')
     }
-    testImplementation 'com.jayway.jsonpath:json-path:0.9.1'
+    testImplementation 'com.jayway.jsonpath:json-path:2.9.0'
 
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
 }

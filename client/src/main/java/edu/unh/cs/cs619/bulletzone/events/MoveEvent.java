@@ -21,6 +21,7 @@ public class MoveEvent extends GameEvent {
         return "Move " + rawServerValue +
                 " from " + oldPosition +
                 " to " + newPosition +
+                "at time " + getTimeStamp() +
                 super.toString();
     }
 }

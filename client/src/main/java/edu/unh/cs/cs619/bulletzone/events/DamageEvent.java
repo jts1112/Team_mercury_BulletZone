@@ -3,27 +3,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DamageEvent extends GameEvent {
     @JsonProperty
-    private long entityId;
+    private int position;
     @JsonProperty
-    private int damageAmount;
+    private int rawServerValue;
 
-    public DamageEvent() {}
+    public DamageEvent( int position, int damageAmount) {
+        this.position = position;
+        this.rawServerValue = damageAmount;
+    }
 
     @Override
     void applyTo(int[][] board) {
-        Position pos = findPositionById(entityId);
-        if (pos != null) {
-            applyDamageToEntityAtPosition(pos, damageAmount);
-        }
-    }
+        int row = position / 16;
+        int col = position % 16;
 
-    public DamageEvent(long entityId, int damageAmount) {
-        this.entityId = entityId;
-        this.damageAmount = damageAmount;
+        board[row][col] = rawServerValue;
     }
 
     @Override
     public String toString() {
-        return "Damage " + entityId + " by " + damageAmount + super.toString();
+        return "Damage at " + position + super.toString();
     }
 }

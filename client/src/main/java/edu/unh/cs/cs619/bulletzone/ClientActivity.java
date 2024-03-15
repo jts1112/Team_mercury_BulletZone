@@ -1,5 +1,5 @@
 package edu.unh.cs.cs619.bulletzone;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,7 +76,7 @@ public class ClientActivity extends Activity {
      * actually points to a subclass implementation, the methods registered in this class will
      * not be found. This immediately becomes a problem when using the AndroidAnnotations
      * framework as it always produces a subclass of annotated classes.
-     *
+     * <p>
      * To get around the class hierarchy limitation, one can use a separate anonymous class to
      * handle the events.
      */
@@ -115,11 +115,13 @@ public class ClientActivity extends Activity {
         mGridAdapter.updateList(gw.getGrid());
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(mGridAdapter.getBoard()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setBoard(mGridAdapter.getBoard());
+            //necessary because "board" keeps changing when it's int[][]
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -178,7 +180,7 @@ public class ClientActivity extends Activity {
 
     @Click(R.id.buttonLogin)
     void login() {
-        Intent intent = new Intent(this, AuthenticateActivity_.class);
+        Intent intent = new Intent(this, AuthenticateActivity.class);
         startActivity(intent);
     }
 

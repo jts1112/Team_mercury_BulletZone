@@ -1,19 +1,16 @@
 package edu.unh.cs.cs619.bulletzone.model.events;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class RemovalEvent extends GameEvent {
     @JsonProperty
-    private long entityId;
+    private int position;
 
-    public RemovalEvent() {}
-
-    public RemovalEvent(long entityId) {
-        this.entityId = entityId;
+    public RemovalEvent(int position) {
+        this.position = position;
     }
+
 
     @Override
     public String toString() {
-        return "Remove entity " + entityId + super.toString();
+        return "Removed position " + position + super.toString();
     }
 }

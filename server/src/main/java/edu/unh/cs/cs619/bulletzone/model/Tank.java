@@ -1,24 +1,17 @@
 package edu.unh.cs.cs619.bulletzone.model;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Tank extends FieldEntity {
 
     private static final String TAG = "Tank";
-
     private final long id;
-
     private final String ip;
-
     private long lastMoveTime;
     private int allowedMoveInterval;
-
     private long lastFireTime;
     private int allowedFireInterval;
-
     private int numberOfBullets;
     private int allowedNumberOfBullets;
-
     private int life;
 
     private Direction direction;
@@ -116,8 +109,7 @@ public class Tank extends FieldEntity {
 
     @Override
     public int getIntValue() {
-        return (int) (10000000 + 10000 * id + 10 * life + Direction
-                .toByte(direction));
+        return (int) (10_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
 
     @Override

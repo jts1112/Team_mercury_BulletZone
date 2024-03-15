@@ -6,14 +6,14 @@ import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
+//import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
 
 @EBean
 public class GameEventProcessor {
     private int[][] board;
-
-    public void setBoard(int[][] newBoard) { board = newBoard; }
-
+    public void setBoard(int[][] newBoard) {
+        board = newBoard;
+    }
     public void start() {
         EventBus.getDefault().register(this);
     }
@@ -22,17 +22,8 @@ public class GameEventProcessor {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
+    @Subscribe  // Subscribes to EventBus
     public void onNewEvent(GameEvent event) {
-        if (event instanceof MoveEvent) {
-            // Handle move event
-        } else if (event instanceof SpawnEvent) {
-            // Handle spawn event
-        } else if (event instanceof DamageEvent) {
-            // Handle damage event
-        } else if (event instanceof RemovalEvent) {
-            // Handle removal event
-        }
         Log.d("GameEventProcessor", "Applying " + event);
         event.applyTo(board);
     }

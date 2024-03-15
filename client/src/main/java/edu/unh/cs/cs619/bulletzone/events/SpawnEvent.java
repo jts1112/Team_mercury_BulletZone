@@ -7,7 +7,10 @@ public class SpawnEvent extends GameEvent {
     @JsonProperty
     private int position;
 
-    public SpawnEvent() {}
+    public SpawnEvent(int rawServerValue, int position) {
+        this.rawServerValue = rawServerValue;
+        this.position = position;
+    }
 
     void applyTo(int [][]board) {
         board[position / 16][position % 16] = rawServerValue;
