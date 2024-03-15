@@ -59,7 +59,7 @@ public class AccountController {
      *
      * @param name The username
      * @param password The password
-     * @return a response w/ the user ID (or -1 if invalid)
+     * @return a response w/ the user ID with HttpStatus.OK if valid (or -1 with HttpStatus.UNAUTHORIZED if invalid)
      */
     @RequestMapping(method = RequestMethod.PUT, value = "login/{name}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -68,7 +68,7 @@ public class AccountController {
     {
         // Log the request
         log.debug("Login '" + name + "' with password '" + password + "'");
-        // Return the response (return user ID if valid login)
+        // Return the response (return user ID if valid login), -1 if not
         Optional<GameUser> userData = data.validateUser(name, password, false);
         return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId()), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(new LongWrapper(-1), HttpStatus.UNAUTHORIZED));

@@ -62,15 +62,19 @@ public class DataRepository {
         //      users.validateLogin(name, password) as appropriate, maybe does other bookkeeping
 
         if (create) {
-            // check if user is creatable
-              // if true create user, give 1000 coins and return them
-              // else return Optional.empty()
+            GameUser returnedUser = bzdata.users.createUser(username, username, password);
+            if (returnedUser != null) {
+                return Optional.of(returnedUser);
+            } else {
+                return Optional.empty();
+            }
         } else {
-            // check if user exists
-              // if true return user
-              // else return Optional.empty()
+            GameUser returnedUser = bzdata.users.validateLogin(username, password);
+            if (returnedUser != null) {
+                return Optional.of(returnedUser);
+            } else {
+                return Optional.empty();
+            }
         }
-
-        return Optional.empty();
     }
 }

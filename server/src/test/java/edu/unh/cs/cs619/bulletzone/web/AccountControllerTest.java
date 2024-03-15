@@ -24,6 +24,8 @@ import edu.unh.cs.cs619.bulletzone.repository.DataRepository;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
+import java.util.Optional;
+
 @RunWith(MockitoJUnitRunner.class)
 /**
  * This is a class that will Test the Creation and Authorization of users on the server side.
@@ -47,7 +49,7 @@ public class AccountControllerTest {
 
         GameUser validUser = database.users.createUser("Jack","username","password");
 
-        when(dataRepository.validateUser("username","password",true)).thenReturn(validUser);
+        when(dataRepository.validateUser("username","password",false)).thenReturn(Optional.ofNullable(validUser));
 
         // Invoke the login method
         ResponseEntity<LongWrapper> responseEntity = controller.login("username", "password");
@@ -56,6 +58,8 @@ public class AccountControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // Verify the response body (assuming LongWrapper contains the user ID)
+        assert validUser != null;
+        assert responseEntity.getBody() != null;
         assertEquals(validUser.getId(), responseEntity.getBody().getResult());
     }
 
