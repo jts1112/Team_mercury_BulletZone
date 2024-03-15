@@ -2,6 +2,7 @@ package edu.unh.cs.cs619.bulletzone.repository;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,9 +57,20 @@ public class DataRepository {
      * @param create true if the user should be created, or false otherwise
      * @return GameUser corresponding to the username/password if successful, null otherwise
      */
-    public GameUser validateUser(String username, String password, boolean create) {
+    public Optional<GameUser> validateUser(String username, String password, boolean create) {
         //TODO: something that invokes users.createUser(name, password) or
         //      users.validateLogin(name, password) as appropriate, maybe does other bookkeeping
-        return null;
+
+        if (create) {
+            // check if user is creatable
+              // if true create user, give 1000 coins and return them
+              // else return Optional.empty()
+        } else {
+            // check if user exists
+              // if true return user
+              // else return Optional.empty()
+        }
+
+        return Optional.empty();
     }
 }
