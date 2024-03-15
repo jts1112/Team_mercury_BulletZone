@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Comparator;
 
-//This class is adapted from group Alpha's project from 2020, courtesy Gersi Doko
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-              property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type",
+        visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "move", value = MoveEvent.class),
-        @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class)
+        @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class),
+        @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
+        @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;

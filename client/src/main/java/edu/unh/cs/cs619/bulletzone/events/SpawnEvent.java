@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.events;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SpawnEvent extends GameEvent {
@@ -20,5 +19,4 @@ public class SpawnEvent extends GameEvent {
                 " at " + position +
                 super.toString();
     }
-
 }

@@ -1,9 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.rest;
-
 import android.util.Log;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;

@@ -24,6 +24,15 @@ public class GameEventProcessor {
 
     @Subscribe
     public void onNewEvent(GameEvent event) {
+        if (event instanceof MoveEvent) {
+            // Handle move event
+        } else if (event instanceof SpawnEvent) {
+            // Handle spawn event
+        } else if (event instanceof DamageEvent) {
+            // Handle damage event
+        } else if (event instanceof RemovalEvent) {
+            // Handle removal event
+        }
         Log.d("GameEventProcessor", "Applying " + event);
         event.applyTo(board);
     }

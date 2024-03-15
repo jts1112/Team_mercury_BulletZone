@@ -1,5 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
+import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
+import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
+
 public abstract class FieldEntity {
     //protected static final EventBus eventBus = new EventBus();
     protected FieldHolder parent;
@@ -19,11 +22,14 @@ public abstract class FieldEntity {
         this.parent = parent;
     }
 
-    public int getPosition() { return parent.getPosition(); }
+    public int getPosition() {
+        return parent.getPosition();
+    }
 
     public abstract FieldEntity copy();
 
-    public void hit(int damage) {
+    public void hit(int damage) {  // Tentative
+        EventHistory.getInstance().onEventNotification(new DamageEvent(this.entityId, damageAmount));
     }
 
     /*public static final void registerEventBusListener(Object listener) {
