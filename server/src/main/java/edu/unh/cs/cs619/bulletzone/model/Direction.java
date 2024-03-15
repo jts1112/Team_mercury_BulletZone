@@ -12,15 +12,12 @@ public enum Direction {
                 break;
             case 2:
                 direction = Right;
-
                 break;
             case 4:
                 direction = Down;
-
                 break;
             case 6:
                 direction = Left;
-
                 break;
 
             default:

@@ -17,8 +17,7 @@ public class GameEventCollectionWrapper {
         return this.events;
     }
 
-    public void setEvents(Collection<GameEvent> set) {
+    public void setEvents(Collection<GameEvent> set) {  // FIX? Not used anywhere
         this.events = set;
     }
-
 }

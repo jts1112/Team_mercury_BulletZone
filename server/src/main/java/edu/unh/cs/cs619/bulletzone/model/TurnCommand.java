@@ -6,8 +6,8 @@ public class TurnCommand implements Command{
 
     /**
      * TurnCommand Constructor To initialize variables needed to execute
-     * @param tankId
-     * @param direction
+     * @param tankId Tank ID
+     * @param direction Direction to turn
      */
     public  TurnCommand(long tankId,Direction direction) {
         this.tankId = tankId;
@@ -17,7 +17,7 @@ public class TurnCommand implements Command{
     /**
      * TurnCommand execute class that runs code from turnMethod that was found in InMemoryGameRepository
      * @return True if Success and False if Failure.
-     * @throws TankDoesNotExistException
+     * @throws TankDoesNotExistException if tank does not exist
      */
     public Boolean execute(Game game) throws TankDoesNotExistException {
 
@@ -33,7 +33,8 @@ public class TurnCommand implements Command{
 
         tank.setLastMoveTime(millis+tank.getAllowedMoveInterval());
 
-            /*try {
+            /*
+            try {
                 Thread.sleep(500);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();

@@ -1,15 +1,10 @@
 package edu.unh.cs.cs619.bulletzone.util;
 
-/**
- * Created by simon on 10/1/14.
- */
 public class BooleanWrapper {
     private boolean result;
     private String name;
 
-    public BooleanWrapper() {
-
-    }
+    public BooleanWrapper() {  }
 
     public BooleanWrapper(String name) {
         this.name = name;

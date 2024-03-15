@@ -5,12 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Comparator;
 
-import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
-
-//This class is adapted from group Alpha's project from 2020, courtesy Gersi Doko
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "move", value = MoveEvent.class),

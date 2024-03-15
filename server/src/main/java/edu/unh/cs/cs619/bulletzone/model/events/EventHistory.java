@@ -35,6 +35,7 @@ public class EventHistory {
      * @param timeStampQueried the timestamp since events have transpired
      * @return a list of events since the timeStampQueried
      */
+    @SuppressWarnings("NewApi")  // Find cause
     public Collection<GameEvent> getHistory(long timeStampQueried) {
         this.trimHistory();
         Collection<GameEvent> ret = (Collection<GameEvent>) history.clone();

@@ -1,24 +1,19 @@
 package edu.unh.cs.cs619.bulletzone.model.events;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import edu.unh.cs.cs619.bulletzone.model.events.GameEvent;
 
 public class DamageEvent extends GameEvent {
     @JsonProperty
-    private long entityId;
+    private int position;
     @JsonProperty
-    private int damageAmount;
+    private int rawServerValue;
 
-    public DamageEvent() {}
-
-    public DamageEvent(long entityId, int damageAmount) {
-        this.entityId = entityId;
-        this.damageAmount = damageAmount;
+    public DamageEvent( int position, int rawServerValue) {
+        this.position = position;
+        this.rawServerValue = rawServerValue;
     }
 
     @Override
     public String toString() {
-        return "Damage " + entityId + " by " + damageAmount + super.toString();
+        return "Damage at " + position + super.toString();
     }
 }

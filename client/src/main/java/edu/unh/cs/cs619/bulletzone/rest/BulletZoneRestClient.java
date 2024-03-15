@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.rest;
-
 import org.androidannotations.rest.spring.annotations.Delete;
 import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Path;

@@ -1,28 +1,22 @@
 package edu.unh.cs.cs619.bulletzone.events;
-
-import android.icu.text.Transliterator;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 public class RemovalEvent extends GameEvent {
     @JsonProperty
-    private long entityId;
+    private int position;
 
-    public RemovalEvent() {}
+    public RemovalEvent( int position) {
+        this.position = position;
+    }
 
     @Override
     void applyTo(int[][] board) {
-        Transliterator.Position pos = findPositionById(entityId);
-        if (pos != null) {
-            board[pos.x][pos.y] = 0; /
-        }
-    }
-
-    public RemovalEvent(long entityId) {
-        this.entityId = entityId;
+        int row = position / 16;
+        int col = position % 16;
+        board[row][col] = 0;
     }
 
     @Override
     public String toString() {
-        return "Remove entity " + entityId + super.toString();
+        return "Removed position " + position + super.toString();
     }
 }
