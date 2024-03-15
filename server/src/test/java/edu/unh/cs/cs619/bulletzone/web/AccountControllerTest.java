@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mock.*;
 import static org.mockito.junit.MockitoJUnitRunner.*;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,13 +41,25 @@ public class AccountControllerTest {
     @InjectMocks
     AccountController controller;
 
+    private BulletZoneData database;
+
+    @Before
+    public void setup() {
+        database = new BulletZoneData();
+    }
+
+    @After
+    public void cleanup(){
+        database.refresh();
+    }
+
 
     @Test
     /**
      * This Will test how the server behaves when a user successfully logs in.
      */
     public void test_AccountController_Login_Success() {
-        BulletZoneData database = new BulletZoneData();
+//        BulletZoneData database = new BulletZoneData();
 
         GameUser validUser = database.users.createUser("Jack","username","password");
 
@@ -54,7 +68,7 @@ public class AccountControllerTest {
         // Invoke the login method
         ResponseEntity<LongWrapper> responseEntity = controller.login("username", "password");
 
-        // Verify the response status code
+        // Verify the response status code is OK
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // Verify the response body (assuming LongWrapper contains the user ID)
@@ -71,6 +85,18 @@ public class AccountControllerTest {
      */
     public void test_AccountController_Login_Failure() {
 
+//        BulletZoneData database = new BulletZoneData();
+
+        GameUser validUser = database.users.createUser("Jack","username1","password1");
+
+        when(dataRepository.validateUser("username","password",false)).thenReturn(Optional.empty());
+
+        // Invoke the login method
+        ResponseEntity<LongWrapper> responseEntity = controller.login("username", "password");
+
+        // Verify the response status code is Unauthorized
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+
     }
 
 
@@ -80,7 +106,25 @@ public class AccountControllerTest {
      */
     public void test_AccountController_Register_Success() {
 
+//        BulletZoneData database = new BulletZoneData();
+
+        GameUser validUser = database.users.createUser("Jack","username","password");
+
+        when(dataRepository.validateUser("username","password",true)).thenReturn(Optional.ofNullable(validUser));
+
+        // Invoke the login method
+        ResponseEntity<BooleanWrapper> responseEntity = controller.register("username", "password");
+
+        // Verify the response status code is CREATED
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+
+        // Verify the response body (assuming LongWrapper contains the user ID)
+        assert validUser != null;
+        assert responseEntity.getBody() != null;
+
+        database.users.delete(validUser.getId());
     }
+
 
     @Test
     /**
@@ -88,6 +132,19 @@ public class AccountControllerTest {
      */
     public void test_AccountController_Register_Failure() {
 
+//        BulletZoneData database = new BulletZoneData();
+
+        GameUser validUser = database.users.createUser("Jack","username","password");
+//
+        when(dataRepository.validateUser("username","password",true)).thenReturn(Optional.empty());
+
+        // Invoke the login method
+        ResponseEntity<BooleanWrapper> responseEntity = controller.register("username", "password");
+
+        // Verify the response status code is UNAUTHORIZED
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+
+        // Verify the response body (assuming LongWrapper contains the user ID)
     }
 
 }
