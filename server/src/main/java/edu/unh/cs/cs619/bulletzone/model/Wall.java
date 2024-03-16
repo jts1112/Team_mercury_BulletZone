@@ -37,7 +37,7 @@ public class Wall extends FieldEntity {
     @Override
     public void hit(int damage) {
         life = life - damage;
-        System.out.println("Tank life: " + id + " : " + life);
+        System.out.println("Wall life: " + life);
     }
 
     public int getLife() {
