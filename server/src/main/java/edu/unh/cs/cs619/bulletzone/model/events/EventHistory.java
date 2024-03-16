@@ -74,6 +74,7 @@ public class EventHistory {
     /**
      * Trims the log of events
      */
+    @SuppressWarnings("NewApi")
     private void trimHistory() {
         long curTime = System.currentTimeMillis();
         history.removeIf(n -> (curTime - n.getTimeStamp()) >= millisToKeepHistory);
