@@ -52,7 +52,7 @@ public class GridPollerTask {
                     // last poll
                     long currentTime = System.currentTimeMillis();  // New code 🔽
                     String summary = "Processed " + events.getEvents().size() + " events.";
-                    EventBus.getDefault().post(new UpdateBoardEvent(currentTime, summary));
+                    EventBus.getDefault().post(new UpdateBoardEvent());
                 }
             }
 
