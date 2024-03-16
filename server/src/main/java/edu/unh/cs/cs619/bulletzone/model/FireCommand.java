@@ -5,19 +5,21 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
+import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 public class FireCommand implements Command{
-     private  long tankId;
-     private int bulletType;
-     private Game game;
+    private  long tankId;
+    private int bulletType;
+    private Game game;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
-     private final int[] trackActiveBullets = {0, 0};
+    private final int[] trackActiveBullets = {0, 0};
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
-     private  Object monitor; // possibly needed
+    private  Object monitor; // possibly needed
 
     /**
      * Fire Command Method that initializes values needed for execution.
@@ -90,8 +92,7 @@ public class FireCommand implements Command{
                     System.out.println("Active Bullet: "+tank.getNumberOfBullets()+"---- Bullet ID: "+bullet.getIntValue());
                     FieldHolder currentField = bullet.getParent();
                     Direction direction = bullet.getDirection();
-                    FieldHolder nextField = currentField
-                            .getNeighbor(direction);
+                    FieldHolder nextField = currentField.getNeighbor(direction);
 
                     // Is the bullet visible on the field?
                     boolean isVisible = currentField.isPresent()
@@ -100,32 +101,47 @@ public class FireCommand implements Command{
 
                     if (nextField.isPresent()) {
                         // Something is there, hit it
-                        nextField.getEntity().hit(bullet.getDamage());
+                        FieldEntity entity = nextField.getEntity();
+                        int damageAmount = bullet.getDamage();
+                        entity.hit(damageAmount);
 
-                        if ( nextField.getEntity() instanceof  Tank){
-                            Tank t = (Tank) nextField.getEntity();
+                        // Create new damageEvent
+                        int position = entity.getPosition();
+                        DamageEvent damageEvent = new DamageEvent(position, entity.getIntValue());
+                        EventBus.getDefault().post(damageEvent);
+
+                        if (nextField.getEntity() instanceof Tank t){
                             System.out.println("tank is hit, tank life: " + t.getLife());
                             if (t.getLife() <= 0 ){
                                 t.getParent().clearField();
                                 t.setParent(null);
                                 game.removeTank(t.getId());
+                                // Create new removalEvent
+                                RemovalEvent removalEvent = new RemovalEvent(t.getPosition());
+                                EventBus.getDefault().post(removalEvent);
                             }
-                        }
-                        else if ( nextField.getEntity() instanceof  Wall){
-                            Wall w = (Wall) nextField.getEntity();
-                            if (w.getIntValue() >1000 && w.getIntValue()<=2000 ){
-                                game.getHolderGrid().get(w.getPos()).clearField();
+                        } else if (nextField.getEntity() instanceof Wall w) {
+                            // Check if the wall is destructible
+                            if (w.getIntValue() > 1000 && w.getIntValue() <= 2000) {
+                                if (w.getLife() <= 0) {  // If 0 health
+                                    game.getHolderGrid().get(w.getPos()).clearField();
+                                    // Create new RemovalEvent
+                                    RemovalEvent removalEvent = new RemovalEvent(w.getPos());
+                                    EventBus.getDefault().post(removalEvent);
+                                }
                             }
                         }
                         if (isVisible) {
                             // Remove bullet from field
                             currentField.clearField();
+                            RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
+                            EventBus.getDefault().post(removalEvent);
                         }
                         trackActiveBullets[bullet.getBulletId()]=0;
                         tank.setNumberOfBullets(tank.getNumberOfBullets()-1);
                         cancel();
 
-                    } else {
+                    } else {  // Nothing is there, move bullet along
                         if (isVisible) {
                             // Remove bullet from field
                             currentField.clearField();
@@ -135,7 +151,9 @@ public class FireCommand implements Command{
                         nextField.setFieldEntity(bullet);
                         bullet.setParent(nextField);
                         int newPos = bullet.getPosition();
-                        EventBus.getDefault().post(new MoveEvent(bullet.getIntValue(), oldPos, newPos));
+                        // Create new moveEvent
+                        MoveEvent moveEvent = new MoveEvent(bullet.getIntValue(), oldPos, newPos);
+                        EventBus.getDefault().post(moveEvent);
                     }
                 }
             }
