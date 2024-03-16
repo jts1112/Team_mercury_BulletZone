@@ -4,9 +4,7 @@ public class RemovalEvent extends GameEvent {
     @JsonProperty
     private int position;
 
-    public RemovalEvent( int position) {
-        this.position = position;
-    }
+    public RemovalEvent( int position) { }
 
     @Override
     void applyTo(int[][] board) {

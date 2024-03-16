@@ -1,3 +1,7 @@
+/*
+Tests for retrieving server-side event history, including tests for showing the longest any
+history is maintained (at least 1 minute, but no more than 3 minutes)
+ */
 package edu.unh.cs.cs619.bulletzone.datalayer;
 
 import static org.junit.Assert.assertEquals;
