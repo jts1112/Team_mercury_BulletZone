@@ -29,6 +29,7 @@ dependencies {
 }
 
 dependencies {
+    testImplementation 'org.testng:testng:6.9.6'
     implementation project(':server')
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
