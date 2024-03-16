@@ -92,7 +92,7 @@ public class FireCommand implements Command{
                     System.out.println("Active Bullet: "+tank.getNumberOfBullets()+"---- Bullet ID: "+bullet.getIntValue());
                     FieldHolder currentField = bullet.getParent();
                     Direction direction = bullet.getDirection();
-                    FieldHolder nextField = currentField.getNeighbor(didrection);
+                    FieldHolder nextField = currentField.getNeighbor(direction);
 
                     // Is the bullet visible on the field?
                     boolean isVisible = currentField.isPresent()
