@@ -43,7 +43,7 @@ targetCompatibility = 17
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.guava:guava:24.1-jre'
-    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.1'
+    implementation('org.springframework.boot:spring-boot-starter-web')
     implementation 'com.h2database:h2:1.4.194'
     implementation 'org.greenrobot:eventbus-java:3.3.1'
     extraLibs group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.1'
