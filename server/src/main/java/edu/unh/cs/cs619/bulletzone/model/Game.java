@@ -53,7 +53,6 @@ public final class Game {
         return tanks;
     }
 
-    @SuppressWarnings("NewApi")
     public List<Optional<FieldEntity>> getGrid() {
         synchronized (holderGrid) {
             List<Optional<FieldEntity>> entities = new ArrayList<>();

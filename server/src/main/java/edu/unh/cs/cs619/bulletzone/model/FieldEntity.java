@@ -1,7 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.model;
-import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
-
 
 public abstract class FieldEntity {
     //protected static final EventBus eventBus = new EventBus();

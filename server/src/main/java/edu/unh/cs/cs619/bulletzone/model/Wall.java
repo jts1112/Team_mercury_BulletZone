@@ -1,17 +1,14 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 public class Wall extends FieldEntity {
-    int destructValue, pos, life;
+    int destructValue, pos;
 
-    public Wall() {
-        // For indestructible wall
+    public Wall(){
         this.destructValue = 1000;
     }
 
-    public Wall(int destructValue, int pos) {
-        // For destructible wall
+    public Wall(int destructValue, int pos){
         this.destructValue = destructValue;
-        this.life = destructValue - 1000;
         this.pos = pos;
     }
 
@@ -30,17 +27,7 @@ public class Wall extends FieldEntity {
         return "W";
     }
 
-    public int getPos() {
+    public int getPos(){
         return pos;
-    }
-
-    @Override
-    public void hit(int damage) {
-        life = life - damage;
-        System.out.println("Wall life: " + life);
-    }
-
-    public int getLife() {
-        return life;
     }
 }

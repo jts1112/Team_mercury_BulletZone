@@ -15,14 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
-import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
-import edu.unh.cs.cs619.bulletzone.model.events.GameEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import com.google.common.base.Preconditions;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
@@ -120,5 +114,4 @@ class GamesController {
     String handleBadRequests(Exception e) {
         return e.getMessage();
     }
-
 }
