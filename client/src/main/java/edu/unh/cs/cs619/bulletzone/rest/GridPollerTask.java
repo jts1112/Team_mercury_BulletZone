@@ -22,7 +22,7 @@ public class GridPollerTask {
     public boolean toggleEventUsage() {
         updateUsingEvents = !updateUsingEvents;
         return updateUsingEvents;
-    }dddddddddddd
+    }
 
     @Background(id = "grid_poller_task")
     public void doPoll() {
