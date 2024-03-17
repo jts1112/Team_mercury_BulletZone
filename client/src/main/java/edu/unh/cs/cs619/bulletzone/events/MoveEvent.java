@@ -10,9 +10,19 @@ public class MoveEvent extends GameEvent {
     @JsonProperty
     private int newPosition;
 
-    public MoveEvent() {}
+    /*
+     * Constructor for testing only.
+     */
+    public MoveEvent(int rawServerValue, int oldPosition, int newPosition) {
+        this.rawServerValue = rawServerValue;
+        this.oldPosition = oldPosition;
+        this.newPosition = newPosition;
+    }
 
-    void applyTo(int [][]board) {
+    /*
+     Public only for testing.
+    */
+    public void applyTo(int[][] board) {
         board[oldPosition / 16][oldPosition % 16] = 0; //clear old position
         board[newPosition / 16][newPosition % 16] = rawServerValue;
     }
