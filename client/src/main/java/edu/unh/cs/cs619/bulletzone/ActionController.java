@@ -1,0 +1,76 @@
+package edu.unh.cs.cs619.bulletzone;
+
+import android.content.Context;
+
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.rest.spring.annotations.RestService;
+
+import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
+import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
+import edu.unh.cs.cs619.bulletzone.util.ShakeDetector;
+
+/**
+ * Controller class for the client activity UI invoked movement actions
+ * Handles the restClient calls previously done by client activity and
+ * uses shakeDetector to call
+ */
+@EBean
+public class ActionController {
+
+    @RestService
+    public
+    BulletZoneRestClient restClient;
+
+    @Bean
+    BZRestErrorhandler bzRestErrorhandler;
+
+    private long tankId = -1;
+    private ShakeDetector shakeDetector;
+
+    public ActionController() {
+    }
+
+    // Method to initialize the ActionController with context
+    public void initialize(Context context) {
+        restClient.setRestErrorHandler(bzRestErrorhandler);
+        shakeDetector = new ShakeDetector(context);
+        shakeDetector.setOnShakeListener(() -> {
+            // Call onButtonFire when shake is detected
+            if (tankId != -1) {
+                onButtonFire(tankId);
+            }
+        });
+    }
+
+    public long join() {
+        try {
+            tankId = restClient.join().getResult();
+            return tankId;
+        } catch (Exception e) {
+        }
+        return -1;
+    }
+
+    @Background
+    public void onButtonMove(long tankId, byte direction) {
+        restClient.move(tankId, direction);
+    }
+
+    // Move and turn merged into one action for client side, server side differentiates turn/move
+//    @Background
+//    public void onButtonTurn(long tankId, byte direction) {
+//        restClient.turn(tankId, direction);
+//    }
+
+    @Background
+    public void onButtonFire(long tankId) {
+        restClient.fire(tankId);
+    }
+
+    public void leave(long tankId) {
+        restClient.leave(tankId);
+    }
+}
