@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
@@ -39,6 +40,7 @@ public class ActionController {
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
             // Call onButtonFire when shake is detected
+            // Log.d("Action Controller", "Shake detected");
             if (tankId != -1) {
                 onButtonFire(tankId);
             }
@@ -67,6 +69,7 @@ public class ActionController {
 
     @Background
     public void onButtonFire(long tankId) {
+        // Log.d("ActionController", "Fire called.");
         restClient.fire(tankId);
     }
 

@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 public class ShakeDetector implements SensorEventListener {
 
     // Minimum acceleration needed to register as a shake event
-    private static final float MIN_ACCELERATION = 5.0f;
+    private static final float MIN_ACCELERATION = 15.0f;
 
     // Minimum time interval between shake events
     private static final long MIN_INTERVAL = 500; // in milliseconds

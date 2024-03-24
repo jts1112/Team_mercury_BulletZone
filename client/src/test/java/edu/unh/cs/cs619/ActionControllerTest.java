@@ -25,12 +25,6 @@ public class ActionControllerTest {
     @Mock
     private BulletZoneRestClient restClient;
 
-    @Mock
-    private ShakeDetector shakeDetector;
-
-    @Mock
-    private Context context;
-
     private ActionController actionController;
 
     @Before
@@ -42,7 +36,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void testJoin() {
+    public void test_ActionController_Join() {
         // Define the behavior of restClient
         when(restClient.join()).thenReturn(new LongWrapper(123));
 
@@ -54,7 +48,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void testOnButtonMove() {
+    public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
         actionController.onButtonMove(123, (byte) 1);
 
@@ -63,7 +57,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void testOnButtonFire() {
+    public void test_ActionController_OnButtonFire() {
         // Call the method to be tested
         actionController.onButtonFire(123);
 
@@ -72,22 +66,11 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void testSimulateShakeEvent() {
-        // Create a mock Context
+    public void test_ShakeDetector_ShakeEventCallsFire() {
+        // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
-
-        // Log mockContext to ensure it's not null
-        System.out.println("Mock Context: " + mockContext);
-
-        // Create a mock ActionController
         ActionController mockActionController = mock(ActionController.class);
-
-        // Log mockActionController to ensure it's not null
-        System.out.println("Mock ActionController: " + mockActionController);
-
-        // Initialize the mock ActionController with the mock Context
         mockActionController.initialize(mockContext);
-
 
         // Create a mock SensorManager
         SensorManager mockSensorManager = mock(SensorManager.class);
@@ -112,7 +95,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void testLeave() {
+    public void test_ActionController_Leave() {
         // Call the method to be tested
         actionController.leave(123);
 
