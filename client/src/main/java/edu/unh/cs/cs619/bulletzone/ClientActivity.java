@@ -111,7 +111,7 @@ public class ClientActivity extends Activity {
     void joinAsync() {
         try {
             tankId = actionController.join();
-            gridPollTask.doPoll();
+            gridPollTask.startPolling();
         } catch (Exception e) {
         }
     }
@@ -132,6 +132,10 @@ public class ClientActivity extends Activity {
         }
     }
 
+    /**
+     * Client side only sends a move request whenever direction is pressed
+     * Server determines whether to turn or move based on the tank direction
+     */
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
     protected void onButtonMove(View view) {
         final int viewId = view.getId();

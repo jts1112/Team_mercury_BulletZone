@@ -1,6 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.rest;
-import android.os.SystemClock;
-import edu.unh.cs.cs619.bulletzone.events.UpdateBoardEvent;
+
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
@@ -10,54 +9,56 @@ import edu.unh.cs.cs619.bulletzone.events.GameEvent;
 import edu.unh.cs.cs619.bulletzone.util.GameEventCollectionWrapper;
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Updated the grid poller to use a scheduled thread
+ */
 @EBean
 public class GridPollerTask {
     @RestService
     BulletZoneRestClient restClient;
 
+    private final ScheduledThreadPoolExecutor scheduler;
     private long previousTimeStamp = -1;
-    private int polls = 0;
+    //private int polls = 0;
     private boolean updateUsingEvents = false;
+
+    public GridPollerTask() {
+        this.scheduler = new ScheduledThreadPoolExecutor(1);
+    }
 
     public boolean toggleEventUsage() {
         updateUsingEvents = !updateUsingEvents;
         return updateUsingEvents;
     }
 
-    @Background(id = "grid_poller_task")
-    public void doPoll() {
-        while (true) {
-            if (previousTimeStamp < 0 || !updateUsingEvents) {
-                //Log.d("Poller", "Updating whole grid");
-                GridWrapper grid = restClient.grid();
-                onGridUpdate(grid);
-                previousTimeStamp = grid.getTimeStamp();
-                if (polls < 1) {
-                    updateUsingEvents = true;
-                    polls++;
-                }
+    public void startPolling() {
+        scheduler.scheduleAtFixedRate(this::pollServer, 0, 100, TimeUnit.MILLISECONDS);
+    }
 
-            }
-            else {
-                //Log.d("Poller", "Updating using events");
-                GameEventCollectionWrapper events = restClient.events(previousTimeStamp);
-                boolean haveEvents = false;
-                for (GameEvent event : events.getEvents()) {
-                    //Log.d("Event-check", event.toString());
-                    EventBus.getDefault().post(event);
-                    previousTimeStamp = event.getTimeStamp();
-                    haveEvents = true;
-                }
-                if (haveEvents) {  // If the server has returned events that occurred since the
-                    // last poll
-                    long currentTime = System.currentTimeMillis();  // New code 🔽
-                    String summary = "Processed " + events.getEvents().size() + " events.";
-                    EventBus.getDefault().post(new UpdateBoardEvent());
-                }
-            }
+    public void stopPolling() {
+        scheduler.shutdown();
+    }
 
-            // poll server every 100ms
-            SystemClock.sleep(100);
+    @Background
+    public void pollServer() {
+        if (!updateUsingEvents) {
+            //Log.d("Poller", "Updating whole grid");
+            GridWrapper grid = restClient.grid();
+            onGridUpdate(grid);
+        } else {
+            GameEventCollectionWrapper events = restClient.events(previousTimeStamp);
+            boolean haveEvents = false;
+            for (GameEvent event : events.getEvents()) {
+                EventBus.getDefault().post(event);
+                previousTimeStamp = event.getTimeStamp();
+                haveEvents = true;
+            }
+            if (haveEvents) {
+                onGridUpdate(restClient.grid()); // Update grid after processing events
+            }
         }
     }
     @UiThread
