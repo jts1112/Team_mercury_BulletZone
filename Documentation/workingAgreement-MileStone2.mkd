@@ -1,14 +1,15 @@
 
     1. Highest-priority items. These are the top 2 or 3 items in your new agreement that you want everyone to work on the most.
     These items could be new, or this could just be re-emphasizing something that was already in the agreement before.
-    ```Uitlize the voice Channel more, Allocating work with dependencies in mind to avoid gridlock, finding a open source graphing
-    software to allow.```
+    [Uitlize the voice Channel more, Allocating work with dependencies in mind to avoid gridlock, all issues should try and be
+    completed and pushed day prior to due date to allow time for functional testingand verification the following day]
     2. Changes from the initial agreement. List any additions, removals, and modifications to the prior agreement, with some explanation as to why the change is happening.
-    ``` Modified: "How Meetings will be scheduled" changed to meetings on tuesday and thursday starting at 5:30 on Discord. reason
+    [Modified: "How Meetings will be scheduled" changed to meetings on tuesday and thursday starting at 5:30 on Discord. reason
     for change is that it is easier for teamates to use their own setups to improve productivity aswell as easier for them without
     them having to rely on transportation
     Added: "When projects should be finished" all issues should try and be completed and pushed day prior to due date to allow time for functional testing
     and verification the following day```
+    Added: "Affordability" finding a open source graphing software to allow more affordable diagram production.]
     3. List remaining agreement items. Still keep the rest of the original list that didn't change and that you still expect to carry through Milestone 2, but are not high-priority. There is no need to put these items in any particular order.
 
 
