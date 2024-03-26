@@ -54,6 +54,10 @@ public class ClientActivity extends Activity {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
+    // Add new controller for rest calls
+    @Bean
+    protected ActionController actionController;
+
     /**
      * Remote tank identifier
      */
@@ -98,15 +102,16 @@ public class ClientActivity extends Activity {
 
     @AfterInject
     void afterInject() {
-        restClient.setRestErrorHandler(bzRestErrorhandler);
         EventBus.getDefault().register(gridEventHandler);
+        // initialize actioncontroller
+        actionController.initialize(this);
     }
 
     @Background
     void joinAsync() {
         try {
-            tankId = restClient.join().getResult();
-            gridPollTask.doPoll();
+            tankId = actionController.join();
+            gridPollTask.startPolling();
         } catch (Exception e) {
         }
     }
@@ -127,6 +132,10 @@ public class ClientActivity extends Activity {
         }
     }
 
+    /**
+     * Client side only sends a move request whenever direction is pressed
+     * Server determines whether to turn or move based on the tank direction
+     */
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
@@ -149,23 +158,13 @@ public class ClientActivity extends Activity {
                 Log.e(TAG, "Unknown movement button id: " + viewId);
                 break;
         }
-        this.moveAsync(tankId, direction);
-    }
-
-    @Background
-    void moveAsync(long tankId, byte direction) {
-        restClient.move(tankId, direction);
-    }
-
-    @Background
-    void turnAsync(long tankId, byte direction) {
-        restClient.turn(tankId, direction);
+        actionController.onButtonMove(tankId, direction);
     }
 
     @Click(R.id.buttonFire)
     @Background
     protected void onButtonFire() {
-        restClient.fire(tankId);
+        actionController.onButtonFire(tankId);
     }
 
     @Click(R.id.buttonLeave)
@@ -173,12 +172,12 @@ public class ClientActivity extends Activity {
     void leaveGame() {
         System.out.println("leaveGame() called, tank ID: "+tankId);
         BackgroundExecutor.cancelAll("grid_poller_task", true);
-        restClient.leave(tankId);
+        actionController.leave(tankId);
     }
 
     @Click(R.id.buttonLogin)
     void login() {
-        Intent intent = new Intent(this, AuthenticateActivity_.class);
+        Intent intent = new Intent(this, AuthenticateActivity.class);
         startActivity(intent);
     }
 
@@ -186,6 +185,6 @@ public class ClientActivity extends Activity {
     void leaveAsync(long tankId) {
         System.out.println("Leave called, tank ID: " + tankId);
         BackgroundExecutor.cancelAll("grid_poller_task", true);
-        restClient.leave(tankId);
+        actionController.leave(tankId);
     }
 }
