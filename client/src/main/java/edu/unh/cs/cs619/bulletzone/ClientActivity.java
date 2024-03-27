@@ -171,6 +171,10 @@ public class ClientActivity extends Activity {
     @Background
     void leaveGame() {
         System.out.println("leaveGame() called, tank ID: "+tankId);
+
+        Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
+        startActivity(intent);
+
         BackgroundExecutor.cancelAll("grid_poller_task", true);
         actionController.leave(tankId);
     }
@@ -180,5 +184,11 @@ public class ClientActivity extends Activity {
         System.out.println("Leave called, tank ID: " + tankId);
         BackgroundExecutor.cancelAll("grid_poller_task", true);
         actionController.leave(tankId);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        // Not calling **super**, disables back button in current screen.
     }
 }
