@@ -1,10 +1,19 @@
 package edu.unh.cs.cs619.bulletzone;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.rest.spring.annotations.RestService;
+import org.junit.rules.Timeout;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
@@ -14,6 +23,10 @@ import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 public class AuthenticationController {
     @RestService
     BulletZoneRestClient restClient;
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+
 
     /**
      * Constructor for InputHandler
@@ -38,11 +51,22 @@ public class AuthenticationController {
      * @param password Password for account provided by user.
      */
     public long login(String username, String password) {
-        LongWrapper result = restClient.login(username, password);
-        if (result == null) {
+        Future<LongWrapper> future = executorService.submit(() -> restClient.login(username, password));
+
+        try {
+            LongWrapper result = future.get(10, TimeUnit.SECONDS);
+            if (result == null) {
+                return -1;
+            }
+            return result.getResult();
+        } catch (TimeoutException e) {
+            Log.d("AuthenticatonActivty", "Loging operation timed out");
+            future.cancel(true);
+            return -2;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
             return -1;
         }
-        return result.getResult();
     }
 
     /**
