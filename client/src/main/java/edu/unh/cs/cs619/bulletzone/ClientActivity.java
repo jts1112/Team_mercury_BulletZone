@@ -1,5 +1,5 @@
 package edu.unh.cs.cs619.bulletzone;
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,6 +54,10 @@ public class ClientActivity extends Activity {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
+    // Add new controller for rest calls
+    @Bean
+    protected ActionController actionController;
+
     /**
      * Remote tank identifier
      */
@@ -76,7 +80,7 @@ public class ClientActivity extends Activity {
      * actually points to a subclass implementation, the methods registered in this class will
      * not be found. This immediately becomes a problem when using the AndroidAnnotations
      * framework as it always produces a subclass of annotated classes.
-     * <p>
+     *
      * To get around the class hierarchy limitation, one can use a separate anonymous class to
      * handle the events.
      */
@@ -98,15 +102,16 @@ public class ClientActivity extends Activity {
 
     @AfterInject
     void afterInject() {
-        restClient.setRestErrorHandler(bzRestErrorhandler);
         EventBus.getDefault().register(gridEventHandler);
+        // initialize actioncontroller
+        actionController.initialize(this);
     }
 
     @Background
     void joinAsync() {
         try {
-            tankId = restClient.join().getResult();
-            gridPollTask.doPoll();
+            tankId = actionController.join();
+            gridPollTask.startPolling();
         } catch (Exception e) {
         }
     }
@@ -115,13 +120,11 @@ public class ClientActivity extends Activity {
         mGridAdapter.updateList(gw.getGrid());
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(mGridAdapter.getBoard());
-            //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setBoard(mGridAdapter.getBoard()); //necessary because "board" keeps changing when it's int[][]
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -129,6 +132,10 @@ public class ClientActivity extends Activity {
         }
     }
 
+    /**
+     * Client side only sends a move request whenever direction is pressed
+     * Server determines whether to turn or move based on the tank direction
+     */
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
@@ -151,23 +158,13 @@ public class ClientActivity extends Activity {
                 Log.e(TAG, "Unknown movement button id: " + viewId);
                 break;
         }
-        this.moveAsync(tankId, direction);
-    }
-
-    @Background
-    void moveAsync(long tankId, byte direction) {
-        restClient.move(tankId, direction);
-    }
-
-    @Background
-    void turnAsync(long tankId, byte direction) {
-        restClient.turn(tankId, direction);
+        actionController.onButtonMove(tankId, direction);
     }
 
     @Click(R.id.buttonFire)
     @Background
     protected void onButtonFire() {
-        restClient.fire(tankId);
+        actionController.onButtonFire(tankId);
     }
 
     @Click(R.id.buttonLeave)
@@ -175,7 +172,7 @@ public class ClientActivity extends Activity {
     void leaveGame() {
         System.out.println("leaveGame() called, tank ID: "+tankId);
         BackgroundExecutor.cancelAll("grid_poller_task", true);
-        restClient.leave(tankId);
+        actionController.leave(tankId);
     }
 
     @Click(R.id.buttonLogin)
@@ -188,6 +185,6 @@ public class ClientActivity extends Activity {
     void leaveAsync(long tankId) {
         System.out.println("Leave called, tank ID: " + tankId);
         BackgroundExecutor.cancelAll("grid_poller_task", true);
-        restClient.leave(tankId);
+        actionController.leave(tankId);
     }
 }

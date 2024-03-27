@@ -1,4 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.events;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MoveEvent extends GameEvent {
@@ -9,9 +10,19 @@ public class MoveEvent extends GameEvent {
     @JsonProperty
     private int newPosition;
 
-    public MoveEvent() {}
+    /*
+     * Constructor for testing only.
+     */
+    public MoveEvent(int rawServerValue, int oldPosition, int newPosition) {
+        this.rawServerValue = rawServerValue;
+        this.oldPosition = oldPosition;
+        this.newPosition = newPosition;
+    }
 
-    void applyTo(int [][]board) {
+    /*
+     Public only for testing.
+    */
+    public void applyTo(int[][] board) {
         board[oldPosition / 16][oldPosition % 16] = 0; //clear old position
         board[newPosition / 16][newPosition % 16] = rawServerValue;
     }
@@ -21,7 +32,6 @@ public class MoveEvent extends GameEvent {
         return "Move " + rawServerValue +
                 " from " + oldPosition +
                 " to " + newPosition +
-                "at time " + getTimeStamp() +
                 super.toString();
     }
 }

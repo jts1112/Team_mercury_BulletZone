@@ -1,4 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.events;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SpawnEvent extends GameEvent {
@@ -7,12 +8,18 @@ public class SpawnEvent extends GameEvent {
     @JsonProperty
     private int position;
 
+    /*
+     * Constructor for testing only.
+     */
     public SpawnEvent(int rawServerValue, int position) {
         this.rawServerValue = rawServerValue;
         this.position = position;
     }
 
-    void applyTo(int [][]board) {
+    /*
+     Public only for testing.
+    */
+    public void applyTo(int[][] board) {
         board[position / 16][position % 16] = rawServerValue;
     }
 
@@ -22,4 +29,5 @@ public class SpawnEvent extends GameEvent {
                 " at " + position +
                 super.toString();
     }
+
 }

@@ -20,4 +20,5 @@ public class GameEventCollectionWrapper {
     public void setEvents(Collection<GameEvent> set) {
         this.events = set;
     }
+
 }
