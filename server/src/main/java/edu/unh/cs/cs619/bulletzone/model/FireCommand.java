@@ -1,14 +1,10 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
+import edu.unh.cs.cs619.bulletzone.model.events.*;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 public class FireCommand implements Command{
     private  long tankId;

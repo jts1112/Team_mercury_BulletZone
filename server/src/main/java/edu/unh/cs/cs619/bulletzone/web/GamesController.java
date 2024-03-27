@@ -66,16 +66,6 @@ class GamesController {
         return null;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/turn/{direction}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<BooleanWrapper> turn(@PathVariable long tankId, @PathVariable byte direction)
-            throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException {
-        return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.turn(tankId, Direction.fromByte(direction))),
-                HttpStatus.OK
-        );
-    }
-
     @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/move/{direction}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> move(@PathVariable long tankId, @PathVariable byte direction)

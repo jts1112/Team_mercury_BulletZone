@@ -9,6 +9,7 @@ import java.util.Comparator;
         visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "move", value = MoveEvent.class),
+        @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
         @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class),
         @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class)

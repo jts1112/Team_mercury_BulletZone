@@ -43,4 +43,13 @@ public enum Direction {
                 return -1;
         }
     }
+
+    public static Direction opposite(Direction direction) {
+        return switch (direction) {
+            case Up -> Direction.Down;
+            case Left -> Direction.Right;
+            case Right -> Direction.Left;
+            case Down -> Direction.Up;
+        };
+    }
 }

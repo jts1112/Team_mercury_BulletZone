@@ -2,13 +2,9 @@ package edu.unh.cs.cs619.bulletzone.datalayer;
 
 import static org.junit.Assert.assertEquals;
 
+import edu.unh.cs.cs619.bulletzone.model.events.*;
 import org.junit.Assert;
 import org.junit.Test;
-
-import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.EventHistory;
-import edu.unh.cs.cs619.bulletzone.model.events.GameEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 
 public class EventTests {
     @Test
