@@ -3,7 +3,9 @@ package edu.unh.cs.cs619.bulletzone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,15 +32,12 @@ public class TitleScreenActivity extends AppCompatActivity {
     public Button accountButton;
     public Button inventoryButton;
     public Button storeButton;
+    private SharedPreferences sharedPref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Since we are using the @EActivity annotation, anything done past this point will
-        //be overridden by the work AndroidAnnotations does. If you need to do more setup,
-        //add to the methods under @AfterViews (for view items) or @AfterInject (for Bean items) below
-
-
 
         setContentView(R.layout.activity_title_screen);
 
@@ -47,21 +46,50 @@ public class TitleScreenActivity extends AppCompatActivity {
         inventoryButton = findViewById(R.id.inventoryButton);
         storeButton = findViewById(R.id.storeButton);
 
-        playGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
-                startActivity(intent);
-            }
-        });
+        sharedPref = getSharedPreferences("UserAuthentication", Context.MODE_PRIVATE);
 
-        accountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
-                startActivity(intent);
-            }
-        });
+        // Read the login status
+        boolean isLoggedIn = sharedPref.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            playGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
+                    startActivity(intent);
+                }
+            });
+
+            accountButton.setText((CharSequence) "Account Info");
+            inventoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else {
+            playGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(TitleScreenActivity.this, "Please Sign In!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            accountButton.setText((CharSequence) "Sign in");
+            accountButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
+
+
+
+
 
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override

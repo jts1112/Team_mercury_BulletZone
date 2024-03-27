@@ -2,6 +2,7 @@ package edu.unh.cs.cs619.bulletzone;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ public class AuthenticateActivity extends AppCompatActivity {
 
     @Bean
     AuthenticationController controller;
+
+    private SharedPreferences sharedPref;
 
     long userID;
 
