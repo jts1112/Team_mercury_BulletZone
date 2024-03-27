@@ -5,8 +5,6 @@
 
 package edu.unh.cs.cs619.bulletzone.model;
 
-import com.google.common.util.concurrent.Monitor;
-
 import java.util.ArrayList;
 
 public class GameBoardBuilder {
@@ -20,9 +18,9 @@ public class GameBoardBuilder {
     }
 
     /**
-     * sets the feild holder grid to the specified field holder grid.
+     * sets the field holder grid to the specified field holder grid.
      *
-     * @param fieldHolderGrid the feild holder grid to set.
+     * @param fieldHolderGrid the field holder grid to set.
      * @return returns the Gameboardbuilder instance.
      */
     public GameBoardBuilder setFieldHolderGrid(ArrayList<FieldHolder>fieldHolderGrid){
@@ -54,10 +52,10 @@ public class GameBoardBuilder {
     }
 
     /**
-     * Game board CreateFeildHolderGrid that was originally in InMemoryGameRepository
-     * Creates the feildholderGrid with the specified dimensions
+     * Game board CreateFieldHolderGrid that was originally in InMemoryGameRepository
+     * Creates the fieldholderGrid with the specified dimensions
      *
-     * @param fieldDimension specified dimensions of the feildholder grid
+     * @param fieldDimension specified dimensions of the fieldholder grid
      * @param monitor monitor object needed to be passed
      * @return the GameBoardBuilder instance
      */
@@ -108,7 +106,7 @@ public class GameBoardBuilder {
     }
 
     /**
-     * Initialization that occured within the InMemoryGameRepository
+     * Initialization that occurred within the InMemoryGameRepository
      * @return the updated game
      */
     public GameBoardBuilder inMemoryGameReposiryInitialize(){
@@ -150,6 +148,19 @@ public class GameBoardBuilder {
         fieldHolderGrid.get(57).setFieldEntity(new Wall());
         fieldHolderGrid.get(73).setFieldEntity(new Wall());
         return  this;
+    }
+
+    /**
+     * Initialization that occurred within the InMemoryGameRepository
+     * @return the updated game
+     */
+    public GameBoardBuilder initializeFieldOfWalls(){
+        // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
+        for (int i = 1; i <= 256; i++) {
+            fieldHolderGrid.get(1).setFieldEntity(new Wall());
+        }
+
+        return this;
     }
 
 }

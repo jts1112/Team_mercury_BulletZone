@@ -1,28 +1,19 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
-import org.greenrobot.eventbus.EventBus;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import edu.unh.cs.cs619.bulletzone.model.Bullet;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
-import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-import edu.unh.cs.cs619.bulletzone.model.TurnCommand;
-import edu.unh.cs.cs619.bulletzone.model.Wall;
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -103,16 +94,6 @@ public class InMemoryGameRepository implements GameRepository {
             }
         }
         return game;
-    }
-
-    @Override
-    public boolean turn(long tankId, Direction direction)
-            throws TankDoesNotExistException {
-        synchronized (this.monitor) {
-            checkNotNull(direction);
-            //TODO added wth turnCommand
-            return new TurnCommand(tankId,direction).execute(game);
-        }
     }
 
     @Override
