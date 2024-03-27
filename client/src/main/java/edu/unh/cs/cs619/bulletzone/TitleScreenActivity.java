@@ -22,7 +22,7 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.androidannotations.api.BackgroundExecutor;
 import org.greenrobot.eventbus.EventBus;
 
-@EActivity(R.layout.activity_client)
+//@EActivity(R.layout.activity_client)
 public class TitleScreenActivity extends AppCompatActivity {
 
     public Button playGameButton;
@@ -40,74 +40,42 @@ public class TitleScreenActivity extends AppCompatActivity {
 
 
 
-//        setContentView(R.layout.activity_title_screen);
-//
-//        playGameButton = findViewById(R.id.playGameButton);
-//        accountButton = findViewById(R.id.accountButton);
-//        inventoryButton = findViewById(R.id.inventoryButton);
-//        storeButton = findViewById(R.id.storeButton);
-//
-//        playGameButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.w("OHNO", "playGameBurtton Clicked");
-//                Toast.makeText(TitleScreenActivity.this, "Changing to play game", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(TitleScreenActivity.this, ClientActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        accountButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        inventoryButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        storeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-    }
+        setContentView(R.layout.activity_title_screen);
 
-    @AfterViews
-    protected void afterViewInjection() {
-        //Put any view-setup code here (that you might normally put in onCreate)
-    }
+        playGameButton = findViewById(R.id.playGameButton);
+        accountButton = findViewById(R.id.accountButton);
+        inventoryButton = findViewById(R.id.inventoryButton);
+        storeButton = findViewById(R.id.storeButton);
 
-    @AfterInject
-    void afterInject() {
-        //Put any Bean-related setup code here (the you might normally put in onCreate)
-    }
+        playGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
+                startActivity(intent);
+            }
+        });
 
-    @Click(R.id.playGameButton)
-    void playGame() {
-//        Intent intent = new Intent(this, ClientActivity.class);
-//        startActivity(intent);
-    }
+        accountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
+                startActivity(intent);
+            }
+        });
 
-    @Click(R.id.accountButton)
-    void viewAccount() {
-        Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-    }
+        inventoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-    @Click(R.id.inventoryButton)
-    void openGarage() {
-        Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-    }
-
-    @Click(R.id.storeButton)
-    void openStore() {
-        Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+        storeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

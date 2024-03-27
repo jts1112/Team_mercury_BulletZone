@@ -11,7 +11,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".TitleScreenActivity_"
+            android:name=".TitleScreenActivity"
             android:exported="true">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />

@@ -176,12 +176,6 @@ public class ClientActivity extends Activity {
         restClient.leave(tankId);
     }
 
-    @Click(R.id.buttonLogin)
-    void login() {
-        Intent intent = new Intent(this, AuthenticateActivity.class);
-        startActivity(intent);
-    }
-
     @Background
     void leaveAsync(long tankId) {
         System.out.println("Leave called, tank ID: " + tankId);
