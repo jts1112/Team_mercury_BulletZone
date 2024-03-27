@@ -1,11 +1,14 @@
 package edu.unh.cs.cs619.bulletzone;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.SystemClock;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -71,6 +74,8 @@ public class AuthenticateActivity extends AppCompatActivity {
                 setStatus("Registration unsuccessful--inconsistency with server.");
             }
             //do other login things?
+            Intent intent = new Intent(AuthenticateActivity.this, TitleScreenActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -84,11 +89,15 @@ public class AuthenticateActivity extends AppCompatActivity {
         String password = password_editText.getText().toString();
 
         userID = controller.login(username, password);
-        if (userID < 0) {
+        if (userID == -1) {
             setStatus("Invalid username and/or password.\nPlease try again.");
+        } else if (userID == -2) {
+            setStatus("Server Login Timeout.");
         } else { //register successful
             setStatus("Login successful.");
-            //do other login things?
+            //do other login things
+            Intent intent = new Intent(AuthenticateActivity.this, TitleScreenActivity.class);
+            startActivity(intent);
         }
     }
 

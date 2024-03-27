@@ -87,4 +87,10 @@ public class TitleScreenActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        // Not calling **super**, disables back button in current screen.
+    }
 }
