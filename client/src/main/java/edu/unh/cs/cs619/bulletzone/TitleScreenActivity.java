@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -32,8 +33,8 @@ public class TitleScreenActivity extends AppCompatActivity {
     public Button accountButton;
     public Button inventoryButton;
     public Button storeButton;
-    private SharedPreferences sharedPref;
 
+    public static final int REQUEST_LOGIN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,50 +47,22 @@ public class TitleScreenActivity extends AppCompatActivity {
         inventoryButton = findViewById(R.id.inventoryButton);
         storeButton = findViewById(R.id.storeButton);
 
-        sharedPref = getSharedPreferences("UserAuthentication", Context.MODE_PRIVATE);
 
-        // Read the login status
-        boolean isLoggedIn = sharedPref.getBoolean("isLoggedIn", false);
+        playGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(TitleScreenActivity.this, "Please Sign In!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        if (isLoggedIn) {
-            playGameButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
-                    startActivity(intent);
-                }
-            });
-
-            accountButton.setText((CharSequence) "Account Info");
-            inventoryButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        } else {
-            playGameButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(TitleScreenActivity.this, "Please Sign In!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            accountButton.setText((CharSequence) "Sign in");
-            accountButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
-
-
-
-
+        accountButton.setText((CharSequence) "Sign in");
+        accountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
+                startActivityForResult(intent, REQUEST_LOGIN);
+            }
+        });
 
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +77,35 @@ public class TitleScreenActivity extends AppCompatActivity {
                 Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                // User Logged in Successfully, Update UI
+
+                accountButton.setText((CharSequence) "Account Info");
+                accountButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                playGameButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
+                        startActivity(intent);
+                    }
+                });
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // User login failed. No UI changes
+            }
+        }
     }
 
     @Override
