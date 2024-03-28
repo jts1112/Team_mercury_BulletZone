@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
@@ -62,15 +61,8 @@ public class GridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder;
-
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.field_item, null);
-            holder = new ViewHolder();
-            holder.imageView = convertView.findViewById(R.id.gridImageView); // Assuming you have an ImageView with id 'gridImageView'
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
         }
 
         int row = position / 16;
@@ -82,14 +74,14 @@ public class GridAdapter extends BaseAdapter {
             synchronized (monitor) {
                 if (val > 0) {
                     if (val == 1000 || (val>1000&&val<=2000)) {
-                        holder.imageView.setImageResource(R.drawable.wall2);
+                        ((TextView) convertView).setText("W");
                     } else if (val >= 2000000 && val <= 3000000) {
-                        holder.imageView.setImageResource(R.drawable.bullet1);
+                        ((TextView) convertView).setText("B");
                     } else if (val >= 10000000 && val <= 20000000) {
-                        holder.imageView.setImageResource(R.drawable.tank_icon2);
+                        ((TextView) convertView).setText("T");
                     }
                 } else {
-                    holder.imageView.setImageResource(R.drawable.grass_base1);
+                    ((TextView) convertView).setText("");
                 }
             }
         }
@@ -98,6 +90,4 @@ public class GridAdapter extends BaseAdapter {
     }
 }
 
-class ViewHolder {
-    ImageView imageView;
-}
+
