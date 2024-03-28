@@ -76,15 +76,6 @@ public class AuthenticateActivity extends AppCompatActivity {
             if (userID < 0) {
                 setStatus("Registration unsuccessful--inconsistency with server.");
             }
-            // Update shared pref
-            sharedPref = getSharedPreferences("UserAuthentication", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean("isLoggedIn", true);
-            editor.apply();
-
-            // Go back to TitleScreenActivity
-            Intent intent = new Intent(AuthenticateActivity.this, TitleScreenActivity.class);
-            startActivity(intent);
         }
     }
 
@@ -107,6 +98,13 @@ public class AuthenticateActivity extends AppCompatActivity {
             //do other login things
             Intent intent = new Intent(AuthenticateActivity.this, TitleScreenActivity.class);
             startActivity(intent);
+
+            // Update shared pref
+            sharedPref = getSharedPreferences("UserAuthentication", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("isLoggedIn", true);
+            editor.apply();
+
         }
     }
 
