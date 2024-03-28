@@ -18,10 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
-import edu.unh.cs.cs619.bulletzone.datalayer.core.Entity;
-import edu.unh.cs.cs619.bulletzone.datalayer.core.EntityRepository;
-import edu.unh.cs.cs619.bulletzone.datalayer.core.EntityType;
-import edu.unh.cs.cs619.bulletzone.datalayer.core.Status;
+import edu.unh.cs.cs619.bulletzone.datalayer.core.*;
 import edu.unh.cs.cs619.bulletzone.datalayer.item.GameItemRepository;
 
 public class GameUserRepository implements EntityRepository {
@@ -92,6 +89,34 @@ public class GameUserRepository implements EntityRepository {
         }
         System.out.println("New user " + username + " added with ID " + newUser.getId());
         return newUser;
+    }
+
+    /**
+     * Deletes the referenced account from the in-memory representation and
+     * marks it as deleted in the database.
+     * NOTE: this method does not remove the item from its container in the in-memory representation.
+     * @param userID    ID of the user to be marked as deleted
+     * @return  true if the operation was successful, and false otherwise.
+     */
+    public boolean delete(int userID) {
+        if (!userMap.containsKey(userID))
+            return false;
+        Connection dataConnection = data.getConnection();
+        if (dataConnection == null)
+            return false;
+
+        try {
+            if (!EntityRecord.markDeleted(userID, dataConnection)) {
+                dataConnection.close();
+                return false; //nothing deleted
+            }
+            dataConnection.close();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error while deleting item.", e);
+        }
+
+        userMap.remove(userID);
+        return true;
     }
 
     /**

@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.web;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.unh.cs.cs619.bulletzone.repository.DataRepository;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/games/account")
@@ -44,14 +47,11 @@ public class AccountController {
         // Log the request
         log.debug("Register '" + name + "' with password '" + password + "'");
         // Return the response (true if account created)
-        /*
-        return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(
-                TODO: something that invokes users.createUser(name, password) and does
-                      other setup in the DataRepository (actually calls data.validateUser(...))
-                ),
-                HttpStatus.CREATED);
-         */
-        return null;
+        if (data.validateUser(name, password, true).isPresent()) {
+            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(true), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(false), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /**
@@ -59,7 +59,7 @@ public class AccountController {
      *
      * @param name The username
      * @param password The password
-     * @return a response w/ the user ID (or -1 if invalid)
+     * @return a response w/ the user ID with HttpStatus.OK if valid (or -1 with HttpStatus.UNAUTHORIZED if invalid)
      */
     @RequestMapping(method = RequestMethod.PUT, value = "login/{name}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -68,15 +68,10 @@ public class AccountController {
     {
         // Log the request
         log.debug("Login '" + name + "' with password '" + password + "'");
-        // Return the response (return user ID if valid login)
-        /*
-        return new ResponseEntity<LongWrapper>(new LongWrapper(
-                TODO: something that invokes users.validateLogin(name, password) in
-                      the DataRepository (actually calls data.validateUser(...))
-                ),
-                HttpStatus.OK);
-         */
-        return null;
+        // Return the response (return user ID if valid login), -1 if not
+        Optional<GameUser> userData = data.validateUser(name, password, false);
+        return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId()), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(new LongWrapper(-1), HttpStatus.UNAUTHORIZED));
     }
 
 }

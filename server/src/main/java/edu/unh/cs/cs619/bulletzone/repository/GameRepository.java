@@ -13,9 +13,6 @@ public interface GameRepository {
 
     Game getGame();
 
-    boolean turn(long tankId, Direction direction)
-            throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException;
-
     boolean move(long tankId, Direction direction)
             throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException;
 

@@ -1,24 +1,19 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
-import org.greenrobot.eventbus.EventBus;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import edu.unh.cs.cs619.bulletzone.model.Bullet;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
-import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
-import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
+import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-import edu.unh.cs.cs619.bulletzone.model.Wall;
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
-import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -102,83 +97,11 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean turn(long tankId, Direction direction)
-            throws TankDoesNotExistException {
-        synchronized (this.monitor) {
-            checkNotNull(direction);
-
-            // Find user
-            Tank tank = game.getTanks().get(tankId);
-            if (tank == null) {
-                //Log.i(TAG, "Cannot find user with id: " + tankId);
-                throw new TankDoesNotExistException(tankId);
-            }
-
-            long millis = System.currentTimeMillis();
-            if(millis < tank.getLastMoveTime())
-                return false;
-
-            tank.setLastMoveTime(millis+tank.getAllowedMoveInterval());
-
-            /*try {
-                Thread.sleep(500);
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }*/
-
-            tank.setDirection(direction);
-
-            return true; // TODO check
-        }
-    }
-
-    @Override
     public boolean move(long tankId, Direction direction)
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
             // Find tank
-
-            Tank tank = game.getTanks().get(tankId);
-            if (tank == null) {
-                //Log.i(TAG, "Cannot find user with id: " + tankId);
-                //return false;
-                throw new TankDoesNotExistException(tankId);
-            }
-
-            long millis = System.currentTimeMillis();
-            if(millis < tank.getLastMoveTime())
-                return false;
-
-            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
-
-            FieldHolder parent = tank.getParent();
-
-            FieldHolder nextField = parent.getNeighbor(direction);
-            checkNotNull(parent.getNeighbor(direction), "Neightbor is not available");
-
-            boolean isCompleted;
-            if (!nextField.isPresent()) {
-                // If the next field is empty move the user
-
-                /*try {
-                    Thread.sleep(500);
-                } catch(InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }*/
-
-                int oldPos = tank.getPosition();
-                parent.clearField();
-                nextField.setFieldEntity(tank);
-                tank.setParent(nextField);
-                int newPos = tank.getPosition();
-                EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
-
-                isCompleted = true;
-            } else {
-                isCompleted = false;
-            }
-
-            return isCompleted;
+            return new MoveCommand(tankId,direction).execute(game);
         }
     }
 
@@ -186,113 +109,7 @@ public class InMemoryGameRepository implements GameRepository {
     public boolean fire(long tankId, int bulletType)
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
-
-            // Find tank
-            Tank tank = game.getTanks().get(tankId);
-            if (tank == null) {
-                //Log.i(TAG, "Cannot find user with id: " + tankId);
-                //return false;
-                throw new TankDoesNotExistException(tankId);
-            }
-
-            if(tank.getNumberOfBullets() >= tank.getAllowedNumberOfBullets())
-                return false;
-
-            long millis = System.currentTimeMillis();
-            if(millis < tank.getLastFireTime()/*>tank.getAllowedFireInterval()*/){
-                return false;
-            }
-
-            //Log.i(TAG, "Cannot find user with id: " + tankId);
-            Direction direction = tank.getDirection();
-            FieldHolder parent = tank.getParent();
-            tank.setNumberOfBullets(tank.getNumberOfBullets() + 1);
-
-            if(!(bulletType>=1 && bulletType<=3)) {
-                System.out.println("Bullet type must be 1, 2 or 3, set to 1 by default.");
-                bulletType = 1;
-            }
-
-            tank.setLastFireTime(millis + bulletDelay[bulletType - 1]);
-
-            int bulletId=0;
-            if(trackActiveBullets[0]==0){
-                bulletId = 0;
-                trackActiveBullets[0] = 1;
-            }else if(trackActiveBullets[1]==0){
-                bulletId = 1;
-                trackActiveBullets[1] = 1;
-            }
-
-            // Create a new bullet to fire
-            final Bullet bullet = new Bullet(tankId, direction, bulletDamage[bulletType-1]);
-            // Set the same parent for the bullet.
-            // This should be only a one way reference.
-            bullet.setParent(parent);
-            bullet.setBulletId(bulletId);
-            EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
-
-            // TODO make it nicer
-            timer.schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    synchronized (monitor) {
-                        System.out.println("Active Bullet: "+tank.getNumberOfBullets()+"---- Bullet ID: "+bullet.getIntValue());
-                        FieldHolder currentField = bullet.getParent();
-                        Direction direction = bullet.getDirection();
-                        FieldHolder nextField = currentField
-                                .getNeighbor(direction);
-
-                        // Is the bullet visible on the field?
-                        boolean isVisible = currentField.isPresent()
-                                && (currentField.getEntity() == bullet);
-
-
-                            if (nextField.isPresent()) {
-                                // Something is there, hit it
-                                nextField.getEntity().hit(bullet.getDamage());
-
-                                if ( nextField.getEntity() instanceof  Tank){
-                                    Tank t = (Tank) nextField.getEntity();
-                                    System.out.println("tank is hit, tank life: " + t.getLife());
-                                    if (t.getLife() <= 0 ){
-                                        t.getParent().clearField();
-                                        t.setParent(null);
-                                        game.removeTank(t.getId());
-                                    }
-                                }
-                                else if ( nextField.getEntity() instanceof  Wall){
-                                    Wall w = (Wall) nextField.getEntity();
-                                    if (w.getIntValue() >1000 && w.getIntValue()<=2000 ){
-                                        game.getHolderGrid().get(w.getPos()).clearField();
-                                    }
-                                }
-                            if (isVisible) {
-                                // Remove bullet from field
-                                currentField.clearField();
-                            }
-                            trackActiveBullets[bullet.getBulletId()]=0;
-                            tank.setNumberOfBullets(tank.getNumberOfBullets()-1);
-                            cancel();
-
-                        } else {
-                            if (isVisible) {
-                                // Remove bullet from field
-                                currentField.clearField();
-                            }
-
-                            int oldPos = bullet.getPosition();
-                            nextField.setFieldEntity(bullet);
-                            bullet.setParent(nextField);
-                            int newPos = bullet.getPosition();
-                            EventBus.getDefault().post(new MoveEvent(bullet.getIntValue(), oldPos, newPos));
-                        }
-                    }
-                }
-            }, 0, BULLET_PERIOD);
-
-            return true;
+           return new FireCommand(tankId,bulletType).execute(game);
         }
     }
 
@@ -321,48 +138,15 @@ public class InMemoryGameRepository implements GameRepository {
 
             this.game = new Game();
 
-            createFieldHolderGrid(game);
+//            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
+            //TODO added
+//            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
+            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
 
-            // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
-            game.getHolderGrid().get(1).setFieldEntity(new Wall());
-            game.getHolderGrid().get(2).setFieldEntity(new Wall());
-            game.getHolderGrid().get(3).setFieldEntity(new Wall());
-
-            game.getHolderGrid().get(17).setFieldEntity(new Wall());
-            game.getHolderGrid().get(33).setFieldEntity(new Wall(1500, 33));
-            game.getHolderGrid().get(49).setFieldEntity(new Wall(1500, 49));
-            game.getHolderGrid().get(65).setFieldEntity(new Wall(1500, 65));
-
-            game.getHolderGrid().get(34).setFieldEntity(new Wall());
-            game.getHolderGrid().get(66).setFieldEntity(new Wall(1500, 66));
-
-            game.getHolderGrid().get(35).setFieldEntity(new Wall());
-            game.getHolderGrid().get(51).setFieldEntity(new Wall());
-            game.getHolderGrid().get(67).setFieldEntity(new Wall(1500, 67));
-
-            game.getHolderGrid().get(5).setFieldEntity(new Wall());
-            game.getHolderGrid().get(21).setFieldEntity(new Wall());
-            game.getHolderGrid().get(37).setFieldEntity(new Wall());
-            game.getHolderGrid().get(53).setFieldEntity(new Wall());
-            game.getHolderGrid().get(69).setFieldEntity(new Wall(1500, 69));
-
-            game.getHolderGrid().get(7).setFieldEntity(new Wall());
-            game.getHolderGrid().get(23).setFieldEntity(new Wall());
-            game.getHolderGrid().get(39).setFieldEntity(new Wall());
-            game.getHolderGrid().get(71).setFieldEntity(new Wall(1500, 71));
-
-            game.getHolderGrid().get(8).setFieldEntity(new Wall());
-            game.getHolderGrid().get(40).setFieldEntity(new Wall());
-            game.getHolderGrid().get(72).setFieldEntity(new Wall(1500, 72));
-
-            game.getHolderGrid().get(9).setFieldEntity(new Wall());
-            game.getHolderGrid().get(25).setFieldEntity(new Wall());
-            game.getHolderGrid().get(41).setFieldEntity(new Wall());
-            game.getHolderGrid().get(57).setFieldEntity(new Wall());
-            game.getHolderGrid().get(73).setFieldEntity(new Wall());
         }
     }
 
+    // TODO Removed since implemented in GameBoardBuilder
     private void createFieldHolderGrid(Game game) {
         synchronized (this.monitor) {
             game.getHolderGrid().clear();

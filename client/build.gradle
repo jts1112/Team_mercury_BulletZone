@@ -29,6 +29,10 @@ dependencies {
 }
 
 dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -38,6 +42,13 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
     implementation 'org.greenrobot:eventbus:3.3.1'
 
+    // TODO added dependencies
+    implementation 'junit:junit:4.12'
+    implementation 'org.mockito:mockito-core:5.6.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation 'org.mockito:mockito-core:5.6.0'
 
 }
 
@@ -45,12 +56,25 @@ android {
     compileSdkVersion 34
     buildToolsVersion '34.0.0'
 
+    // TODO added
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    //
+
     defaultConfig {
         applicationId "edu.unh.cs.cs619.bulletzone"
         minSdkVersion 18
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
+
+        // TODO added
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true;
     }
     buildTypes {
         release {

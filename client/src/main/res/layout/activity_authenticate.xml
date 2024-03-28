@@ -23,10 +23,10 @@
         android:id="@+id/status_message"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:ems="16"
         android:gravity="center"
         android:text=""
         android:textColor="@android:color/holo_red_dark"
-        android:ems="16"
         android:textStyle="bold" />
 
     <Space
@@ -37,8 +37,8 @@
         android:id="@+id/username_editText"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:ems="11"
         android:layout_gravity="center"
+        android:ems="11"
         android:hint="Username:"
         android:inputType="textPersonName" />
 
@@ -69,8 +69,8 @@
             android:text="Register" />
 
         <Space
-            android:layout_height="match_parent"
-            android:layout_width="40dp" />
+            android:layout_width="40dp"
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/login_button"
