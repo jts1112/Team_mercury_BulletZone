@@ -1,6 +1,8 @@
 package edu.unh.cs.cs619.bulletzone;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -170,13 +172,29 @@ public class ClientActivity extends Activity {
     @Click(R.id.buttonLeave)
     @Background
     void leaveGame() {
-        System.out.println("leaveGame() called, tank ID: "+tankId);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(ClientActivity.this)
+                        .setTitle("Leave Game")
+                        .setMessage("Are you sure you want to leave?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Player clicked yes. Leave game
+                                System.out.println("leaveGame() called, tank ID: "+tankId);
 
-        Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
-        startActivity(intent);
+                                Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
+                                startActivity(intent);
 
-        BackgroundExecutor.cancelAll("grid_poller_task", true);
-        actionController.leave(tankId);
+//                                BackgroundExecutor.cancelAll("grid_poller_task", true);
+//                                actionController.leave(tankId);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null) // do nothing if user clicks no
+                        .show();
+            }
+        });
     }
 
     @Background
