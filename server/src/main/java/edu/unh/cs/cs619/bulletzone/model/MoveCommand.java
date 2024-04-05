@@ -2,9 +2,10 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
-import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
+import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
 public class MoveCommand implements Command{
     private long tankId;
@@ -22,7 +23,7 @@ public class MoveCommand implements Command{
 
     /**
      * MoveCommand Execute to run code from move() that was in InMemoryGameRepository
-     * @return returns True if Successs and False if Failure.
+     * @return returns True if Successes and False if Failure.
      * @throws TankDoesNotExistException
      */
     @Override
@@ -31,21 +32,40 @@ public class MoveCommand implements Command{
         // Find tank
         Tank tank = game.getTanks().get(tankId);
         if (tank == null) {
-            //Log.i(TAG, "Cannot find user with id: " + tankId);
-            //return false;
             throw new TankDoesNotExistException(tankId);
         }
 
+        // Check if the time from the last firing is too short
         long millis = System.currentTimeMillis();
         if(millis < tank.getLastMoveTime())
             return false;
 
-        tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
+        // Rotate tank if not moving forwards or backwards
+        Direction currentDir = tank.getDirection();
+        Direction desiredDirection = this.direction;
+        int current = Byte.toUnsignedInt(Direction.toByte(currentDir));
+        if (current == 0) {
+            current = 8;
+        }
+
+        int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
+
+        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)) {
+            // Set new direction
+            tank.setDirection(desiredDirection);
+
+            // Post new TurnEvent
+            EventBus.getDefault().post(new TurnEvent(tank.getIntValue(), currentDir, tank.getDirection()));
+
+            // Set the next valid move time
+            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
+            return true;
+        }
 
         FieldHolder parent = tank.getParent();
 
         FieldHolder nextField = parent.getNeighbor(direction);
-        checkNotNull(parent.getNeighbor(direction), "Neightbor is not available");
+        checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
 
         boolean isCompleted;
         if (!nextField.isPresent()) {
@@ -65,6 +85,7 @@ public class MoveCommand implements Command{
             EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
 
             isCompleted = true;
+            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
         } else {
             isCompleted = false;
         }
