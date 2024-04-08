@@ -20,7 +20,7 @@ public class MoveCommandTest {
     public void setup() {
         // Build empty board for testing
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(16,new Object()).build());
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
 

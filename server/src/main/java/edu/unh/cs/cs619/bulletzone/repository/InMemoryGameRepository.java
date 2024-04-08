@@ -72,6 +72,7 @@ public class InMemoryGameRepository implements GameRepository {
             for (; ; ) {
                 x = random.nextInt(FIELD_DIM);
                 y = random.nextInt(FIELD_DIM);
+                // FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 if (!fieldElement.isPresent()) {
                     fieldElement.setFieldEntity(tank);
@@ -141,8 +142,8 @@ public class InMemoryGameRepository implements GameRepository {
 //            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
             //TODO added
 //            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-
+//            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// change back to this  before the createFeildHolderGrid
+            game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
         }
     }
 

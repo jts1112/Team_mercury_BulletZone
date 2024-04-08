@@ -58,6 +58,7 @@ public final class Game {
         return gameBoard;
     }
 
+
     // TODO can be removed since in gameBoard
 //    public List<Optional<FieldEntity>> getGrid() {
 //        synchronized (holderGrid) {

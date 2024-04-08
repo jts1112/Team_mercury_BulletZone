@@ -9,12 +9,19 @@ import java.util.ArrayList;
 
 public class GameBoardBuilder {
 
-    private ArrayList<FieldHolder>fieldHolderGrid;
+    private ArrayList<FieldHolder>fieldHolderGrid = new ArrayList<>();
+    int fieldDimension;
+    Object monitor;
 
     /**
      * Initial constructor
      */
-    public GameBoardBuilder() {
+    public GameBoardBuilder(int fieldDimension,Object monitor) {
+
+        // initializeing the grid by creating the field holder grid.
+        createFieldHolderGrid(fieldDimension, monitor);
+        this.fieldDimension = fieldDimension;
+        this.monitor = monitor;
     }
 
     /**
@@ -59,7 +66,7 @@ public class GameBoardBuilder {
      * @param monitor monitor object needed to be passed
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder createFieldHolderGrid(int fieldDimension, Object monitor) {
+    private void createFieldHolderGrid(int fieldDimension, Object monitor) {
 
         synchronized (monitor) {
             if (this.fieldHolderGrid != null){
@@ -93,7 +100,7 @@ public class GameBoardBuilder {
                 }
             }
         }
-        return this;
+//        return this;
     }
 
 
@@ -112,7 +119,7 @@ public class GameBoardBuilder {
      */
     public GameBoardBuilder inMemoryGameReposiryInitialize(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
-        GameBoardBuilder newBoard = new GameBoardBuilder();
+        GameBoardBuilder newBoard = new GameBoardBuilder(fieldDimension,monitor);
         newBoard.setWall(1).
                 setWall(2).
                 setWall(3).

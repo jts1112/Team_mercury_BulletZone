@@ -76,6 +76,10 @@ public class GameBoard {
         }
     }
 
+    public void setBoard(ArrayList<FieldHolder> validGrid){
+        board = validGrid;
+    }
+
     public ArrayList<FieldHolder> getBoard() {
         return board;
     }
