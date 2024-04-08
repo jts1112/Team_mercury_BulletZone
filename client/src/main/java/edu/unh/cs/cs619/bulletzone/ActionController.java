@@ -57,7 +57,27 @@ public class ActionController {
     }
 
     @Background
-    public void onButtonMove(long tankId, byte direction) {
+    public void onButtonMove(long tankId, int viewId) {
+        byte direction = 0;
+
+        switch (viewId) {
+            case R.id.buttonUp:
+                direction = 0;
+                break;
+            case R.id.buttonDown:
+                direction = 4;
+                break;
+            case R.id.buttonLeft:
+                direction = 6;
+                break;
+            case R.id.buttonRight:
+                direction = 2;
+                break;
+            default:
+                Log.e("ActionController", "Unknown movement button id: " + viewId);
+                break;
+        }
+
         restClient.move(tankId, direction);
     }
 

@@ -30,36 +30,30 @@ import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
+import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
+import edu.unh.cs.cs619.bulletzone.ui.GridModel;
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 
 @EActivity(R.layout.activity_client)
 public class ClientActivity extends Activity {
 
     private static final String TAG = "ClientActivity";
-
     @Bean
     protected GridAdapter mGridAdapter;
-
     @Bean
     protected GameEventProcessor eventProcessor;
 
+    protected GridEventHandler gridEventHandler;
     @ViewById
     protected GridView gridView;
-
     @NonConfigurationInstance
     @Bean
     GridPollerTask gridPollTask;
-
-    @RestService
-    BulletZoneRestClient restClient;
-
-    @Bean
-    BZRestErrorhandler bzRestErrorhandler;
-
     // Add new controller for rest calls
     @Bean
     protected ActionController actionController;
 
+    private GridModel gridModel;
     /**
      * Remote tank identifier
      */
@@ -68,12 +62,22 @@ public class ClientActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_client);
+
+        gridModel = new GridModel();
+        mGridAdapter = new GridAdapter(this);
+
+        GridView gridView = findViewById(R.id.gridView);
+        gridView.setAdapter(mGridAdapter);
+
+        // Initialize gridEventHandler after gridModel initialization
+        gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(gridEventHandler);
+        gridEventHandler.unregister();
     }
 
     /**
@@ -85,7 +89,7 @@ public class ClientActivity extends Activity {
      *
      * To get around the class hierarchy limitation, one can use a separate anonymous class to
      * handle the events.
-     */
+
     private Object gridEventHandler = new Object()
     {
         @Subscribe
@@ -93,7 +97,7 @@ public class ClientActivity extends Activity {
             updateGrid(event.gw);
         }
     };
-
+    */
 
     @AfterViews
     protected void afterViewInjection() {
@@ -104,7 +108,6 @@ public class ClientActivity extends Activity {
 
     @AfterInject
     void afterInject() {
-        EventBus.getDefault().register(gridEventHandler);
         // initialize actioncontroller
         actionController.initialize(this);
     }
@@ -118,15 +121,15 @@ public class ClientActivity extends Activity {
         }
     }
 
-    public void updateGrid(GridWrapper gw) {
-        mGridAdapter.updateList(gw.getGrid());
-    }
+//    public void updateGrid(GridWrapper gw) {
+//        mGridAdapter.updateList(gw.getGrid());
+//    }
 
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(mGridAdapter.getBoard()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setBoard(gridModel.getGrid()); //necessary because "board" keeps changing when it's int[][]
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -141,26 +144,8 @@ public class ClientActivity extends Activity {
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
-        byte direction = 0;
 
-        switch (viewId) {
-            case R.id.buttonUp:
-                direction = 0;
-                break;
-            case R.id.buttonDown:
-                direction = 4;
-                break;
-            case R.id.buttonLeft:
-                direction = 6;
-                break;
-            case R.id.buttonRight:
-                direction = 2;
-                break;
-            default:
-                Log.e(TAG, "Unknown movement button id: " + viewId);
-                break;
-        }
-        actionController.onButtonMove(tankId, direction);
+        actionController.onButtonMove(tankId, viewId);
     }
 
     @Click(R.id.buttonFire)
