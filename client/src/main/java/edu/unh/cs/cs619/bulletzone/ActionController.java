@@ -3,7 +3,6 @@ package edu.unh.cs.cs619.bulletzone;
 import android.content.Context;
 import android.util.Log;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
