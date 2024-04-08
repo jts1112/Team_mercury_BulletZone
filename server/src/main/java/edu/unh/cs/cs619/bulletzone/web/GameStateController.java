@@ -41,7 +41,7 @@ class GameStateController {
     public
     @ResponseBody
     ResponseEntity<GridWrapper> grid() {
-        return new ResponseEntity<GridWrapper>(new GridWrapper(game.getGrid2D()), HttpStatus.OK);
+        return new ResponseEntity<GridWrapper>(new GridWrapper(game.getGameBoard().getGrid2D()), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/events/{timeSince}", produces = MediaType.APPLICATION_JSON_VALUE)

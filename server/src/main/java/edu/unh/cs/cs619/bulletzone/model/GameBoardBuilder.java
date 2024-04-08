@@ -35,8 +35,8 @@ public class GameBoardBuilder {
      * @param index the index of the field holder grid
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder setDestructWall(int index){
-        fieldHolderGrid.get(index).setFieldEntity(new Wall(1500, index));
+    public GameBoardBuilder setWall(int destructValue,int index){
+        fieldHolderGrid.get(index).setFieldEntity(new Wall(destructValue, index));
         return this;
     }
 
@@ -105,49 +105,46 @@ public class GameBoardBuilder {
         return this.fieldHolderGrid;
     }
 
+
     /**
      * Initialization that occurred within the InMemoryGameRepository
      * @return the updated game
      */
     public GameBoardBuilder inMemoryGameReposiryInitialize(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
-        fieldHolderGrid.get(1).setFieldEntity(new Wall());
-        fieldHolderGrid.get(2).setFieldEntity(new Wall());
-        fieldHolderGrid.get(3).setFieldEntity(new Wall());
+        GameBoardBuilder newBoard = new GameBoardBuilder();
+        newBoard.setWall(1).
+                setWall(2).
+                setWall(3).
+                setWall(17).
+                setWall(1500,33).
+                setWall(1500,49).
+                setWall(1500,65).
+                setWall(34).
+                setWall(1500,66).
+                setWall(35).
+                setWall(51).
+                setWall(1500,67).
+                setWall(5).
+                setWall(21).
+                setWall(37).
+                setWall(53).
+                setWall(1500,69).
+                setWall(7).
+                setWall(23).
+                setWall(39).
+                setWall(1500,71).
+                setWall(8).
+                setWall(40).
+                setWall(1500,72).
+                setWall(9).
+                setWall(25).
+                setWall(41).
+                setWall(57).
+                setWall(73);
 
-        fieldHolderGrid.get(17).setFieldEntity(new Wall());
-        fieldHolderGrid.get(33).setFieldEntity(new Wall(1500, 33));
-        fieldHolderGrid.get(49).setFieldEntity(new Wall(1500, 49));
-        fieldHolderGrid.get(65).setFieldEntity(new Wall(1500, 65));
-
-        fieldHolderGrid.get(34).setFieldEntity(new Wall());
-        fieldHolderGrid.get(66).setFieldEntity(new Wall(1500, 66));
-
-        fieldHolderGrid.get(35).setFieldEntity(new Wall());
-        fieldHolderGrid.get(51).setFieldEntity(new Wall());
-        fieldHolderGrid.get(67).setFieldEntity(new Wall(1500, 67));
-
-        fieldHolderGrid.get(5).setFieldEntity(new Wall());
-        fieldHolderGrid.get(21).setFieldEntity(new Wall());
-        fieldHolderGrid.get(37).setFieldEntity(new Wall());
-        fieldHolderGrid.get(53).setFieldEntity(new Wall());
-        fieldHolderGrid.get(69).setFieldEntity(new Wall(1500, 69));
-
-        fieldHolderGrid.get(7).setFieldEntity(new Wall());
-        fieldHolderGrid.get(23).setFieldEntity(new Wall());
-        fieldHolderGrid.get(39).setFieldEntity(new Wall());
-        fieldHolderGrid.get(71).setFieldEntity(new Wall(1500, 71));
-
-        fieldHolderGrid.get(8).setFieldEntity(new Wall());
-        fieldHolderGrid.get(40).setFieldEntity(new Wall());
-        fieldHolderGrid.get(72).setFieldEntity(new Wall(1500, 72));
-
-        fieldHolderGrid.get(9).setFieldEntity(new Wall());
-        fieldHolderGrid.get(25).setFieldEntity(new Wall());
-        fieldHolderGrid.get(41).setFieldEntity(new Wall());
-        fieldHolderGrid.get(57).setFieldEntity(new Wall());
-        fieldHolderGrid.get(73).setFieldEntity(new Wall());
-        return  this;
+        fieldHolderGrid = newBoard.build();
+        return this;
     }
 
     /**

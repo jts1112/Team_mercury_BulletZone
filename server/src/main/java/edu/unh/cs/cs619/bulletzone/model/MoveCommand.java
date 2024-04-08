@@ -1,7 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
