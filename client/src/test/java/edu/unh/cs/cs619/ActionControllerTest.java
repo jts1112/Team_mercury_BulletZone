@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 import edu.unh.cs.cs619.bulletzone.ActionController;
+import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 import edu.unh.cs.cs619.bulletzone.util.ShakeDetector;
@@ -50,10 +51,10 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
-        actionController.onButtonMove(123, (byte) 1);
+        actionController.onButtonMove(123, R.id.buttonDown);
 
         // Verify that the restClient's move method is called with the correct parameters
-        verify(restClient).move(123, (byte) 1);
+        verify(restClient).move(123, (byte) 4);
     }
 
     @Test
