@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
 
 import edu.unh.cs.cs619.bulletzone.model.FieldEntity;
+import edu.unh.cs.cs619.bulletzone.model.Vehicle;
 
 /**
  * Meadow class that will
@@ -41,12 +42,15 @@ public class HillsTerrain extends FieldEntity implements Terrain{
     }
 
     @Override
-    public double getTankDifficulty() {
+    public double getDifficulty(Object entity) {
+        if (entity instanceof Vehicle){
+            Vehicle vehicle = (Vehicle) entity;
+            if (vehicle.isTracked()) {
+                return 1.5;
+            } else if (vehicle.isWheeled()) {
+                return 1;
+            }
+        }
         return 1;
-    }
-
-    @Override
-    public double getMinerDifficulty() {
-        return 1.5;
     }
 }

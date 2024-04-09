@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
 
 import edu.unh.cs.cs619.bulletzone.model.FieldEntity;
+import edu.unh.cs.cs619.bulletzone.model.Vehicle;
 
 /**
  * Meadow class that will
@@ -40,15 +41,16 @@ public class ForestTerrain extends FieldEntity implements Terrain{
     }
 
     @Override
-    public double getTankDifficulty() {
-        return 2;
+    public double getDifficulty(Object entity) {
+        if (entity instanceof Vehicle){
+            Vehicle vehicle = (Vehicle) entity;
+            if (vehicle.isTracked()) {
+                return 2;
+            } else if (vehicle.isWheeled()) {
+                return -1;
+            }
+        }
+        return 1;
     }
 
-    @Override
-    /**
-     * Miners arent allowed to enter forest
-     */
-    public double getMinerDifficulty() {
-        return -1;
-    }
 }
