@@ -20,7 +20,7 @@ public class GridAdapter extends BaseAdapter {
 
     public GridAdapter(Context context) {
         inflater = LayoutInflater.from(context);
-        mapper = new GridCellImageMapper(context);
+        mapper = new GridCellImageMapper();
     }
 
     public void setGridData(int[][] gridData) {
@@ -47,7 +47,6 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("Adapter", "getView called");
         ViewHolder holder;
 
         if (convertView == null) {
