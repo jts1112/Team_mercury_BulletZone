@@ -7,6 +7,8 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import java.util.ArrayList;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
+
 public class GameBoardBuilder {
 
     private ArrayList<FieldHolder>fieldHolderGrid = new ArrayList<>();
@@ -55,6 +57,11 @@ public class GameBoardBuilder {
      */
     public GameBoardBuilder setWall(int index) {
         fieldHolderGrid.get(index).setFieldEntity(new Wall());
+        return this;
+    }
+
+    public GameBoardBuilder setRockyTerrain(int index) {
+        fieldHolderGrid.get(index).setFieldEntity(new RockyTerrain());
         return this;
     }
 

@@ -1,6 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
@@ -57,15 +59,24 @@ public class MoveCommand implements Command{
             EventBus.getDefault().post(new TurnEvent(tank.getIntValue(), currentDir, tank.getDirection()));
 
             // Set the next valid move time
-            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
+            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval()); // TODO remove 10000
             return true;
         }
 
         FieldHolder parent = tank.getParent();
 
         FieldHolder nextField = parent.getNeighbor(direction);
-        checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
+        double difficulty = 1;
+//        if (nextField.getEntity() instanceof Terrain) { // TODO uncomment later
+//            Terrain terrain = (Terrain) nextField.getEntity();
+//            if (tank.getIntValue() >= 10000000 && tank.getIntValue() < 20000000) { // its a normal tank
+//                difficulty = terrain.getTankDifficulty();
+//            } else if (tank.getIntValue() >= 20000000 && tank.getIntValue() < 30000000){ // its a miner
+//                difficulty = terrain.getMinerDifficulty();
+//            }
+//        }
 
+        checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
         boolean isCompleted;
         if (!nextField.isPresent()) {
             // If the next field is empty move the user
@@ -75,16 +86,21 @@ public class MoveCommand implements Command{
                 } catch(InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }*/
+//            if (difficulty > 0) { // TODO unccomment
+                int oldPos = tank.getPosition();
+                parent.clearField();
+                nextField.setFieldEntity(tank);
+                tank.setParent(nextField);
+                int newPos = tank.getPosition();
+                EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
 
-            int oldPos = tank.getPosition();
-            parent.clearField();
-            nextField.setFieldEntity(tank);
-            tank.setParent(nextField);
-            int newPos = tank.getPosition();
-            EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
+                isCompleted = true;
+                tank.setLastMoveTime(millis + (long)(tank.getAllowedMoveInterval()*difficulty)); // TODO remove 1000
+//            } else { // TODO uncomment
+//                isCompleted = false;
+//            }
 
-            isCompleted = true;
-            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
+
         } else {
             isCompleted = false;
         }
