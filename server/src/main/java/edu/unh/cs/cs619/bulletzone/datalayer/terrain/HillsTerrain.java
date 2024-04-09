@@ -53,4 +53,9 @@ public class HillsTerrain extends FieldEntity implements Terrain{
         }
         return 1;
     }
+
+    @Override
+    public double getrescourceValue() {
+        return 50;
+    }
 }
