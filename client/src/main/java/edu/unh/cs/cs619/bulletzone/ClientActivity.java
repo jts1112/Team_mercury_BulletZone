@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -129,7 +130,7 @@ public class ClientActivity extends Activity {
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(gridModel.getGrid()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -152,6 +153,46 @@ public class ClientActivity extends Activity {
     @Background
     protected void onButtonFire() {
         actionController.onButtonFire(tankId);
+    }
+
+    @Click(R.id.buttonTank)
+    protected void onTankButtonClick() {
+        updateControlsForUnit("tank");
+    }
+
+    @Click(R.id.buttonMiner)
+    protected void onMinerButtonClick() {
+        updateControlsForUnit("miner");
+    }
+
+    @Click(R.id.buttonDropship)
+    protected void onDropshipButtonClick() {
+        updateControlsForUnit("dropship");
+    }
+
+    private void updateControlsForUnit(String unit) {
+        Button buttonMine = findViewById(R.id.buttonMine);
+        Button buttonUp = findViewById(R.id.buttonUp);
+        Button buttonDown = findViewById(R.id.buttonDown);
+        Button buttonLeft = findViewById(R.id.buttonLeft);
+        Button buttonRight = findViewById(R.id.buttonRight);
+        Button buttonFire = findViewById(R.id.buttonFire);
+
+        // Hide mine button first
+        buttonMine.setVisibility(View.GONE);
+
+        // Show buttons based on the selected unit
+        if ("miner".equals(unit)) {
+            buttonMine.setVisibility(View.VISIBLE);
+        } else if ("dropship".equals(unit)) {
+            buttonFire.setVisibility(View.GONE);
+        } else { // Tank
+            buttonUp.setVisibility(View.VISIBLE);
+            buttonDown.setVisibility(View.VISIBLE);
+            buttonLeft.setVisibility(View.VISIBLE);
+            buttonRight.setVisibility(View.VISIBLE);
+            buttonFire.setVisibility(View.VISIBLE);
+        }
     }
 
     @Click(R.id.buttonLeave)

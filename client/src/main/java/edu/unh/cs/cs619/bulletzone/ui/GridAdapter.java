@@ -15,7 +15,7 @@ import edu.unh.cs.cs619.bulletzone.R;
 public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private int[][] gridData;
+    private GridCell[][] gridData;
     private GridCellImageMapper mapper;
 
     public GridAdapter(Context context) {
@@ -23,7 +23,7 @@ public class GridAdapter extends BaseAdapter {
         mapper = new GridCellImageMapper();
     }
 
-    public void setGridData(int[][] gridData) {
+    public void setGridData(GridCell[][] gridData) {
         this.gridData = gridData;
         notifyDataSetChanged();
     }
@@ -58,17 +58,14 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        int row = position / 16;
-        int col = position % 16;
+        int row = position / gridData[0].length;
+        int col = position % gridData[0].length;
 
-        int cellValue = gridData[row][col];
-
-        // TODO: somehow have getview not call image mapper for speed
-        // Get the image resource for the cell value
-        int imageResource = mapper.getImageResourceForCell(cellValue);
+        GridCell cell = gridData[row][col];
 
         // Set the image resource to the ImageView
-        holder.imageView.setImageResource(imageResource);
+        holder.imageView.setImageResource(cell.getResourceID());
+        holder.imageView.setRotation(cell.getRotation());
 
         return convertView;
     }

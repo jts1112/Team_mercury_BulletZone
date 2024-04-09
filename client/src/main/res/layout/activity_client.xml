@@ -25,12 +25,31 @@
             android:numColumns="16"
             tools:listitem="@layout/field_item"/>
 
+        <Button
+            android:id="@+id/buttonTank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tank" />
+
+        <Button
+            android:id="@+id/buttonMiner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Miner" />
+
+        <Button
+            android:id="@+id/buttonDropship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dropship" />
+
         <Switch
             android:id="@+id/eventSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:text="Update using events" />
+
     </LinearLayout>
 
     <RelativeLayout
@@ -80,6 +99,15 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/buttonRight"
             android:text="@string/fire" />
+
+        <Button
+            android:id="@+id/buttonMine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonFire"
+            android:layout_centerHorizontal="true"
+            android:text="MINE" />
+
 
         <Button
             android:id="@+id/buttonLeave"
