@@ -8,7 +8,7 @@ public class GridModel {
     private int[][] grid;
 
     public void updateGrid(int[][] newGrid) {
-        Log.d("model", "new grid ");
+        // Log.d("model", "new grid ");
         this.grid = newGrid;
     }
 

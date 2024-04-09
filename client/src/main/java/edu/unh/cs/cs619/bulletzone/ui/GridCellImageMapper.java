@@ -11,10 +11,8 @@ import edu.unh.cs.cs619.bulletzone.R;
 public class GridCellImageMapper {
 
 
-    private Context context;
+    public GridCellImageMapper() {
 
-    public GridCellImageMapper(Context context) {
-        this.context = context;
     }
 
     public int getImageResourceForCell(int cellValue) {
@@ -22,7 +20,10 @@ public class GridCellImageMapper {
 
         // Map cell values to image resources
         if (cellValue > 0) {
-            if (cellValue == 1000 || (cellValue > 1000 && cellValue <= 2000)) {
+            if (cellValue == 1000) {
+                imageResource = R.drawable.wall5;
+            }
+            if ((cellValue > 1000 && cellValue <= 2000)) {
                 imageResource = R.drawable.wall2;
             } else if (cellValue >= 2000000 && cellValue <= 3000000) {
                 imageResource = R.drawable.bullet1;

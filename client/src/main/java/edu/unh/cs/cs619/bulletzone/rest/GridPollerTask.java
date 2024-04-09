@@ -66,6 +66,6 @@ public class GridPollerTask {
     @UiThread
     public void onGridUpdate(GridWrapper gw) {
         EventBus.getDefault().post(new GridUpdateEvent(gw));
-//        Log.d("poller", "new gridupdateevent " + gw.getGrid());
+        //Log.d("poller", "new gridupdateevent " + gw.getGrid());
     }
 }
