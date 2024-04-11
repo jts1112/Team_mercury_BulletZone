@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
 import edu.unh.cs.cs619.bulletzone.model.Dropship;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 import jakarta.servlet.http.HttpServletRequest;
 import com.google.common.base.Preconditions;
 
@@ -45,18 +46,25 @@ class GamesController {
     @RequestMapping(method=RequestMethod.POST, value="", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    ResponseEntity<LongWrapper> join(HttpServletRequest request) {
+    ResponseEntity<UnitIds> join(HttpServletRequest request) {
         Dropship dropship;
         try {
             dropship = gameRepository.join(request.getRemoteAddr());
-            log.info("Player joined: dropshipId={} IP={}", dropship.getId(), request.getRemoteAddr());
+            long minerId = gameRepository.spawnMiner(dropship.getId());
+            long tankId = gameRepository.spawnTank(dropship.getId());
+            log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
+                    dropship.getId(), minerId, tankId, request.getRemoteAddr());
 
-            return new ResponseEntity<LongWrapper>(
-                    new LongWrapper(dropship.getId()),
+            return new ResponseEntity<UnitIds>(
+                    new UnitIds(tankId, minerId, dropship.getId()),
                     HttpStatus.CREATED
             );
         } catch (RestClientException e) {
             e.printStackTrace();
+        } catch (LimitExceededException e) {
+            throw new RuntimeException(e);
+        } catch (TankDoesNotExistException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }

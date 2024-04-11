@@ -46,6 +46,7 @@ public class ActionController {
         try {
             LongWrapper response = restClient.join();
             dropshipId = response.getResult();
+            Log.d("ActionController", "Id = " + dropshipId);
             return dropshipId;
         } catch (Exception ignored) { }
         return -1;
@@ -75,10 +76,10 @@ public class ActionController {
     }
 
     // Move and turn merged into one action for client side, server side differentiates turn/move
-    @Background
-    public void onButtonTurn(long tankId, byte direction) {
-        restClient.turn(tankId, direction);
-    }
+//    @Background
+//    public void onButtonTurn(long tankId, byte direction) {
+//        restClient.turn(tankId, direction);
+//    }
 
     @Background
     public void onButtonFire(long entityId) {

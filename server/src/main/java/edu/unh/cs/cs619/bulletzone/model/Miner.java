@@ -14,11 +14,10 @@ public class Miner extends FieldEntity {
     private long lastFireTime;
     private long lastMoveTime;
 
-    public Miner(long id, Direction direction, String ip, Dropship dropship) {
+    public Miner(long id, Direction direction, String ip) {
         this.id = id;
         this.direction = direction;
         this.ip = ip;
-        this.dropship = dropship;
         this.life = INITIAL_LIFE;
         this.lastFireTime = 0;
         this.lastMoveTime = 0;
@@ -26,7 +25,7 @@ public class Miner extends FieldEntity {
 
     @Override
     public int getIntValue() {
-        return 0;
+        return (int) (20_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
 
     @Override

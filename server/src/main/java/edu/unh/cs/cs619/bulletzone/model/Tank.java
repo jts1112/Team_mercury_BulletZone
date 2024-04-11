@@ -15,15 +15,12 @@ public class Tank extends FieldEntity {
     private int allowedNumberOfBullets;
     private int life;
 
-    private Dropship dropship;
-
     private Direction direction;
 
-    public Tank(long id, Direction direction, String ip, Dropship dropship) {
+    public Tank(long id, Direction direction, String ip) {
         this.id = id;
         this.direction = direction;
         this.ip = ip;
-        this.dropship = dropship;
         this.life = INITIAL_LIFE;
         numberOfBullets = 0;
         allowedNumberOfBullets = 2;
@@ -35,7 +32,7 @@ public class Tank extends FieldEntity {
 
     @Override
     public FieldEntity copy() {
-        return new Tank(id, direction, ip, dropship);
+        return new Tank(id, direction, ip);
     }
 
     @Override
@@ -113,10 +110,6 @@ public class Tank extends FieldEntity {
 
     public Direction getDirection() {
         return direction;
-    }
-
-    public Dropship getDropship() {
-        return dropship;
     }
 
     public int getLife() {

@@ -153,9 +153,6 @@ public class ClientActivity extends Activity {
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonTank)
     protected void onTankButtonClick() {
-        if (tankId == -1) {
-            tankId = actionController.spawnTank();
-        }
         currentEntityId = tankId;
         updateControlsForUnit("tank");
     }
@@ -163,9 +160,6 @@ public class ClientActivity extends Activity {
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonMiner)
     protected void onMinerButtonClick() {
-        if (minerId == -1) {
-            minerId = actionController.spawnMiner();
-        }
         currentEntityId = minerId;
         updateControlsForUnit("miner");
     }
