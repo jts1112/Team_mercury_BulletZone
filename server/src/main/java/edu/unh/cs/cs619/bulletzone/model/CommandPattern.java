@@ -17,10 +17,10 @@ public class CommandPattern {
         this.game = game;
     }
     public void addTurnCommand(long tankId, Direction direction){
-        commandstoExecute.add(new TurnCommand(tankId,direction));
+        commandstoExecute.add(new TurnCommand(tankId, direction));
     }
     public  void addFireCommand(long tankId, int bulletType){
-        commandstoExecute.add(new FireCommand(tankId,bulletType));
+        commandstoExecute.add(new FireCommand(tankId, bulletType));
     }
 
     /**
@@ -29,7 +29,7 @@ public class CommandPattern {
      * @param direction the direction object being passed in.
      */
     public void addMoveCommand(long tankId, Direction direction){
-        commandstoExecute.add(new MoveCommand(tankId,direction));
+        commandstoExecute.add(new MoveCommand(tankId, direction));
     }
 
     /**

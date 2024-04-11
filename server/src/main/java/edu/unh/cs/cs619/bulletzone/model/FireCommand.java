@@ -85,7 +85,8 @@ public class FireCommand implements Command{
             @Override
             public void run() {
                 synchronized (monitor) {
-                    System.out.println("Active Bullet: "+tank.getNumberOfBullets()+"---- Bullet ID: "+bullet.getIntValue());
+                    System.out.println("Active Bullet: " + tank.getNumberOfBullets() +
+                            "---- Bullet ID: "+bullet.getIntValue());
                     FieldHolder currentField = bullet.getParent();
                     Direction direction = bullet.getDirection();
                     FieldHolder nextField = currentField.getNeighbor(direction);

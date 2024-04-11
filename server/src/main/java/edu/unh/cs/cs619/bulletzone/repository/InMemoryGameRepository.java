@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
@@ -47,22 +48,30 @@ public class InMemoryGameRepository implements GameRepository {
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
 
+    /**
+     * Generates a new tank to join the game.
+     * @param ip IP address of the tank.
+     * @retur Generated Tank object.
+     */
     @Override
-    public Tank join(String ip) {
+    public Dropship join(String ip) {
         synchronized (this.monitor) {
             Tank tank;
+            Dropship dropship;
             if (game == null) {
                 this.create();
             }
 
-            if( (tank = game.getTank(ip)) != null){
-                return tank;
+            // Check if a dropship with the same IP already exists in the game.
+            Dropship existingDropship = game.getDropship(ip);
+            if (existingDropship != null) {
+                return existingDropship;
+//                return tank;
             }
 
-            Long tankId = this.idGenerator.getAndIncrement();
+            Long dropshipId = this.idGenerator.getAndIncrement();
 
-            tank = new Tank(tankId, Direction.Up, ip);
-            tank.setLife(TANK_LIFE);
+            dropship = new Dropship(dropshipId, Direction.Up, ip);
 
             Random random = new Random();
             int x;
@@ -75,15 +84,15 @@ public class InMemoryGameRepository implements GameRepository {
                 // FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 if (!fieldElement.isPresent()) {
-                    fieldElement.setFieldEntity(tank);
-                    tank.setParent(fieldElement);
+                    fieldElement.setFieldEntity(dropship);
+                    dropship.setParent(fieldElement);
                     break;
                 }
             }
 
-            game.addTank(ip, tank);
+            game.addDropship(ip, dropship);
 
-            return tank;
+            return dropship;
         }
     }
 

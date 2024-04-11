@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
+import edu.unh.cs.cs619.bulletzone.model.Dropship;
 import jakarta.servlet.http.HttpServletRequest;
 import com.google.common.base.Preconditions;
 
@@ -46,7 +47,9 @@ class GamesController {
     @ResponseBody
     ResponseEntity<LongWrapper> join(HttpServletRequest request) {
         Tank tank;
+        Dropship dropship;
         try {
+            dropship = gameRepository.join(request.getRemoteAddr());
             tank = gameRepository.join(request.getRemoteAddr());
             log.info("Player joined: tankId={} IP={}", tank.getId(), request.getRemoteAddr());
 

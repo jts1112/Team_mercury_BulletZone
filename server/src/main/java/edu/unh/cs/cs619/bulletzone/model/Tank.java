@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Tank extends FieldEntity {
 
+    private static final int INITIAL_LIFE = 100;
     private static final String TAG = "Tank";
     private final long id;
     private final String ip;
@@ -14,12 +15,16 @@ public class Tank extends FieldEntity {
     private int allowedNumberOfBullets;
     private int life;
 
+    private Dropship dropship;
+
     private Direction direction;
 
-    public Tank(long id, Direction direction, String ip) {
+    public Tank(long id, Direction direction, String ip, Dropship dropship) {
         this.id = id;
         this.direction = direction;
         this.ip = ip;
+        this.dropship = dropship;
+        this.life = INITIAL_LIFE;
         numberOfBullets = 0;
         allowedNumberOfBullets = 2;
         lastFireTime = 0;
@@ -30,7 +35,7 @@ public class Tank extends FieldEntity {
 
     @Override
     public FieldEntity copy() {
-        return new Tank(id, direction, ip);
+        return new Tank(id, direction, ip, dropship);
     }
 
     @Override
@@ -46,60 +51,84 @@ public class Tank extends FieldEntity {
         }
     }
 
-    public long getLastMoveTime() {
-        return lastMoveTime;
+
+    @Override
+    public String toString() {
+        return "T";
     }
 
+    public Boolean isWheeled() {
+        return false;
+    }
+
+    public Boolean isTracked() {
+        return true;
+    }
+
+    // --------------------------------- Setters ---------------------------------
     public void setLastMoveTime(long lastMoveTime) {
         this.lastMoveTime = lastMoveTime;
     }
 
-    public long getAllowedMoveInterval() {
-        return allowedMoveInterval;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public void setAllowedMoveInterval(int allowedMoveInterval) {
         this.allowedMoveInterval = allowedMoveInterval;
     }
 
-    public long getLastFireTime() {
-        return lastFireTime;
-    }
-
     public void setLastFireTime(long lastFireTime) {
         this.lastFireTime = lastFireTime;
-    }
-
-    public long getAllowedFireInterval() {
-        return allowedFireInterval;
     }
 
     public void setAllowedFireInterval(int allowedFireInterval) {
         this.allowedFireInterval = allowedFireInterval;
     }
 
-    public int getNumberOfBullets() {
-        return numberOfBullets;
-    }
-
     public void setNumberOfBullets(int numberOfBullets) {
         this.numberOfBullets = numberOfBullets;
-    }
-
-    public int getAllowedNumberOfBullets() {
-        return allowedNumberOfBullets;
     }
 
     public void setAllowedNumberOfBullets(int allowedNumberOfBullets) {
         this.allowedNumberOfBullets = allowedNumberOfBullets;
     }
 
+    // --------------------------------- Getters ---------------------------------
+    public long getLastMoveTime() {
+        return lastMoveTime;
+    }
+
+    public long getAllowedMoveInterval() {
+        return allowedMoveInterval;
+    }
+
+    public long getLastFireTime() {
+        return lastFireTime;
+    }
+
+    public long getAllowedFireInterval() {
+        return allowedFireInterval;
+    }
+
+    public int getNumberOfBullets() {
+        return numberOfBullets;
+    }
+
+    public int getAllowedNumberOfBullets() {
+        return allowedNumberOfBullets;
+    }
+
     public Direction getDirection() {
         return direction;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public Dropship getDropship() {
+        return dropship;
+    }
+
+    public int getLife() {
+        return life;
     }
 
     @JsonIgnore
@@ -107,26 +136,13 @@ public class Tank extends FieldEntity {
         return id;
     }
 
+    public String getIp(){
+        return ip;
+    }
+
     @Override
     public int getIntValue() {
         return (int) (10_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
-    }
-
-    @Override
-    public String toString() {
-        return "T";
-    }
-
-    public int getLife() {
-        return life;
-    }
-
-    public void setLife(int life) {
-        this.life = life;
-    }
-
-    public String getIp(){
-        return ip;
     }
 
 }

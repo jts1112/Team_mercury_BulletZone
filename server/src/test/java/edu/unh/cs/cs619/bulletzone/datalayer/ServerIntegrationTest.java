@@ -40,8 +40,10 @@ public class ServerIntegrationTest {
 
         db.accounts.modifyBalance(playerAccount, reward);
 
-        assertEquals("Player's balance should be increased by the reward amount", initialBalance + reward, playerAccount.getBalance(), 0.001);
+        assertEquals("Player's balance should be increased by the reward amount",
+                initialBalance + reward, playerAccount.getBalance(), 0.001);
 
-        assertTrue("Event history should include the enemy defeat event", eventHistory.getHistory().size() > 0);
+        assertTrue("Event history should include the enemy defeat event",
+                eventHistory.getHistory().size() > 0);
     }
 }

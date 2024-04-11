@@ -56,7 +56,8 @@ public class MoveCommand implements Command{
             tank.setDirection(desiredDirection);
 
             // Post new TurnEvent
-            EventBus.getDefault().post(new TurnEvent(tank.getIntValue(), currentDir, tank.getDirection()));
+            EventBus.getDefault().post(new TurnEvent(tank.getIntValue(), currentDir,
+                    tank.getDirection()));
 
             // Set the next valid move time
             tank.setLastMoveTime(millis + tank.getAllowedMoveInterval()); // TODO remove 10000
@@ -69,9 +70,9 @@ public class MoveCommand implements Command{
         double difficulty = 1;
 //        if (nextField.getEntity() instanceof Terrain) { // TODO uncomment later
 //            Terrain terrain = (Terrain) nextField.getEntity();
-//            if (tank.getIntValue() >= 10000000 && tank.getIntValue() < 20000000) { // its a normal tank
+//            if (tank.getIntValue() >= 10000000 && tank.getIntValue() < 20000000) { // normal tank
 //                difficulty = terrain.getTankDifficulty();
-//            } else if (tank.getIntValue() >= 20000000 && tank.getIntValue() < 30000000){ // its a miner
+//            } else if (tank.getIntValue() >= 20000000 && tank.getIntValue() < 30000000){ // miner
 //                difficulty = terrain.getMinerDifficulty();
 //            }
 //        }

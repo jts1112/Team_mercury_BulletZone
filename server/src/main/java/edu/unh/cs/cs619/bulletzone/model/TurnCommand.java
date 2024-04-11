@@ -1,6 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
-public class TurnCommand implements Command{
+public class TurnCommand implements Command {
     private long tankId;
     private  Direction direction;
 
@@ -15,23 +15,22 @@ public class TurnCommand implements Command{
     }
 
     /**
-     * TurnCommand execute class that runs code from turnMethod that was found in InMemoryGameRepository
+     * Runs code from turnMethod that was found in InMemoryGameRepository.
      * @return True if Success and False if Failure.
-     * @throws TankDoesNotExistException
+     * @throws TankDoesNotExistException If Tank does not exist.
      */
     public Boolean execute(Game game) throws TankDoesNotExistException {
-
         Tank tank = game.getTanks().get(tankId);
         if (tank == null) {
             //Log.i(TAG, "Cannot find user with id: " + tankId);
             throw new TankDoesNotExistException(tankId);
         }
 
-        long millis = System.currentTimeMillis();
-        if(millis < tank.getLastMoveTime())
+        long milliseconds = System.currentTimeMillis();
+        if(milliseconds < tank.getLastMoveTime())
             return false;
 
-        tank.setLastMoveTime(millis+tank.getAllowedMoveInterval());
+        tank.setLastMoveTime(milliseconds+tank.getAllowedMoveInterval());
 
             /*try {
                 Thread.sleep(500);
