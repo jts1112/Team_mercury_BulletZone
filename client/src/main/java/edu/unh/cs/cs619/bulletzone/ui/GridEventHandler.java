@@ -29,7 +29,7 @@ public class GridEventHandler {
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
-            gridAdapter.setGridData(gridData);
+            gridAdapter.setGridData(gridModel.getGrid());
             // Log.d("grideventhandler", "new grid update ");
         }
     }
