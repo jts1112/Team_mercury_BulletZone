@@ -21,8 +21,9 @@ public final class Game {
 //    private final ArrayList<FieldHolder> holderGrid = new ArrayList<>(); // TODO removed
     private final GameBoard gameBoard = new GameBoard(FIELD_DIM);
 
-    private final ConcurrentMap<Long, Tank> tanks = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, Dropship> dropships = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Tank> tanks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Miner> miners = new ConcurrentHashMap<>(); // Add this line
     private final ConcurrentMap<String, Long> playersIP = new ConcurrentHashMap<>();
 
     public Game() {
@@ -50,15 +51,15 @@ public final class Game {
         return tanks;
     }
 
-    public void addTank(String ip, Tank tank) {
+    public void addTank(Tank tank) {
         synchronized (tanks) {
             tanks.put(tank.getId(), tank);
-            playersIP.put(ip, tank.getId());
+            playersIP.put(tank.getIp(), tank.getId());
         }
         EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
     }
 
-    public Tank getTank(Long tankId) {
+    public Tank getTank(Long tankId) {  // Never used, except in tests
         return tanks.get(tankId);
     }
 
@@ -84,10 +85,10 @@ public final class Game {
         return dropships;
     }
 
-    public void addDropship(String ip, Dropship dropship) {
+    public void addDropship(Dropship dropship) {
         synchronized (dropships) {
             dropships.put(dropship.getId(), dropship);
-            playersIP.put(ip, dropship.getId());
+            playersIP.put(dropship.getIp(), dropship.getId());
         }
         EventBus.getDefault().post(new SpawnEvent(dropship.getIntValue(), dropship.getPosition()));
     }
@@ -112,4 +113,38 @@ public final class Game {
         }
     }
 
+
+    // --------------------------------- Miner ---------------------------------
+
+    public ConcurrentMap<Long, Miner> getMiners() {
+        return miners;
+    }
+
+    public void addMiner(Miner miner) {
+        synchronized (miners) {
+            miners.put(miner.getId(), miner);
+            playersIP.put(miner.getIp(), miner.getId());
+        }
+        EventBus.getDefault().post(new SpawnEvent(miner.getIntValue(), miner.getPosition()));
+    }
+
+    public Miner getMiner(Long minerId) {
+        return miners.get(minerId);
+    }
+
+    public Miner getMiner(String ip) {
+        if (playersIP.containsKey(ip)) {
+            return miners.get(playersIP.get(ip));
+        }
+        return null;
+    }
+
+    public void removeMiner(long minerId) {
+        synchronized (miners) {
+            Miner miner = miners.remove(minerId);
+            if (miner != null) {
+                playersIP.remove(miner.getIp());
+            }
+        }
+    }
 }

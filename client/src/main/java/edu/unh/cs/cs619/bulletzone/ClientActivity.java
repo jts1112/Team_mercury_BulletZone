@@ -1,4 +1,6 @@
 package edu.unh.cs.cs619.bulletzone;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,9 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -21,22 +20,18 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
 import org.androidannotations.api.BackgroundExecutor;
 
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
-import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
-import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
-import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
 import edu.unh.cs.cs619.bulletzone.ui.GridModel;
-import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
+@SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
 public class ClientActivity extends Activity {
 
-    private static final String TAG = "ClientActivity";
+//    private static final String TAG = "ClientActivity";
     @Bean
     protected GridAdapter mGridAdapter;
     @Bean
@@ -53,7 +48,10 @@ public class ClientActivity extends Activity {
     /**
      * Remote tank identifier
      */
+    private long dropshipId = -1;  // Each dropship contains 1 miner and 1 tank.
     private long tankId = -1;
+    private long minerId = -1;
+    private long currentEntityId = -1;  // can be a Dropship, tank, or a miner.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,15 +109,17 @@ public class ClientActivity extends Activity {
     @Background
     void joinAsync() {
         try {
-            tankId = actionController.join();
+            dropshipId = actionController.join();
+            currentEntityId = dropshipId;
             gridPollTask.startPolling();
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
     }
 
 //    public void updateGrid(GridWrapper gw) {
 //        mGridAdapter.updateList(gw.getGrid());
 //    }
 
+    @SuppressLint("NonConstantResourceId")
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
@@ -140,27 +140,40 @@ public class ClientActivity extends Activity {
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
 
-        actionController.onButtonMove(tankId, viewId);
+        actionController.onButtonMove(currentEntityId, viewId);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonFire)
     @Background
     protected void onButtonFire() {
-        actionController.onButtonFire(tankId);
+        actionController.onButtonFire(currentEntityId);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonTank)
     protected void onTankButtonClick() {
+        if (tankId == -1) {
+            tankId = actionController.spawnTank();
+        }
+        currentEntityId = tankId;
         updateControlsForUnit("tank");
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonMiner)
     protected void onMinerButtonClick() {
+        if (minerId == -1) {
+            minerId = actionController.spawnMiner();
+        }
+        currentEntityId = minerId;
         updateControlsForUnit("miner");
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonDropship)
     protected void onDropshipButtonClick() {
+        currentEntityId = dropshipId;
         updateControlsForUnit("dropship");
     }
 
@@ -178,7 +191,12 @@ public class ClientActivity extends Activity {
         if ("miner".equals(unit)) {
             buttonMine.setVisibility(View.VISIBLE);
         } else if ("dropship".equals(unit)) {
-            buttonFire.setVisibility(View.GONE);
+//            buttonFire.setVisibility(View.GONE);  // Dropships can fire.
+            buttonUp.setVisibility(View.VISIBLE);
+            buttonDown.setVisibility(View.VISIBLE);
+            buttonLeft.setVisibility(View.VISIBLE);
+            buttonRight.setVisibility(View.VISIBLE);
+            buttonFire.setVisibility(View.VISIBLE);
         } else { // Tank
             buttonUp.setVisibility(View.VISIBLE);
             buttonDown.setVisibility(View.VISIBLE);
@@ -188,6 +206,7 @@ public class ClientActivity extends Activity {
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonLeave)
     @Background
     void leaveGame() {
@@ -201,7 +220,8 @@ public class ClientActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Player clicked yes. Leave game
-                                System.out.println("leaveGame() called, tank ID: "+tankId);
+                                System.out.println("leaveGame() called, Current Entity ID: "
+                                        + currentEntityId);
 
                                 Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
                                 startActivity(intent);

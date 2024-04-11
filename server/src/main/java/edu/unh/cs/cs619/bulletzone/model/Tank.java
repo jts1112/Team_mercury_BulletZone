@@ -57,14 +57,6 @@ public class Tank extends FieldEntity {
         return "T";
     }
 
-    public Boolean isWheeled() {
-        return false;
-    }
-
-    public Boolean isTracked() {
-        return true;
-    }
-
     // --------------------------------- Setters ---------------------------------
     public void setLastMoveTime(long lastMoveTime) {
         this.lastMoveTime = lastMoveTime;

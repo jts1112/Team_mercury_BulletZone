@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicLong;
@@ -11,6 +12,8 @@ import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
+import edu.unh.cs.cs619.bulletzone.model.Miner;
 import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
@@ -86,9 +89,7 @@ public class InMemoryGameRepository implements GameRepository {
                     break;
                 }
             }
-
-            game.addDropship(ip, dropship);
-
+            game.addDropship(dropship);
             return dropship;
         }
     }
@@ -150,4 +151,96 @@ public class InMemoryGameRepository implements GameRepository {
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
         }
     }
+
+
+    // New ⬇️⬇️
+    @Override
+    public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
+        synchronized (this.monitor) {
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new TankDoesNotExistException(dropshipId);
+            }
+
+            if (dropship.getNumMiners() <= 0) {
+                List<Long> miners = dropship.getMiners();
+                return miners.get(0);
+            }
+
+            long minerId = this.idGenerator.getAndIncrement();
+            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp(), dropship);
+
+            // Find a free space near the dropship to spawn the miner
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(miner);
+                miner.setParent(spawningPoint);
+                game.getMiners().put(minerId, miner);
+                dropship.setNumMiners(dropship.getNumMiners() - 1);
+                dropship.addMiner(minerId);
+                return minerId;
+            } else {
+                return dropshipId;
+            }
+        }
+    }
+
+    @Override
+    public long spawnTank(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
+        synchronized (this.monitor) {
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new TankDoesNotExistException(dropshipId);
+            }
+
+            if (dropship.getNumTanks() <= 0) {
+                List<Long> tanks = dropship.getTanks();
+                return tanks.get(0);
+            }
+
+            long tankId = this.idGenerator.getAndIncrement();
+            Tank tank = new Tank(tankId, Direction.Up, dropship.getIp(), dropship);
+
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(tank);
+                tank.setParent(spawningPoint);
+                game.getTanks().put(tankId, tank);
+                dropship.setNumTanks(dropship.getNumTanks() - 1);
+                dropship.addTank_(tankId);
+                return tankId;
+            } else {
+                return dropshipId;
+            }
+        }
+    }
+
+    private FieldHolder findFreeSpace(FieldHolder startingPoint) {
+        int startIndex = game.getGameBoard().getBoard().indexOf(startingPoint);
+        int x = startIndex % FIELD_DIM;
+        int y = startIndex / FIELD_DIM;
+        int dx = 0;
+        int dy = -1;
+        int maxSteps = 2 * (FIELD_DIM - 1);
+
+        for (int i = 0; i < maxSteps; i++) {
+            if (0 <= x && x < FIELD_DIM && 0 <= y && y < FIELD_DIM) {
+                FieldHolder currentField = game.getGameBoard().getBoard().get(y * FIELD_DIM + x);
+                if (!currentField.isPresent()) {
+                    return currentField;
+                }
+            }
+
+            if (x == (startIndex % FIELD_DIM) + dx && y == (startIndex / FIELD_DIM) + dy) {
+                int temp = dx;
+                dx = -dy;
+                dy = temp;
+            }
+            x += dx;
+            y += dy;
+        }
+
+        return null;
+    }
+
 }

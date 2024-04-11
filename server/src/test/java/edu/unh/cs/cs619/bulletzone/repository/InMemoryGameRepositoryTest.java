@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -26,12 +27,12 @@ public class InMemoryGameRepositoryTest {
 
     @Test
     public void testJoin() throws Exception {
-        Tank tank = repo.join("");
-        Assert.assertNotNull(tank);
-        Assert.assertTrue(tank.getId() >= 0);
-        Assert.assertNotNull(tank.getDirection());
-        Assert.assertTrue(tank.getDirection() == Direction.Up);
-        Assert.assertNotNull(tank.getParent());
+        Dropship dropship = repo.join("");
+        Assert.assertNotNull(dropship);
+        Assert.assertTrue(dropship.getId() >= 0);
+        Assert.assertNotNull(dropship.getDirection());
+        Assert.assertTrue(dropship.getDirection() == Direction.Up);
+        Assert.assertNotNull(dropship.getParent());
     }
     /*
     @Test
