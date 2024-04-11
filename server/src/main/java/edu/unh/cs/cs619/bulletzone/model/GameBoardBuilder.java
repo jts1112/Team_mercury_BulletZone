@@ -65,11 +65,6 @@ public class GameBoardBuilder {
         return this;
     }
 
-    public GameBoardBuilder setDropship(Dropship dropship) {
-        gameBoard.setDropship(dropship);
-        return this;
-    }
-
     /**
      * Game board CreateFieldHolderGrid that was originally in InMemoryGameRepository
      * Creates the fieldholderGrid with the specified dimensions

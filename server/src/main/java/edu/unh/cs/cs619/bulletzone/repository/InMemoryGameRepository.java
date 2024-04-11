@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.repository;
-
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -51,12 +50,11 @@ public class InMemoryGameRepository implements GameRepository {
     /**
      * Generates a new tank to join the game.
      * @param ip IP address of the tank.
-     * @retur Generated Tank object.
+     * @return Generated Tank object.
      */
     @Override
     public Dropship join(String ip) {
         synchronized (this.monitor) {
-            Tank tank;
             Dropship dropship;
             if (game == null) {
                 this.create();
@@ -66,7 +64,6 @@ public class InMemoryGameRepository implements GameRepository {
             Dropship existingDropship = game.getDropship(ip);
             if (existingDropship != null) {
                 return existingDropship;
-//                return tank;
             }
 
             Long dropshipId = this.idGenerator.getAndIncrement();
@@ -111,7 +108,7 @@ public class InMemoryGameRepository implements GameRepository {
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
             // Find tank
-            return new MoveCommand(tankId,direction).execute(game);
+            return new MoveCommand(tankId, direction).execute(game); ////
         }
     }
 
@@ -119,7 +116,7 @@ public class InMemoryGameRepository implements GameRepository {
     public boolean fire(long tankId, int bulletType)
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
-           return new FireCommand(tankId,bulletType).execute(game);
+           return new FireCommand(tankId, bulletType).execute(game); ////
         }
     }
 
@@ -145,9 +142,7 @@ public class InMemoryGameRepository implements GameRepository {
             return;
         }
         synchronized (this.monitor) {
-
             this.game = new Game();
-
 //            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
             //TODO added
 //            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
@@ -155,6 +150,4 @@ public class InMemoryGameRepository implements GameRepository {
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
         }
     }
-
-
 }

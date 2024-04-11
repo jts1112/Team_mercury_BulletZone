@@ -22,7 +22,6 @@ public final class Game {
     private final GameBoard gameBoard = new GameBoard(FIELD_DIM);
 
     private final ConcurrentMap<Long, Tank> tanks = new ConcurrentHashMap<>();
-
     private final ConcurrentMap<Long, Dropship> dropships = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Long> playersIP = new ConcurrentHashMap<>();
 
@@ -40,16 +39,16 @@ public final class Game {
         return gameBoard.getBoard();
     }
 
-    public ConcurrentMap<Long, Tank> getTanks() {
-        return tanks;
-    }
-
     public GameBoard getGameBoard() {
         return gameBoard;
     }
 
 
     // --------------------------------- Tank ---------------------------------
+
+    public ConcurrentMap<Long, Tank> getTanks() {
+        return tanks;
+    }
 
     public void addTank(String ip, Tank tank) {
         synchronized (tanks) {
@@ -80,6 +79,10 @@ public final class Game {
     }
 
     // --------------------------------- Dropship ---------------------------------
+
+    public ConcurrentMap<Long, Dropship> getDropships() {
+        return dropships;
+    }
 
     public void addDropship(String ip, Dropship dropship) {
         synchronized (dropships) {

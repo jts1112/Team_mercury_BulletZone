@@ -1,9 +1,9 @@
 package edu.unh.cs.cs619.bulletzone;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +33,8 @@ public class TitleScreenActivity extends AppCompatActivity {
     public Button accountButton;
     public Button inventoryButton;
     public Button storeButton;
+    public String devMsg = "Not Yet Implemented";
+    public String loginMsg = "Please Sign in";
 
     public static final int REQUEST_LOGIN = 1;
 
@@ -51,7 +53,7 @@ public class TitleScreenActivity extends AppCompatActivity {
         playGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TitleScreenActivity.this, "Please Sign In!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TitleScreenActivity.this,loginMsg, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -59,7 +61,8 @@ public class TitleScreenActivity extends AppCompatActivity {
         accountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TitleScreenActivity.this, AuthenticateActivity_.class);
+                Intent intent = new Intent(TitleScreenActivity.this,
+                        AuthenticateActivity_.class);
                 startActivityForResult(intent, REQUEST_LOGIN);
             }
         });
@@ -67,14 +70,14 @@ public class TitleScreenActivity extends AppCompatActivity {
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
             }
         });
 
         storeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -90,14 +93,16 @@ public class TitleScreenActivity extends AppCompatActivity {
                 accountButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(TitleScreenActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TitleScreenActivity.this, devMsg,
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 playGameButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(TitleScreenActivity.this, ClientActivity_.class);
+                        Intent intent = new Intent(TitleScreenActivity.this,
+                                ClientActivity_.class);
                         startActivity(intent);
                     }
                 });
@@ -118,6 +123,7 @@ public class TitleScreenActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         // super.onBackPressed();

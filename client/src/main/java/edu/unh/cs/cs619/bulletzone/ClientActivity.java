@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,7 +33,6 @@ import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
 import edu.unh.cs.cs619.bulletzone.ui.GridModel;
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
-
 @EActivity(R.layout.activity_client)
 public class ClientActivity extends Activity {
 
@@ -43,17 +41,14 @@ public class ClientActivity extends Activity {
     protected GridAdapter mGridAdapter;
     @Bean
     protected GameEventProcessor eventProcessor;
-
     protected GridEventHandler gridEventHandler;
     @ViewById
     protected GridView gridView;
     @NonConfigurationInstance
     @Bean
     GridPollerTask gridPollTask;
-    // Add new controller for rest calls
     @Bean
-    protected ActionController actionController;
-
+    protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
     /**
      * Remote tank identifier
@@ -82,12 +77,12 @@ public class ClientActivity extends Activity {
     }
 
     /**
-     * Otto has a limitation (as per design) that it will only find
-     * methods on the immediate class type. As a result, if at runtime this instance
-     * actually points to a subclass implementation, the methods registered in this class will
-     * not be found. This immediately becomes a problem when using the AndroidAnnotations
-     * framework as it always produces a subclass of annotated classes.
-     *
+     * Otto has a limitation (as per design) that it will only find methods on the immediate
+     * class type. As a result, if at runtime this instance actually points to a subclass
+     * implementation, the methods registered in this class will not be found. This immediately
+     * becomes a problem when using the AndroidAnnotations framework as it always produces a
+     * subclass of annotated classes.
+     * <p>
      * To get around the class hierarchy limitation, one can use a separate anonymous class to
      * handle the events.
 
@@ -118,8 +113,7 @@ public class ClientActivity extends Activity {
         try {
             tankId = actionController.join();
             gridPollTask.startPolling();
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
     }
 
 //    public void updateGrid(GridWrapper gw) {
@@ -178,8 +172,7 @@ public class ClientActivity extends Activity {
         Button buttonRight = findViewById(R.id.buttonRight);
         Button buttonFire = findViewById(R.id.buttonFire);
 
-        // Hide mine button first
-        buttonMine.setVisibility(View.GONE);
+        buttonMine.setVisibility(View.GONE);  // Hide mine button first
 
         // Show buttons based on the selected unit
         if ("miner".equals(unit)) {

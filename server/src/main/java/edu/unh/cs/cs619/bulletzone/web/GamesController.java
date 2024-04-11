@@ -42,7 +42,7 @@ class GamesController {
         this.gameRepository = gameRepository;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method=RequestMethod.POST, value="", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     ResponseEntity<LongWrapper> join(HttpServletRequest request) {
@@ -50,11 +50,10 @@ class GamesController {
         Dropship dropship;
         try {
             dropship = gameRepository.join(request.getRemoteAddr());
-            tank = gameRepository.join(request.getRemoteAddr());
-            log.info("Player joined: tankId={} IP={}", tank.getId(), request.getRemoteAddr());
+            log.info("Player joined: tankId={} IP={}", dropship.getId(), request.getRemoteAddr());
 
             return new ResponseEntity<LongWrapper>(
-                    new LongWrapper(tank.getId()),
+                    new LongWrapper(dropship.getId()),
                     HttpStatus.CREATED
             );
         } catch (RestClientException e) {
@@ -63,7 +62,8 @@ class GamesController {
         return null;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/move/{direction}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/move/{direction}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> move(@PathVariable long tankId, @PathVariable byte direction)
             throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException {
@@ -73,27 +73,30 @@ class GamesController {
         );
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> fire(@PathVariable long tankId)
             throws TankDoesNotExistException, LimitExceededException {
         return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.fire(tankId, 1)),
+                new BooleanWrapper(gameRepository.fire(tankId, 1)),  // FIXME: fireCommand
                 HttpStatus.OK
         );
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire/{bulletType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire/{bulletType}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> fire(@PathVariable long tankId, @PathVariable int bulletType)
             throws TankDoesNotExistException, LimitExceededException {
         return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.fire(tankId, bulletType)),
+                new BooleanWrapper(gameRepository.fire(tankId, bulletType)),  // FIXME: fireCommand
                 HttpStatus.OK
         );
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "{tankId}/leave", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.DELETE, value = "{tankId}/leave",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     HttpStatus leave(@PathVariable long tankId)
             throws TankDoesNotExistException {

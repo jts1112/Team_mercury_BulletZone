@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.web;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,8 @@ import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 @RestController
 @RequestMapping(value = "/games")
 class GameStateController {
-    private static final Logger log = LoggerFactory.getLogger(edu.unh.cs.cs619.bulletzone.web.GameStateController.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(edu.unh.cs.cs619.bulletzone.web.GameStateController.class);
 
     private final Game game;
     private final EventHistory eventHistory = EventHistory.getInstance();
@@ -36,15 +36,17 @@ class GameStateController {
         this.game = gameRepository.getGame();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method=RequestMethod.GET, value="", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public
     @ResponseBody
     ResponseEntity<GridWrapper> grid() {
-        return new ResponseEntity<GridWrapper>(new GridWrapper(game.getGameBoard().getGrid2D()), HttpStatus.OK);
+        GridWrapper gridWrapper = new GridWrapper(game.getGameBoard().getGrid2D());
+        return new ResponseEntity<GridWrapper>(gridWrapper, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/events/{timeSince}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/events/{timeSince}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity<GameEventCollectionWrapper> getHistory(@PathVariable long timeSince) {

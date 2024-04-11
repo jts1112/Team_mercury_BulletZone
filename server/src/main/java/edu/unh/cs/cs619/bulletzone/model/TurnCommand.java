@@ -6,8 +6,8 @@ public class TurnCommand implements Command {
 
     /**
      * TurnCommand Constructor To initialize variables needed to execute
-     * @param tankId
-     * @param direction
+     * @param tankId The tankId of the tank that is turning.
+     * @param direction The direction the tank is turning.
      */
     public  TurnCommand(long tankId,Direction direction) {
         this.tankId = tankId;

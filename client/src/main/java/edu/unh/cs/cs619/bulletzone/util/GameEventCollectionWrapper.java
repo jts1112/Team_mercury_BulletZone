@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.util;
-
 import java.util.Collection;
 
 import edu.unh.cs.cs619.bulletzone.events.GameEvent;

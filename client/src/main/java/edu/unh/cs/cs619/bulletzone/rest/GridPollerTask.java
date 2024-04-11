@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.rest;
-
 import android.util.Log;
 
 import org.androidannotations.annotations.Background;

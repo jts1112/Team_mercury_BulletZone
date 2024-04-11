@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.model;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
@@ -25,7 +24,7 @@ public class MoveCommand implements Command{
     /**
      * MoveCommand Execute to run code from move() that was in InMemoryGameRepository
      * @return returns True if Successes and False if Failure.
-     * @throws TankDoesNotExistException
+     * @throws TankDoesNotExistException if tank does not exist.
      */
     @Override
     public Boolean execute(Game game) throws TankDoesNotExistException {
