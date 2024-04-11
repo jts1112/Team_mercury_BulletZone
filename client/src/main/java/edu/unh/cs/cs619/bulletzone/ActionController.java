@@ -7,9 +7,11 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
 
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
+import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 import edu.unh.cs.cs619.bulletzone.util.ShakeDetector;
 /**
  * Controller class for the client activity UI invoked movement actions. Handles restClient
@@ -22,7 +24,10 @@ public class ActionController {
     BulletZoneRestClient restClient;
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
+    private long dropshipId = -1;
     private long tankId = -1;
+    private long minerId = -1;
+    private long currentEntityId = -1;
     private ShakeDetector shakeDetector;
     public ActionController() { }
 
@@ -31,23 +36,24 @@ public class ActionController {
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
             // Log.d("Action Controller", "Shake detected");
-            if (tankId != -1) {
-                onButtonFire(tankId);  // Call onButtonFire when shake is detected
+            if (dropshipId != -1) {
+                onButtonFire(dropshipId);  // Call onButtonFire when shake is detected
             }
         });
     }
 
     public long join() {
         try {
-            tankId = restClient.join().getResult();
-            return tankId;
+            LongWrapper response = restClient.join();
+            dropshipId = response.getResult();
+            return dropshipId;
         } catch (Exception ignored) { }
         return -1;
     }
 
     @SuppressLint("NonConstantResourceId")
     @Background
-    public void onButtonMove(long tankId, int viewId) {
+    public void onButtonMove(long entityId, int viewId) {
         byte direction = 0;
         switch (viewId) {
             case R.id.buttonUp:
@@ -65,7 +71,7 @@ public class ActionController {
                 Log.e("ActionController", "Unknown movement button id: " + viewId);
                 break;
         }
-        restClient.move(tankId, direction);
+        restClient.move(entityId, direction);
     }
 
     // Move and turn merged into one action for client side, server side differentiates turn/move
@@ -75,12 +81,31 @@ public class ActionController {
     }
 
     @Background
-    public void onButtonFire(long tankId) {
+    public void onButtonFire(long entityId) {
         // Log.d("ActionController", "Fire called.");
-        restClient.fire(tankId);
+        restClient.fire(entityId);
     }
 
-    public void leave(long tankId) {
-        restClient.leave(tankId);
+    public void leave(long entityId) {
+        restClient.leave(entityId);
     }
+
+    public long spawnMiner() {
+        try {
+            LongWrapper response = restClient.spawnMiner(dropshipId);
+            minerId = response.getResult();
+            return minerId;
+        } catch (Exception ignored) { }
+        return -1;
+    }
+
+    public long spawnTank() {
+        try {
+            LongWrapper response = restClient.spawnTank(dropshipId);
+            tankId = response.getResult();
+            return tankId;
+        } catch (Exception ignored) { }
+        return -1;
+    }
+
 }

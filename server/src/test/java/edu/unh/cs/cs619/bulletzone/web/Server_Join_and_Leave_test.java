@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestClientException;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 
@@ -25,6 +26,35 @@ import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import org.springframework.web.client.RestClientException;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+
+import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
+import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 
 /**
  * This class runs basic tests regarding how the server behaves when the User Joins and Leaves.
@@ -53,8 +83,9 @@ public class Server_Join_and_Leave_test {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
 
-        Tank tank = new Tank(123,Direction.Up,request.getRemoteAddr());
-        when(repo.join(request.getRemoteAddr())).thenReturn(tank);
+        Dropship dropship = new Dropship(123444, Direction.Up, "1.3.456");
+        Tank tank = new Tank(123,Direction.Up,request.getRemoteAddr(), dropship);
+//        when(repo.join(request.getRemoteAddr())).thenReturn(tank);  // err ?
 
         ResponseEntity<LongWrapper> serverResponse = gamesController.join(request);
 
