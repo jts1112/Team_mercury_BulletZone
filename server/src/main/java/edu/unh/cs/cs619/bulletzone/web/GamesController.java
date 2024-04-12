@@ -46,17 +46,16 @@ class GamesController {
     @RequestMapping(method=RequestMethod.POST, value="", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    ResponseEntity<UnitIds> join(HttpServletRequest request) {
-        Dropship dropship;
+    ResponseEntity<LongWrapper> join(HttpServletRequest request) {
         try {
-            dropship = gameRepository.join(request.getRemoteAddr());
-            long minerId = gameRepository.spawnMiner(dropship.getId());
-            long tankId = gameRepository.spawnTank(dropship.getId());
+            long dropshipId = gameRepository.join(request.getRemoteAddr()).getId();
+            long minerId = gameRepository.spawnMiner(dropshipId);
+            long tankId = gameRepository.spawnTank(dropshipId);
             log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
-                    dropship.getId(), minerId, tankId, request.getRemoteAddr());
+                    dropshipId, minerId, tankId, request.getRemoteAddr());
 
-            return new ResponseEntity<UnitIds>(
-                    new UnitIds(tankId, minerId, dropship.getId()),
+            return new ResponseEntity<LongWrapper>(
+                    new LongWrapper(dropshipId, minerId, tankId),
                     HttpStatus.CREATED
             );
         } catch (RestClientException e) {

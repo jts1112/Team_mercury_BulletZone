@@ -58,7 +58,7 @@ public class Server_Join_and_Leave_test {
         Dropship ship = new Dropship(123,Direction.Up,request.getRemoteAddr());
         when(repo.join(request.getRemoteAddr())).thenReturn(ship);
 
-        ResponseEntity<UnitIds> serverResponse = gamesController.join(request);
+        ResponseEntity<LongWrapper> serverResponse = gamesController.join(request);
 
         assertEquals(HttpStatus.CREATED, serverResponse.getStatusCode());
 
@@ -66,10 +66,10 @@ public class Server_Join_and_Leave_test {
         assertNotNull(serverResponse.getBody());
 
         // make sure the server respose contains the created Tanks ID.
-        assertEquals(serverResponse.getBody().getDropshipId(),ship.getId());
+        assertEquals(serverResponse.getBody().getResult(), ship.getId());
 
         // Optionally, you can check if the tank ID is a positive number
-        assertTrue(serverResponse.getBody().getDropshipId() > 0);
+        assertTrue(serverResponse.getBody().getResult() > 0);
 
 
     }
@@ -92,7 +92,7 @@ public class Server_Join_and_Leave_test {
         when(repo.join(request.getRemoteAddr())).thenThrow(restClientException);
 
         // Simulate the Join method being called with the restclientException being thrown
-        ResponseEntity<UnitIds> serverResponse = gamesController.join(request);
+        ResponseEntity<LongWrapper> serverResponse = gamesController.join(request);
 
         // Join method should return null.
         assertEquals(null, serverResponse);
@@ -115,8 +115,6 @@ public class Server_Join_and_Leave_test {
 
         // Can check that the server response isnt null
         assertNotNull(serverResponse);
-
-
     }
 
 
