@@ -55,7 +55,7 @@ public class ActionController {
             LongWrapper units = restClient.join();
             Ids = new UnitIds(units.getResult(), units.getId1(), units.getId2());
             currentUnitId = Ids.getDropshipId();
-            Log.d("ActionController", "Dropship Id = " + Ids.getDropshipId());
+            // Log.d("ActionController", "Dropship Id = " + Ids.getDropshipId());
             return currentUnitId;
         } catch (Exception e) {
         }
@@ -98,7 +98,7 @@ public class ActionController {
                 break;
         }
 
-        Log.d("ActionController", "move called on id = " + currentUnitId);
+//        Log.d("ActionController", "move called on id = " + currentUnitId);
         restClient.move(currentUnitId, direction);
     }
 

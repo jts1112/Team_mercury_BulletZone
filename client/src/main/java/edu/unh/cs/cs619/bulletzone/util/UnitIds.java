@@ -7,7 +7,7 @@ public class UnitIds {
     private long minerId = -1;
     private long dropshipId = -1;
 
-    public UnitIds(long tankId, long minerId, long dropshipId) {
+    public UnitIds(long dropshipId, long minerId, long tankId) {
         this.tankId = tankId;
         this.minerId = minerId;
         this.dropshipId = dropshipId;

@@ -40,17 +40,17 @@ public class ActionControllerTest {
         actionController.restClient = restClient;
     }
 
-//    @Test
-//    public void test_ActionController_Join() {
-//        // Define the behavior of restClient
-//        when(restClient.join()).thenReturn(new UnitIds(123, 123, 123));
-//
-//        // Call the method to be tested
-//        UnitIds ids = actionController.join();
-//
-//        // Verify that the method returns the correct tank ID
-//        assertEquals(123, ids.getTankId());
-//    }
+    @Test
+    public void test_ActionController_Join() {
+        // Define the behavior of restClient
+        when(restClient.join()).thenReturn(new LongWrapper(123, 124, 125));
+
+        // Call the method to be tested
+        long dropshipId = actionController.join();
+
+        // Verify that the method returns the correct tank ID
+        assertEquals(123, dropshipId);
+    }
 
     @Test
     public void test_ActionController_OnButtonMove() {
