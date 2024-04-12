@@ -27,10 +27,10 @@ public class MoveCommand implements Command{
      * @throws TankDoesNotExistException if tank does not exist.
      */
     @Override
-    public Boolean execute(Game game) throws TankDoesNotExistException {
+    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
 
         // Find tank
-        Tank tank = game.getTanks().get(tankId);
+        Tank tank = tank1;
         if (tank == null) {
             throw new TankDoesNotExistException(tankId);
         }
@@ -59,34 +59,21 @@ public class MoveCommand implements Command{
                     tank.getDirection()));
 
             // Set the next valid move time
-            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval()); // TODO remove 10000
+            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
             return true;
         }
 
         FieldHolder parent = tank.getParent();
 
         FieldHolder nextField = parent.getNeighbor(direction);
-        double difficulty = 1;
-//        if (nextField.getEntity() instanceof Terrain) { // TODO uncomment later
-//            Terrain terrain = (Terrain) nextField.getEntity();
-//            if (tank.getIntValue() >= 10000000 && tank.getIntValue() < 20000000) { // normal tank
-//                difficulty = terrain.getTankDifficulty();
-//            } else if (tank.getIntValue() >= 20000000 && tank.getIntValue() < 30000000){ // miner
-//                difficulty = terrain.getMinerDifficulty();
-//            }
-//        }
+
+        double difficulty = nextField.getTerrain().getDifficulty(tank); // TODO testing the difficulty
 
         checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
         boolean isCompleted;
         if (!nextField.isPresent()) {
             // If the next field is empty move the user
 
-                /*try {
-                    Thread.sleep(500);
-                } catch(InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }*/
-//            if (difficulty > 0) { // TODO unccomment
                 int oldPos = tank.getPosition();
                 parent.clearField();
                 nextField.setFieldEntity(tank);
@@ -95,10 +82,7 @@ public class MoveCommand implements Command{
                 EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
 
                 isCompleted = true;
-                tank.setLastMoveTime(millis + (long)(tank.getAllowedMoveInterval()*difficulty)); // TODO remove 1000
-//            } else { // TODO uncomment
-//                isCompleted = false;
-//            }
+                tank.setLastMoveTime(millis + (long)(tank.getAllowedMoveInterval()*difficulty)); // TODO remove difficulty
 
 
         } else {

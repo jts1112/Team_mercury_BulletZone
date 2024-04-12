@@ -7,6 +7,9 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import java.util.ArrayList;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
 
 public class GameBoardBuilder {
@@ -61,7 +64,22 @@ public class GameBoardBuilder {
     }
 
     public GameBoardBuilder setRockyTerrain(int index) {
-        fieldHolderGrid.get(index).setFieldEntity(new RockyTerrain());
+        fieldHolderGrid.get(index).setTerrain(new RockyTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setForestTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new ForestTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setMeadowTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new MeadowTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setHillsTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new HillsTerrain());
         return this;
     }
 
@@ -84,6 +102,7 @@ public class GameBoardBuilder {
 
             for (int i = 0; i < fieldDimension * fieldDimension; i++) {
                 fieldHolderGrid.add(new FieldHolder(i));
+                fieldHolderGrid.get(i).setTerrain(new RockyTerrain()); // TODO trying to make all terrain. remove set terrain once done
             }
 
             FieldHolder targetHolder;

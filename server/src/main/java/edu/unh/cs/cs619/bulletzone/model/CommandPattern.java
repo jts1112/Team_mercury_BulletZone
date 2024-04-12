@@ -6,15 +6,15 @@ import java.util.ArrayList;
 public class CommandPattern {
 
     private ArrayList<Command> commandstoExecute; // Array list containing commands
-    private Game game;
+    private Tank tank;
 
     //TODO TurnCommand turnCommand;
     //TODO MoveCommand moveCommand;
     // TODO FireCommand fireCommand;
 
-    public CommandPattern(Game game){
+    public CommandPattern(Tank tank1){
         this.commandstoExecute = new ArrayList<Command>();
-        this.game = game;
+        this.tank = tank1;
     }
     public void addTurnCommand(long tankId, Direction direction){
         commandstoExecute.add(new TurnCommand(tankId, direction));
@@ -41,7 +41,7 @@ public class CommandPattern {
      */
     public Boolean executeCommands() throws TankDoesNotExistException {
         for (Command currentCommand: commandstoExecute) {
-            if(currentCommand.execute(game) == Boolean.FALSE) {
+            if(currentCommand.execute(tank) == Boolean.FALSE) {
                 return false;
             }
         }

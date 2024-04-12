@@ -19,8 +19,8 @@ public class TurnCommand implements Command {
      * @return True if Success and False if Failure.
      * @throws TankDoesNotExistException If Tank does not exist.
      */
-    public Boolean execute(Game game) throws TankDoesNotExistException {
-        Tank tank = game.getTanks().get(tankId);
+    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
+        Tank tank = tank1;
         if (tank == null) {
             //Log.i(TAG, "Cannot find user with id: " + tankId);
             throw new TankDoesNotExistException(tankId);

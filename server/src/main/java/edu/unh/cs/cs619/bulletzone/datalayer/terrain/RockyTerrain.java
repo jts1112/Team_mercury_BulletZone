@@ -6,7 +6,7 @@ import edu.unh.cs.cs619.bulletzone.model.Vehicle;
 /**
  * Meadow class that will
  */
-public class RockyTerrain extends FieldEntity implements Terrain{
+public class RockyTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
     public RockyTerrain(){
@@ -36,10 +36,6 @@ public class RockyTerrain extends FieldEntity implements Terrain{
         this.presentItem = presentItem;
     }
 
-    @Override
-    public FieldEntity copy() {
-        return null;
-    }
 
 
     @Override
@@ -47,7 +43,8 @@ public class RockyTerrain extends FieldEntity implements Terrain{
         if (entity instanceof Vehicle){
             Vehicle vehicle = (Vehicle) entity;
             if (vehicle.isTracked()) {
-                return 1;
+//                return 1;
+                return 10; // TODO just for testing
             } else if (vehicle.isWheeled()) {
                 return 1.5;
             }

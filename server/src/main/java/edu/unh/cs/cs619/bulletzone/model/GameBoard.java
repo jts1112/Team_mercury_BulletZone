@@ -105,6 +105,25 @@ public class GameBoard {
         board.get(index).setFieldEntity(new Wall(destructValue, index));
     }
 
+    public FieldHolder getGameboardCell(int index){
+        return board.get(index);
+    }
+
+    public int[][] getTerrain2DGrid(){
+        int[][] grid = new int[fieldDimension][fieldDimension];
+
+        synchronized (board) {
+            FieldHolder holder;
+            for (int i = 0; i < fieldDimension; i++) {
+                for (int j = 0; j < fieldDimension; j++) {
+                    grid[i][j] = board.get(i * fieldDimension + j).getTerrain().getIntValue();
+
+                }
+            }
+        }
+
+        return grid;
+    }
 
     public int[][] getGrid2D() {
         int[][] grid = new int[fieldDimension][fieldDimension];

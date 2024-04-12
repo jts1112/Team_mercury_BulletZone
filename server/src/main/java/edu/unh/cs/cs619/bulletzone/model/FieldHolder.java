@@ -7,11 +7,14 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
+
 public class FieldHolder {
 
     private final Map<Direction, FieldHolder> neighbors = new HashMap<>();
     private Optional<FieldEntity> entityHolder = Optional.empty();
     private final int position;
+    private Terrain terrain;
 
     public FieldHolder(int pos) {
         this.position = pos;
@@ -47,4 +50,11 @@ public class FieldHolder {
         }
     }
 
+    public Terrain getTerrain(){
+        return this.terrain;
+    }
+
+    public void setTerrain(Terrain terrain){
+        this.terrain = terrain;
+    }
 }

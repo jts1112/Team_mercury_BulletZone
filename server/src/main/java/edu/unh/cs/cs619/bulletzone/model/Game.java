@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
@@ -28,6 +29,7 @@ public final class Game {
 
     public Game() {
         this.id = 0;
+        EventBus.getDefault().register(this);
     }
 
     @JsonIgnore
@@ -77,6 +79,11 @@ public final class Game {
                 playersIP.remove(tank.getIp());
             }
         }
+    }
+
+    @Subscribe
+    public void removeTankEvent(Tank tank){
+        removeTank(tank.getId());
     }
 
     // --------------------------------- Dropship ---------------------------------

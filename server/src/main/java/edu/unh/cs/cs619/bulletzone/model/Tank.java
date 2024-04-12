@@ -1,6 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class Tank extends FieldEntity {
 
     private static final int INITIAL_LIFE = 100;
@@ -19,7 +21,10 @@ public class Tank extends FieldEntity {
 
     private Direction direction;
 
-    public Tank(long id, Direction direction, String ip, Dropship dropship) {
+    private final EventBus eventBus = EventBus.getDefault();
+
+//    public Tank(long id, Direction direction, String ip, Dropship dropship) {
+public Tank(long id, Direction direction, String ip, Dropship dropship) {
         this.id = id;
         this.direction = direction;
         this.ip = ip;
@@ -46,7 +51,7 @@ public class Tank extends FieldEntity {
 
         if (life <= 0) {
 //			Log.d(TAG, "Tank event");
-            //eventBus.post(Tank.this);
+            eventBus.post(Tank.this);
             //eventBus.post(new Object());
         }
     }

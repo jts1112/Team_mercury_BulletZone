@@ -109,7 +109,7 @@ public class InMemoryGameRepository implements GameRepository {
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
             // Find tank
-            return new MoveCommand(tankId, direction).execute(game); ////
+            return new MoveCommand(tankId, direction).execute(game.getTank(tankId)); ////
         }
     }
 
@@ -117,7 +117,7 @@ public class InMemoryGameRepository implements GameRepository {
     public boolean fire(long tankId, int bulletType)
             throws TankDoesNotExistException {
         synchronized (this.monitor) {
-           return new FireCommand(tankId, bulletType).execute(game); ////
+           return new FireCommand(tankId, bulletType).execute(game.getTank(tankId)); ////
         }
     }
 

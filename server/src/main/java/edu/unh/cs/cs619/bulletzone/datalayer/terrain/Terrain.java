@@ -5,5 +5,6 @@ public interface Terrain {
     double getDifficulty(Object entity);
 
     double getrescourceValue();
+    int getIntValue();
 
 }

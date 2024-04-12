@@ -9,7 +9,6 @@ import java.util.TimerTask;
 public class FireCommand implements Command{
     private  long tankId;
     private int bulletType;
-    private Game game;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
     private final int[] trackActiveBullets = {0, 0};
@@ -32,10 +31,10 @@ public class FireCommand implements Command{
      * @return True if success False if Failure
      * @throws TankDoesNotExistException
      */
-    public Boolean execute(Game game) throws TankDoesNotExistException {
+    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
 
         // Find tank
-        Tank tank = game.getTanks().get(tankId);
+        Tank tank = tank1;
         if (tank == null) {
             //Log.i(TAG, "Cannot find user with id: " + tankId);
             //return false;
@@ -112,7 +111,7 @@ public class FireCommand implements Command{
                             if (t.getLife() <= 0 ){
                                 t.getParent().clearField();
                                 t.setParent(null);
-                                game.removeTank(t.getId());
+
                                 // Create new removalEvent
                                 RemovalEvent removalEvent = new RemovalEvent(t.getPosition());
                                 EventBus.getDefault().post(removalEvent);
@@ -121,7 +120,8 @@ public class FireCommand implements Command{
                             // Check if the wall is destructible
                             if (w.getIntValue() > 1000 && w.getIntValue() <= 2000) {
                                 if (w.getLife() <= 0) {  // If 0 health
-                                    game.getHolderGrid().get(w.getPos()).clearField();
+                                    w.getParent().clearField();
+
                                     // Create new RemovalEvent
                                     RemovalEvent removalEvent = new RemovalEvent(w.getPos());
                                     EventBus.getDefault().post(removalEvent);

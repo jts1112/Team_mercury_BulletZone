@@ -6,7 +6,7 @@ import edu.unh.cs.cs619.bulletzone.model.Vehicle;
 /**
  * Meadow class that will
  */
-public class HillsTerrain extends FieldEntity implements Terrain{
+public class HillsTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
     public HillsTerrain(){
@@ -35,11 +35,6 @@ public class HillsTerrain extends FieldEntity implements Terrain{
         return presentItem;
     }
 
-
-    @Override
-    public FieldEntity copy() {
-        return null;
-    }
 
     @Override
     public double getDifficulty(Object entity) {
