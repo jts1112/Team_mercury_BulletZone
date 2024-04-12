@@ -53,7 +53,7 @@ public class FireCommandTest {
         tank.setDirection(Direction.Down);
 
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
+            assertTrue(new FireCommand(1L, 1).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -61,7 +61,7 @@ public class FireCommandTest {
         tank.setLastFireTime(System.currentTimeMillis());
 
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
+            assertTrue(new FireCommand(1L, 1).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -71,13 +71,13 @@ public class FireCommandTest {
     @Test
     public void execute_IncorrectTiming_FailsToFire() {
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
+            assertTrue(new FireCommand(1L, 1).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(game));
+            assertFalse(new FireCommand(1L, 1).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -89,7 +89,7 @@ public class FireCommandTest {
 
         for (int i = 0; i < tank.getAllowedNumberOfBullets(); i++) {
             try {
-                assertTrue(new FireCommand(1L, 1).execute(game));
+                assertTrue(new FireCommand(1L, 1).execute(tank));
             } catch(TankDoesNotExistException e) {
                 fail();
             }
@@ -98,7 +98,7 @@ public class FireCommandTest {
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(game));
+            assertFalse(new FireCommand(1L, 1).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }

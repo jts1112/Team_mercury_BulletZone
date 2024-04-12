@@ -45,7 +45,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -64,7 +64,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -83,7 +83,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -102,7 +102,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -122,7 +122,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -141,7 +141,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -160,7 +160,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -179,7 +179,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -199,7 +199,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -218,7 +218,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -237,7 +237,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -256,7 +256,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -276,7 +276,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -295,7 +295,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -314,7 +314,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -333,7 +333,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -356,13 +356,13 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(game));
+            assertTrue(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(moveCommand.execute(game));
+            assertFalse(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -383,7 +383,7 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(game));
+            assertFalse(moveCommand.execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
