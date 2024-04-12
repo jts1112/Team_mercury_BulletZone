@@ -17,18 +17,14 @@ public class Tank extends FieldEntity {
     private int allowedNumberOfBullets;
     private int life;
 
-    private Dropship dropship;
-
     private Direction direction;
 
     private final EventBus eventBus = EventBus.getDefault();
 
-//    public Tank(long id, Direction direction, String ip, Dropship dropship) {
-public Tank(long id, Direction direction, String ip, Dropship dropship) {
+    public Tank(long id, Direction direction, String ip) {
         this.id = id;
         this.direction = direction;
         this.ip = ip;
-        this.dropship = dropship;
         this.life = INITIAL_LIFE;
         numberOfBullets = 0;
         allowedNumberOfBullets = 2;
@@ -40,7 +36,7 @@ public Tank(long id, Direction direction, String ip, Dropship dropship) {
 
     @Override
     public FieldEntity copy() {
-        return new Tank(id, direction, ip, dropship);
+        return new Tank(id, direction, ip);
     }
 
     @Override
@@ -118,10 +114,6 @@ public Tank(long id, Direction direction, String ip, Dropship dropship) {
 
     public Direction getDirection() {
         return direction;
-    }
-
-    public Dropship getDropship() {
-        return dropship;
     }
 
     public int getLife() {

@@ -28,7 +28,7 @@ public class FireCommandTest {
         fieldElement.setFieldEntity(tank);
         tank.setParent(fieldElement);
 
-        game.addTank("127.0.0.1", tank);
+        game.addTank(tank);
 
         tank.setDirection(Direction.Down);
     }
@@ -48,7 +48,7 @@ public class FireCommandTest {
         fieldElement.setFieldEntity(tank);
         tank.setParent(fieldElement);
 
-        game.addTank("127.0.0.1", tank);
+        game.addTank(tank);
 
         tank.setDirection(Direction.Down);
 

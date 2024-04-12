@@ -1,11 +1,13 @@
 package edu.unh.cs.cs619.bulletzone.util;
 
-public class UnitIds {
-    private long tankId;
-    private long minerId;
-    private long dropshipId;
+import java.io.Serializable;
 
-    public UnitIds(long tankId, long minerId, long dropshipId) {
+public class UnitIds {
+    private long tankId = -1;
+    private long minerId = -1;
+    private long dropshipId = -1;
+
+    public UnitIds(long dropshipId, long minerId, long tankId) {
         this.tankId = tankId;
         this.minerId = minerId;
         this.dropshipId = dropshipId;

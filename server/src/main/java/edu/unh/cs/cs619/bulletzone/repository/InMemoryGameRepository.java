@@ -168,7 +168,7 @@ public class InMemoryGameRepository implements GameRepository {
             }
 
             long minerId = this.idGenerator.getAndIncrement();
-            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp(), dropship);
+            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
 
             // Find a free space near the dropship to spawn the miner
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
@@ -199,7 +199,7 @@ public class InMemoryGameRepository implements GameRepository {
             }
 
             long tankId = this.idGenerator.getAndIncrement();
-            Tank tank = new Tank(tankId, Direction.Up, dropship.getIp(), dropship);
+            Tank tank = new Tank(tankId, Direction.Up, dropship.getIp());
 
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
             if (spawningPoint != null) {

@@ -29,6 +29,10 @@ public class GridCellImageMapper {
                 imageResource = R.drawable.bullet1;
             } else if (cellValue >= 10000000 && cellValue <= 20000000) {
                 imageResource = R.drawable.tank_icon2;
+            } else if (cellValue >= 20000000 && cellValue <= 30000000) {
+                imageResource = R.drawable.miner1;
+            } else if (cellValue >= 30000000 && cellValue <= 40000000) {
+                imageResource = R.drawable.dropship1;
             }
         }
 

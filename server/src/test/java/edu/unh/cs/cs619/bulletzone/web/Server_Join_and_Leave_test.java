@@ -18,12 +18,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestClientException;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -53,8 +55,8 @@ public class Server_Join_and_Leave_test {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
 
-        Tank tank = new Tank(123,Direction.Up,request.getRemoteAddr());
-        when(repo.join(request.getRemoteAddr())).thenReturn(tank);
+        Dropship ship = new Dropship(123,Direction.Up,request.getRemoteAddr());
+        when(repo.join(request.getRemoteAddr())).thenReturn(ship);
 
         ResponseEntity<LongWrapper> serverResponse = gamesController.join(request);
 
@@ -64,7 +66,7 @@ public class Server_Join_and_Leave_test {
         assertNotNull(serverResponse.getBody());
 
         // make sure the server respose contains the created Tanks ID.
-        assertEquals(serverResponse.getBody().getResult(),tank.getId());
+        assertEquals(serverResponse.getBody().getResult(), ship.getId());
 
         // Optionally, you can check if the tank ID is a positive number
         assertTrue(serverResponse.getBody().getResult() > 0);
@@ -113,8 +115,6 @@ public class Server_Join_and_Leave_test {
 
         // Can check that the server response isnt null
         assertNotNull(serverResponse);
-
-
     }
 
 

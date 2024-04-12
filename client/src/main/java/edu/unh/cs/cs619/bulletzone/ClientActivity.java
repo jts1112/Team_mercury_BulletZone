@@ -48,10 +48,10 @@ public class ClientActivity extends Activity {
     /**
      * Remote tank identifier
      */
-    private long dropshipId = -1;  // Each dropship contains 1 miner and 1 tank.
-    private long tankId = -1;
-    private long minerId = -1;
-    private long currentEntityId = -1;  // can be a Dropship, tank, or a miner.
+
+    /**
+     * Removed all unit ids in client activity to be used in actioncontroller
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +109,7 @@ public class ClientActivity extends Activity {
     @Background
     void joinAsync() {
         try {
-            dropshipId = actionController.join();
-            currentEntityId = dropshipId;
+            actionController.join();
             gridPollTask.startPolling();
         } catch (Exception ignored) { }
     }
@@ -140,40 +139,34 @@ public class ClientActivity extends Activity {
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
 
-        actionController.onButtonMove(currentEntityId, viewId);
+        actionController.onButtonMove(viewId);
     }
 
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonFire)
     @Background
     protected void onButtonFire() {
-        actionController.onButtonFire(currentEntityId);
+        actionController.onButtonFire();
     }
 
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonTank)
     protected void onTankButtonClick() {
-        if (tankId == -1) {
-            tankId = actionController.spawnTank();
-        }
-        currentEntityId = tankId;
+        actionController.updateCurrentUnit("tank");
         updateControlsForUnit("tank");
     }
 
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonMiner)
     protected void onMinerButtonClick() {
-        if (minerId == -1) {
-            minerId = actionController.spawnMiner();
-        }
-        currentEntityId = minerId;
+        actionController.updateCurrentUnit("miner");
         updateControlsForUnit("miner");
     }
 
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonDropship)
     protected void onDropshipButtonClick() {
-        currentEntityId = dropshipId;
+        actionController.updateCurrentUnit("dropship");
         updateControlsForUnit("dropship");
     }
 
@@ -220,8 +213,7 @@ public class ClientActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Player clicked yes. Leave game
-                                System.out.println("leaveGame() called, Current Entity ID: "
-                                        + currentEntityId);
+                                System.out.println("leaveGame() called");
 
                                 Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
                                 startActivity(intent);
@@ -237,10 +229,10 @@ public class ClientActivity extends Activity {
     }
 
     @Background
-    void leaveAsync(long tankId) {
-        System.out.println("Leave called, tank ID: " + tankId);
+    void leaveAsync() {
+        System.out.println("Leave called, leaving game");
         BackgroundExecutor.cancelAll("grid_poller_task", true);
-        actionController.leave(tankId);
+        actionController.leave();
     }
 
     @Override
