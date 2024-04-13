@@ -60,9 +60,7 @@ class GamesController {
             );
         } catch (RestClientException e) {
             e.printStackTrace();
-        } catch (LimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TankDoesNotExistException e) {
+        } catch (LimitExceededException | TankDoesNotExistException e) {
             throw new RuntimeException(e);
         }
         return null;
@@ -117,7 +115,7 @@ class GamesController {
     }
 
 
-    // New ⬇️⬇️
+    // ------------ Spawn Endpoints ------------
     @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

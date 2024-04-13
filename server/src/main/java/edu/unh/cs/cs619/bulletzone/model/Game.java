@@ -1,7 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,64 @@ public final class Game {
         return gameBoard;
     }
 
+    // --------------------------------- PlayableEntity ---------------------------------
+
+    public List<PlayableEntity> getPlayableEntities() {
+        List<PlayableEntity> playableEntities = new ArrayList<>();
+        playableEntities.addAll(tanks.values());
+        playableEntities.addAll(dropships.values());
+        playableEntities.addAll(miners.values());
+        return playableEntities;
+    }
+
+    public void addPlayableEntity(PlayableEntity playableEntity) {
+        if (playableEntity instanceof Tank) {
+            addTank((Tank) playableEntity);
+        } else if (playableEntity instanceof Dropship) {
+            addDropship((Dropship) playableEntity);
+        } else if (playableEntity instanceof Miner) {
+            addMiner((Miner) playableEntity);
+        }
+    }
+
+    public PlayableEntity getPlayableEntity(Long entityId) {
+        PlayableEntity playableEntity = getTank(entityId);
+        if (playableEntity == null) {
+            playableEntity = getDropship(entityId);
+        }
+        if (playableEntity == null) {
+            playableEntity = getMiner(entityId);
+        }
+        return playableEntity;
+    }
+
+    public PlayableEntity getPlayableEntity(String ip) {
+        PlayableEntity playableEntity = getTank(ip);
+        if (playableEntity == null) {
+            playableEntity = getDropship(ip);
+        }
+        if (playableEntity == null) {
+            playableEntity = getMiner(ip);
+        }
+        return playableEntity;
+    }
+
+    public void removePlayableEntity(long entityId) {
+        removeTank(entityId);
+        removeDropship(entityId);
+        removeMiner(entityId);
+    }
+
+    @Subscribe
+    public void removePlayableEntityEvent(PlayableEntity playableEntity) {
+        if (playableEntity instanceof Tank) {
+            removeTankEvent((Tank) playableEntity);
+        } else if (playableEntity instanceof Dropship) {
+            removeDropshipEvent((Dropship) playableEntity);
+        } else if (playableEntity instanceof Miner) {
+            removeMinerEvent((Miner) playableEntity);
+        }
+    }
 
     // --------------------------------- Tank ---------------------------------
 
@@ -61,7 +118,7 @@ public final class Game {
         EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
     }
 
-    public Tank getTank(Long tankId) {  // Never used, except in tests
+    public Tank getTank(Long tankId) {
         return tanks.get(tankId);
     }
 
@@ -120,6 +177,10 @@ public final class Game {
         }
     }
 
+    @Subscribe
+    public void removeDropshipEvent(Dropship dropship){
+        removeDropship(dropship.getId());
+    }
 
     // --------------------------------- Miner ---------------------------------
 
@@ -153,5 +214,10 @@ public final class Game {
                 playersIP.remove(miner.getIp());
             }
         }
+    }
+
+    @Subscribe
+    public void removeMinerEvent(Miner miner){
+        removeMiner(miner.getId());
     }
 }

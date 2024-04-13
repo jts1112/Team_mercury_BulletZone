@@ -57,7 +57,7 @@ public class ActionController {
             currentUnitId = Ids.getDropshipId();
             // Log.d("ActionController", "Dropship Id = " + Ids.getDropshipId());
             return currentUnitId;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return -1;
     }

@@ -1,16 +1,16 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 public class TurnCommand implements Command {
-    private long tankId;
+    private long playableEntityId;
     private  Direction direction;
 
     /**
      * TurnCommand Constructor To initialize variables needed to execute
-     * @param tankId The tankId of the tank that is turning.
+     * @param playableEntityId The tankId of the tank that is turning.
      * @param direction The direction the tank is turning.
      */
-    public  TurnCommand(long tankId,Direction direction) {
-        this.tankId = tankId;
+    public  TurnCommand(long playableEntityId, Direction direction) {
+        this.playableEntityId = playableEntityId;
         this.direction = direction;
     }
 
@@ -19,18 +19,17 @@ public class TurnCommand implements Command {
      * @return True if Success and False if Failure.
      * @throws TankDoesNotExistException If Tank does not exist.
      */
-    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
-        Tank tank = tank1;
-        if (tank == null) {
+    public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
+        if (playableEntity == null) {
             //Log.i(TAG, "Cannot find user with id: " + tankId);
-            throw new TankDoesNotExistException(tankId);
+            throw new TankDoesNotExistException(playableEntityId);
         }
 
         long milliseconds = System.currentTimeMillis();
-        if(milliseconds < tank.getLastMoveTime())
+        if(milliseconds < playableEntity.getLastMoveTime())
             return false;
 
-        tank.setLastMoveTime(milliseconds+tank.getAllowedMoveInterval());
+        playableEntity.setLastMoveTime(milliseconds+playableEntity.getAllowedMoveInterval());
 
             /*try {
                 Thread.sleep(500);
@@ -38,7 +37,7 @@ public class TurnCommand implements Command {
                 Thread.currentThread().interrupt();
             }*/
 
-        tank.setDirection(direction);
+        playableEntity.setDirection(direction);
         return true;
     }
 }

@@ -1,8 +1,10 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 public abstract class FieldEntity {
-    //protected static final EventBus eventBus = new EventBus();
     protected FieldHolder parent;
+    protected Direction direction;
+    protected long lastMoveTime;
+    protected int allowedMoveInterval;
 
     /**
      * Serializes the current {@link edu.unh.cs.cs619.bulletzone.model.FieldEntity} instance.
@@ -19,20 +21,38 @@ public abstract class FieldEntity {
         this.parent = parent;
     }
 
-    public int getPosition() { return parent.getPosition(); }
+    public int getPosition() {
+        return parent.getPosition();
+    }
 
     public abstract FieldEntity copy();
 
     public void hit(int damage) {
     }
 
-    /*public static final void registerEventBusListener(Object listener) {
-        checkNotNull(listener);
-        eventBus.register(listener);
+    // Getters and Setters for direction, lastMoveTime, and allowedMoveInterval
+
+    public Direction getDirection() {
+        return direction;
     }
 
-    public static final void unregisterEventBusListener(Object listener) {
-        checkNotNull(listener);
-        eventBus.unregister(listener);
-    }*/
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public long getLastMoveTime() {
+        return lastMoveTime;
+    }
+
+    public void setLastMoveTime(long lastMoveTime) {
+        this.lastMoveTime = lastMoveTime;
+    }
+
+    public int getAllowedMoveInterval() {
+        return allowedMoveInterval;
+    }
+
+    public void setAllowedMoveInterval(int allowedMoveInterval) {
+        this.allowedMoveInterval = allowedMoveInterval;
+    }
 }

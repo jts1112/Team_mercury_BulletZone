@@ -1,4 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.repository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,10 +16,9 @@ import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.Miner;
 import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
+import edu.unh.cs.cs619.bulletzone.model.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
 public class InMemoryGameRepository implements GameRepository {
@@ -41,7 +41,6 @@ public class InMemoryGameRepository implements GameRepository {
     /**
      * Tank's default life [life]
      */
-    private static final int TANK_LIFE = 100;
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
@@ -105,25 +104,36 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean move(long tankId, Direction direction)
-            throws TankDoesNotExistException {
+    public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            // Find tank
-            return new MoveCommand(tankId, direction).execute(game.getTank(tankId)); ////
+            PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+
+            System.out.println("Moving entity: " + entityId);
+            System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
+
+            if (playableEntity instanceof Dropship) {
+                System.out.println("Dropship move attempt blocked");
+                return false;
+            }
+
+            MoveCommand moveCommand = new MoveCommand(entityId, direction);
+            boolean moveResult = moveCommand.execute(playableEntity);
+
+            System.out.println("Move result: " + moveResult);
+
+            return moveResult;
         }
     }
 
     @Override
-    public boolean fire(long tankId, int bulletType)
-            throws TankDoesNotExistException {
+    public boolean fire(long tankId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
            return new FireCommand(tankId, bulletType).execute(game.getTank(tankId)); ////
         }
     }
 
     @Override
-    public void leave(long tankId)
-            throws TankDoesNotExistException {
+    public void leave(long tankId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
             if (!this.game.getTanks().containsKey(tankId)) {
                 throw new TankDoesNotExistException(tankId);
@@ -153,7 +163,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
 
-    // New ⬇️⬇️
+    // ------------ Spawn Methods ------------
     @Override
     public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
         synchronized (this.monitor) {

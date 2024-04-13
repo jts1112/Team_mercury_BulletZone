@@ -1,23 +1,22 @@
 package edu.unh.cs.cs619.bulletzone.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
-public class MoveCommand implements Command{
-    private long tankId;
+public class MoveCommand implements Command {
+    private long entityId;
     private Direction direction;
 
     /**
      * Move Command To initialize variables needed to execute
-     * @param tankId passed in tankID
+     * @param entityId passed in tankID
      * @param direction passed in Direction
      */
-    public MoveCommand(long tankId,Direction direction){
-        this.tankId = tankId;
+    public MoveCommand(long entityId, Direction direction){
+        this.entityId = entityId;
         this.direction = direction;
     }
 
@@ -27,21 +26,20 @@ public class MoveCommand implements Command{
      * @throws TankDoesNotExistException if tank does not exist.
      */
     @Override
-    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
 
         // Find tank
-        Tank tank = tank1;
-        if (tank == null) {
-            throw new TankDoesNotExistException(tankId);
+        if (entity == null) {
+            throw new TankDoesNotExistException(entityId);
         }
 
         // Check if the time from the last firing is too short
         long millis = System.currentTimeMillis();
-        if(millis < tank.getLastMoveTime())
+        if(millis < entity.getLastMoveTime())
             return false;
 
         // Rotate tank if not moving forwards or backwards
-        Direction currentDir = tank.getDirection();
+        Direction currentDir = entity.getDirection();
         Direction desiredDirection = this.direction;
         int current = Byte.toUnsignedInt(Direction.toByte(currentDir));
         if (current == 0) {
@@ -52,38 +50,38 @@ public class MoveCommand implements Command{
 
         if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)) {
             // Set new direction
-            tank.setDirection(desiredDirection);
+            entity.setDirection(desiredDirection);
 
             // Post new TurnEvent
-            EventBus.getDefault().post(new TurnEvent(tank.getIntValue(), currentDir,
-                    tank.getDirection()));
+            EventBus.getDefault().post(new TurnEvent(entity.getIntValue(), currentDir,
+                    entity.getDirection()));
 
             // Set the next valid move time
-            tank.setLastMoveTime(millis + (tank.getAllowedMoveInterval())); // TODO remove the multiplier
+            entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
             return true;
         }
 
-        FieldHolder parent = tank.getParent();
+        FieldHolder parent = entity.getParent();
 
         FieldHolder nextField = parent.getNeighbor(direction);
 
-        double difficulty = nextField.getTerrain().getDifficulty(tank); // TODO testing the difficulty
+        double difficulty = nextField.getTerrain().getDifficulty(entity); // TODO testing the difficulty
 
         checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
         boolean isCompleted;
         if (!nextField.isPresent()) {
             // If the next field is empty move the user
 
-                int oldPos = tank.getPosition();
+                int oldPos = entity.getPosition();
                 parent.clearField();
-                nextField.setFieldEntity(tank);
-                tank.setParent(nextField);
-                int newPos = tank.getPosition();
-                EventBus.getDefault().post(new MoveEvent(tank.getIntValue(), oldPos, newPos));
+                nextField.setFieldEntity(entity);
+                entity.setParent(nextField);
+                int newPos = entity.getPosition();
+                EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
 
                 isCompleted = true;
-                tank.setLastMoveTime(millis + (long)(tank.getAllowedMoveInterval()*difficulty)); // TODO remove difficulty
-
+                // TODO remove difficulty
+                entity.setLastMoveTime(millis + (long)(entity.getAllowedMoveInterval()*difficulty));
 
         } else {
             isCompleted = false;
@@ -91,4 +89,5 @@ public class MoveCommand implements Command{
 
         return isCompleted;
     }
+
 }
