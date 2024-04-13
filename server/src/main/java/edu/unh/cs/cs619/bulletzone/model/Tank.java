@@ -3,7 +3,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class Tank extends FieldEntity {
+public class Tank extends FieldEntity implements Vehicle{
 
     private static final int INITIAL_LIFE = 100;
     private static final String TAG = "Tank";
@@ -134,4 +134,13 @@ public class Tank extends FieldEntity {
         return (int) (10_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
 
+    @Override
+    public Boolean isWheeled() {
+        return false;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return true;
+    }
 }

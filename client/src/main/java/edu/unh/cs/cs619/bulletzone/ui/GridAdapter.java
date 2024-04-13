@@ -16,6 +16,8 @@ public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private GridCell[][] gridData;
+
+    private int[][] Terrains;
     private GridCellImageMapper mapper;
 
     public GridAdapter(Context context) {

@@ -43,8 +43,7 @@ public class RockyTerrain implements Terrain{
         if (entity instanceof Vehicle){
             Vehicle vehicle = (Vehicle) entity;
             if (vehicle.isTracked()) {
-//                return 1;
-                return 10; // TODO just for testing
+                return 1;
             } else if (vehicle.isWheeled()) {
                 return 1.5;
             }

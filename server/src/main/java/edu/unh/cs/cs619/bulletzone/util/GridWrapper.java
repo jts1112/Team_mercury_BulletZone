@@ -5,6 +5,8 @@ package edu.unh.cs.cs619.bulletzone.util;
  */
 public class GridWrapper {
     private int[][] grid;
+
+    private int[][] terrainGrid;
     private long timeStamp;
 
     public GridWrapper(int[][] grid) {
@@ -18,6 +20,14 @@ public class GridWrapper {
 
     public void setGrid(int[][] grid) {
         this.grid = grid;
+    }
+
+    public void setTerrainGrid(int[][] Terraingrid){
+        this.terrainGrid = grid;
+    }
+
+    public int[][] getTerrainGrid(){
+        return terrainGrid;
     }
 
     public long getTimeStamp() {

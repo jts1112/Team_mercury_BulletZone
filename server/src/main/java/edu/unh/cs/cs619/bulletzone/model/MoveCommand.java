@@ -59,7 +59,7 @@ public class MoveCommand implements Command{
                     tank.getDirection()));
 
             // Set the next valid move time
-            tank.setLastMoveTime(millis + tank.getAllowedMoveInterval());
+            tank.setLastMoveTime(millis + (tank.getAllowedMoveInterval())); // TODO remove the multiplier
             return true;
         }
 
