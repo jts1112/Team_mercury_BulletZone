@@ -7,6 +7,8 @@ public class DamageEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
 
+    public DamageEvent() {}
+
     /**
      * Constructor for testing only.
      * @param position The position of the entity to remove.

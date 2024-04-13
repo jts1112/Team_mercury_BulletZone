@@ -8,6 +8,8 @@ public class SpawnEvent extends GameEvent {
     @JsonProperty
     private int position;
 
+    public SpawnEvent() {}
+
     /*
      * Constructor for testing only.
      */

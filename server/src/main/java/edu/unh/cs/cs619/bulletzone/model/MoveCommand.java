@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,7 +55,7 @@ public class MoveCommand implements Command {
 
             // Post new TurnEvent
             EventBus.getDefault().post(new TurnEvent(entity.getIntValue(), currentDir,
-                    entity.getDirection()));
+                    entity.getDirection(), entity.getPosition()));
 
             // Set the next valid move time
             entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());

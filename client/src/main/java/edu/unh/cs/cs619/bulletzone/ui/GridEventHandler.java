@@ -26,7 +26,7 @@ public class GridEventHandler {
         int[][] terrainData = event.gw.getTerrainGrid();
 
         if (gridModel != null) {
-            gridModel.updateGrid(gridData);
+            gridModel.updateGrid(gridData, terrainData);
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
