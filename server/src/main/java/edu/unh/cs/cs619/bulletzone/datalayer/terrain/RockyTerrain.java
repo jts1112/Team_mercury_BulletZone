@@ -7,7 +7,7 @@ import edu.unh.cs.cs619.bulletzone.model.Vehicle;
  * Meadow class that will
  */
 public class RockyTerrain implements Terrain{
-    int presentItem; // present item in the terrain.
+    int presentItem = 0; // present item in the terrain.
 
     public RockyTerrain(){
 
