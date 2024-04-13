@@ -1,26 +1,40 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
-public class Miner extends FieldEntity {
+public class Miner extends PlayableEntity {
     private static final int INITIAL_LIFE = 120;
     private static final int BULLET_DAMAGE = 15;
     private static final int FIRE_INTERVAL = 1500; // 1.5 secs
     private static final int MOVE_INTERVAL = 750;
+    private static final int MINE_INTERVAL = 1000;
+    private static final int ALLOWED_NUM_BULLETS = 1;
 
-    private final long id;
-    private final String ip;
-    private int life;
-    private Direction direction;
-    private Dropship dropship;
-    private long lastFireTime;
-    private long lastMoveTime;
+    private int mineInterval;
+    private int lastMineTime;
 
     public Miner(long id, Direction direction, String ip) {
         this.id = id;
-        this.direction = direction;
         this.ip = ip;
+        this.direction = direction;
         this.life = INITIAL_LIFE;
+        this.numberOfBullets = 0;
         this.lastFireTime = 0;
         this.lastMoveTime = 0;
+        this.lastMineTime = 0;
+        this.mineInterval = MINE_INTERVAL;
+        this.allowedMoveInterval = MOVE_INTERVAL;
+        this.allowedFireInterval = FIRE_INTERVAL;
+        this.allowedNumberOfBullets = ALLOWED_NUM_BULLETS;
+        this.bulletDamage = BULLET_DAMAGE;
+    }
+
+    @Override
+    public String toString() {
+        return "M";
+    }
+
+    @Override
+    public FieldEntity copy() {
+        return new Miner(id, direction, ip);
     }
 
     @Override
@@ -28,59 +42,19 @@ public class Miner extends FieldEntity {
         return (int) (20_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
 
-    @Override
-    public FieldEntity copy() {
-        return null;
+    public int getMineInterval() {
+        return mineInterval;
     }
 
-    //  getters and setters
-
-
-    public long getId() {
-        return id;
+    public void setMineInterval(int mineInterval) {
+        this.mineInterval = mineInterval;
     }
 
-    public String getIp() {
-        return ip;
+    public int getLastMineTime() {
+        return lastMineTime;
     }
 
-    public int getLife() {
-        return life;
-    }
-
-    public void setLife(int life) {
-        this.life = life;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    public Dropship getDropship() {
-        return dropship;
-    }
-
-    public void setDropship(Dropship dropship) {
-        this.dropship = dropship;
-    }
-
-    public long getLastFireTime() {
-        return lastFireTime;
-    }
-
-    public void setLastFireTime(long lastFireTime) {
-        this.lastFireTime = lastFireTime;
-    }
-
-    public long getLastMoveTime() {
-        return lastMoveTime;
-    }
-
-    public void setLastMoveTime(long lastMoveTime) {
-        this.lastMoveTime = lastMoveTime;
+    public void setLastMineTime(int lastMineTime) {
+        this.lastMineTime = lastMineTime;
     }
 }

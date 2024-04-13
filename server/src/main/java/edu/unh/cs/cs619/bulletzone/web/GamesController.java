@@ -60,9 +60,7 @@ class GamesController {
             );
         } catch (RestClientException e) {
             e.printStackTrace();
-        } catch (LimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TankDoesNotExistException e) {
+        } catch (LimitExceededException | TankDoesNotExistException e) {
             throw new RuntimeException(e);
         }
         return null;

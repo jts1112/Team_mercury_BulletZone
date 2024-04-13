@@ -6,7 +6,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FireCommand implements Command{
+public class FireCommand implements Command {
     private  long tankId;
     private int bulletType;
     private final Timer timer = new Timer();
@@ -18,11 +18,11 @@ public class FireCommand implements Command{
 
     /**
      * Fire Command Method that initializes values needed for execution.
-     * @param tankId
+     * @param entityId
      * @param bulletType
      */
-    public FireCommand(long tankId, int bulletType){
-        this.tankId = tankId;
+    public FireCommand(long entityId, int bulletType){
+        this.tankId = entityId;
         this.bulletType = bulletType;
     }
 
@@ -31,35 +31,32 @@ public class FireCommand implements Command{
      * @return True if success False if Failure
      * @throws TankDoesNotExistException
      */
-    public Boolean execute(Tank tank1) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
 
         // Find tank
-        Tank tank = tank1;
-        if (tank == null) {
-            //Log.i(TAG, "Cannot find user with id: " + tankId);
-            //return false;
+        if (playableEntity == null) {
             throw new TankDoesNotExistException(tankId);
         }
 
-        if(tank.getNumberOfBullets() >= tank.getAllowedNumberOfBullets())
+        if(playableEntity.getNumberOfBullets() >= playableEntity.getAllowedNumberOfBullets())
             return false;
 
         long millis = System.currentTimeMillis();
-        if(millis < tank.getLastFireTime()/*>tank.getAllowedFireInterval()*/){
+        if(millis < playableEntity.getLastFireTime()/*>tank.getAllowedFireInterval()*/){
             return false;
         }
 
         //Log.i(TAG, "Cannot find user with id: " + tankId);
-        Direction direction = tank.getDirection();
-        FieldHolder parent = tank.getParent();
-        tank.setNumberOfBullets(tank.getNumberOfBullets() + 1);
+        Direction direction = playableEntity.getDirection();
+        FieldHolder parent = playableEntity.getParent();
+        playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets() + 1);
 
         if(!(bulletType>=1 && bulletType<=3)) {
             System.out.println("Bullet type must be 1, 2 or 3, set to 1 by default.");
             bulletType = 1;
         }
 
-        tank.setLastFireTime(millis + bulletDelay[bulletType - 1]);
+        playableEntity.setLastFireTime(millis + bulletDelay[bulletType - 1]);
 
         int bulletId=0;
         if(trackActiveBullets[0]==0){
@@ -84,7 +81,7 @@ public class FireCommand implements Command{
             @Override
             public void run() {
                 synchronized (monitor) {
-                    System.out.println("Active Bullet: " + tank.getNumberOfBullets() +
+                    System.out.println("Active Bullet: " + playableEntity.getNumberOfBullets() +
                             "---- Bullet ID: "+bullet.getIntValue());
                     FieldHolder currentField = bullet.getParent();
                     Direction direction = bullet.getDirection();
@@ -135,7 +132,7 @@ public class FireCommand implements Command{
                             EventBus.getDefault().post(removalEvent);
                         }
                         trackActiveBullets[bullet.getBulletId()]=0;
-                        tank.setNumberOfBullets(tank.getNumberOfBullets()-1);
+                        playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
                         cancel();
 
                     } else {  // Nothing is there, move bullet along

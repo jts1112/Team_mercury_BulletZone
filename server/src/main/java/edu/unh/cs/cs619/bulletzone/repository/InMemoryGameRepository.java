@@ -1,4 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.repository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,10 +16,9 @@ import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.Miner;
 import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
+import edu.unh.cs.cs619.bulletzone.model.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
 public class InMemoryGameRepository implements GameRepository {
@@ -41,7 +41,6 @@ public class InMemoryGameRepository implements GameRepository {
     /**
      * Tank's default life [life]
      */
-    private static final int TANK_LIFE = 100;
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
@@ -105,11 +104,12 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean move(long tankId, Direction direction)
-            throws TankDoesNotExistException {
+    public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            // Find tank
-            return new MoveCommand(tankId, direction).execute(game.getTank(tankId)); ////
+            // Find   // FIXME should be getting entity
+            MoveCommand moveCommand = new MoveCommand(entityId, direction);
+            PlayableEntity entityOptional = game.getPlayableEntity(entityId);
+            return moveCommand.execute(entityOptional);
         }
     }
 
