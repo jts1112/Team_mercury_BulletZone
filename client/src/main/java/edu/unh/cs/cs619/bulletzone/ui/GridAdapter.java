@@ -16,6 +16,8 @@ public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private GridCell[][] gridData;
+
+    private int[][] Terrains;
     private GridCellImageMapper mapper;
 
     public GridAdapter(Context context) {
@@ -52,7 +54,6 @@ public class GridAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.field_item, parent, false);
             holder = new ViewHolder();
-            // Assuming you have an ImageView with id 'gridImageView'
             holder.imageView = convertView.findViewById(R.id.gridImageView);
             convertView.setTag(holder);
         } else {
@@ -64,12 +65,17 @@ public class GridAdapter extends BaseAdapter {
 
         GridCell cell = gridData[row][col];
 
-        // Set the image resource to the ImageView
-        holder.imageView.setImageResource(cell.getResourceID());
-        holder.imageView.setRotation(cell.getRotation());
+        // Set terrain image
+        holder.imageView.setImageResource(cell.getTerrainResourceID());
+
+        // Set entity image on top of terrain
+        holder.imageView.setImageResource(cell.getEntityResourceID());
+        holder.imageView.setRotation(cell.getEntityRotation());
 
         return convertView;
     }
+
+
 
     static class ViewHolder {
         ImageView imageView;

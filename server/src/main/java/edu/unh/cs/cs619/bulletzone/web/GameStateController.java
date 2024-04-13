@@ -42,6 +42,7 @@ class GameStateController {
     @ResponseBody
     ResponseEntity<GridWrapper> grid() {
         GridWrapper gridWrapper = new GridWrapper(game.getGameBoard().getGrid2D());
+        gridWrapper.setTerrainGrid(game.getGameBoard().getTerrain2DGrid()); // TODO testing
         return new ResponseEntity<GridWrapper>(gridWrapper, HttpStatus.OK);
     }
 

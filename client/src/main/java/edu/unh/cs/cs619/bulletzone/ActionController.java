@@ -12,6 +12,7 @@ import org.androidannotations.rest.spring.annotations.RestService;
 
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
+import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 import edu.unh.cs.cs619.bulletzone.util.ShakeDetector;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
@@ -113,7 +114,12 @@ public class ActionController {
     @Background
     public void onButtonFire() {
         // Log.d("ActionController", "Fire called.");
-        restClient.fire(currentUnitId);
+        BooleanWrapper fired = restClient.fire(currentUnitId);
+        if (fired == null) {
+            // Log.d("ActionController", "Fire returned null");
+        } else if (!fired.isResult()) {
+            // Log.d("ActionController", "Fire command failed");
+        }
     }
 
     public void leave() {

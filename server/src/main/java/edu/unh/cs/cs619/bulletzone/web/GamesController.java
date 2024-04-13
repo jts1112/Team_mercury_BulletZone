@@ -72,7 +72,7 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire",
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> fire(@PathVariable long entityId)
