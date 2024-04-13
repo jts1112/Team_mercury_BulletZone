@@ -1,4 +1,6 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.entities;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public abstract class FieldEntity {
     protected FieldHolder parent;
@@ -7,9 +9,9 @@ public abstract class FieldEntity {
     protected int allowedMoveInterval;
 
     /**
-     * Serializes the current {@link edu.unh.cs.cs619.bulletzone.model.FieldEntity} instance.
+     * Serializes the current {@link FieldEntity} instance.
      *
-     * @return Integer representation of the current {@link edu.unh.cs.cs619.bulletzone.model.FieldEntity}
+     * @return Integer representation of the current {@link FieldEntity}
      */
     public abstract int getIntValue();
 

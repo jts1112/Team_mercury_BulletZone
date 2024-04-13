@@ -1,4 +1,6 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.entities;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public class Miner extends PlayableEntity {
     private static final int INITIAL_LIFE = 120;

@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -76,6 +77,7 @@ public class ActionController {
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Background
     public void onButtonMove(int viewId) {
         byte direction = 0;
@@ -126,4 +128,6 @@ public class ActionController {
     public void leave(long id) {
         restClient.leave(id);
     }
+
+
 }

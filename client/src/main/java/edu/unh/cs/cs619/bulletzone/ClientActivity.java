@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -45,6 +46,8 @@ public class ClientActivity extends Activity {
     @Bean
     protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
+    @ViewById
+    protected ProgressBar healthBar;
     /**
      * Remote tank identifier
      */
@@ -147,6 +150,7 @@ public class ClientActivity extends Activity {
     @Background
     protected void onButtonFire() {
         actionController.onButtonFire();
+        updateHealthBar();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -239,5 +243,9 @@ public class ClientActivity extends Activity {
     public void onBackPressed() {
         // super.onBackPressed();
         // Not calling **super**, disables back button in current screen.
+    }
+
+    public static void updateHealthBar() {
+    // Firing and taking damage needs to work before we can test this.
     }
 }

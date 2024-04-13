@@ -5,6 +5,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
+import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
+
 public class MoveCommandTest {
 
     static Game game = new Game();

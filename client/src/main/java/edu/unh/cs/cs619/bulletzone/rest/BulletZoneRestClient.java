@@ -65,7 +65,7 @@ public interface BulletZoneRestClient extends RestClientErrorHandling {
     @Delete("/{entityId}/leave")
     BooleanWrapper leave(@Path long entityId);
 
-    // New ⬇️⬇️
+    // ------------ Spawn Endpoints ------------
     @Put("/{dropshipId}/spawn/miner")
     LongWrapper spawnMiner(@Path long dropshipId);
 

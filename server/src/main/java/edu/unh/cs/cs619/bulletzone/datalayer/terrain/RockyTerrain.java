@@ -1,7 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
 
-import edu.unh.cs.cs619.bulletzone.model.FieldEntity;
-import edu.unh.cs.cs619.bulletzone.model.Vehicle;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
 
 /**
  * Meadow class that will

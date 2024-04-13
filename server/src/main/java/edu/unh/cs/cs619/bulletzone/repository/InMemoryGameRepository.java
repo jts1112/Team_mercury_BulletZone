@@ -8,16 +8,16 @@ import java.util.Timer;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.Dropship;
-import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
-import edu.unh.cs.cs619.bulletzone.model.FireCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
-import edu.unh.cs.cs619.bulletzone.model.Miner;
-import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
-import edu.unh.cs.cs619.bulletzone.model.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
+import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 
 @Component
@@ -173,7 +173,7 @@ public class InMemoryGameRepository implements GameRepository {
             }
 
             if (dropship.getNumMiners() <= 0) {
-                List<Long> miners = dropship.getMiners();
+                List<Long> miners = dropship.getMinerIds();
                 return miners.get(0);
             }
 
@@ -204,7 +204,7 @@ public class InMemoryGameRepository implements GameRepository {
             }
 
             if (dropship.getNumTanks() <= 0) {
-                List<Long> tanks = dropship.getTanks();
+                List<Long> tanks = dropship.getTankIds();
                 return tanks.get(0);
             }
 
