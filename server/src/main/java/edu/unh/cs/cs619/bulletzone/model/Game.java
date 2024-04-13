@@ -94,13 +94,13 @@ public final class Game {
     }
 
     @Subscribe
-    public void removePlayableEntityEvent(PlayableEntity entity) {
-        if (entity instanceof Tank) {
-            removeTankEvent((Tank) entity);
-        } else if (entity instanceof Dropship) {
-            removeDropshipEvent((Dropship) entity);
-        } else if (entity instanceof Miner) {
-            removeMinerEvent((Miner) entity);
+    public void removePlayableEntityEvent(PlayableEntity playableEntity) {
+        if (playableEntity instanceof Tank) {
+            removeTankEvent((Tank) playableEntity);
+        } else if (playableEntity instanceof Dropship) {
+            removeDropshipEvent((Dropship) playableEntity);
+        } else if (playableEntity instanceof Miner) {
+            removeMinerEvent((Miner) playableEntity);
         }
     }
 

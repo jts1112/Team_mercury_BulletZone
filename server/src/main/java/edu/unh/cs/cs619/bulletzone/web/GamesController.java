@@ -115,7 +115,7 @@ class GamesController {
     }
 
 
-    // New ⬇️⬇️
+    // ------------ Spawn Endpoints ------------
     @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

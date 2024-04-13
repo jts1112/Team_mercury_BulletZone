@@ -106,24 +106,34 @@ public class InMemoryGameRepository implements GameRepository {
     @Override
     public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            // Find   // FIXME should be getting entity
+            PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+
+            System.out.println("Moving entity: " + entityId);
+            System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
+
+            if (playableEntity instanceof Dropship) {
+                System.out.println("Dropship move attempt blocked");
+                return false;
+            }
+
             MoveCommand moveCommand = new MoveCommand(entityId, direction);
-            PlayableEntity entityOptional = game.getPlayableEntity(entityId);
-            return moveCommand.execute(entityOptional);
+            boolean moveResult = moveCommand.execute(playableEntity);
+
+            System.out.println("Move result: " + moveResult);
+
+            return moveResult;
         }
     }
 
     @Override
-    public boolean fire(long tankId, int bulletType)
-            throws TankDoesNotExistException {
+    public boolean fire(long tankId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
            return new FireCommand(tankId, bulletType).execute(game.getTank(tankId)); ////
         }
     }
 
     @Override
-    public void leave(long tankId)
-            throws TankDoesNotExistException {
+    public void leave(long tankId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
             if (!this.game.getTanks().containsKey(tankId)) {
                 throw new TankDoesNotExistException(tankId);
@@ -153,7 +163,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
 
-    // New ⬇️⬇️
+    // ------------ Spawn Methods ------------
     @Override
     public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
         synchronized (this.monitor) {
