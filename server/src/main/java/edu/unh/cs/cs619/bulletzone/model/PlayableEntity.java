@@ -89,10 +89,10 @@ public abstract class PlayableEntity extends FieldEntity {
         return ip;
     }
 
-    @Override
-    public int getIntValue() {
-        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
-    }
+//    @Override
+//    public int getIntValue() {
+//        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
+//    }
 
     public boolean isDestroyed() {
         return life <= 0;

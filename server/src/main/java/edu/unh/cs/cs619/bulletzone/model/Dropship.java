@@ -97,4 +97,9 @@ public class Dropship extends PlayableEntity {
     public List<Long> getTanks() {
         return tanks;
     }
+
+    @Override
+    public int getIntValue() {
+        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
+    }
 }
