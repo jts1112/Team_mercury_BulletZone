@@ -32,6 +32,7 @@ public class TitleScreenActivity extends AppCompatActivity {
     public Button accountButton;     // Doubles as sign in button for logged out players
     public Button inventoryButton;
     public Button storeButton;
+    public Button replayButton;
     public String devMsg = "Not Yet Implemented";
     public String loginMsg = "Please Sign in";
 
@@ -47,7 +48,7 @@ public class TitleScreenActivity extends AppCompatActivity {
         accountButton = findViewById(R.id.accountButton);
         inventoryButton = findViewById(R.id.inventoryButton);
         storeButton = findViewById(R.id.storeButton);
-
+//        replayButton = findViewById(R.id.replayButton);
 
         playGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +80,6 @@ public class TitleScreenActivity extends AppCompatActivity {
                 Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
             }
         });
-<<<<<<< HEAD
-=======
 
         replayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +89,6 @@ public class TitleScreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
->>>>>>> 38645b5 (Finished UI for Replay Activity and hooked it up to title screen activity.)
     }
 
     @Override
