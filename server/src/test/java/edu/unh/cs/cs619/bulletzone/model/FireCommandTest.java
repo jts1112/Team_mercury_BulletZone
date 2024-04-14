@@ -50,20 +50,21 @@ public class FireCommandTest {
         tank.setParent(fieldElement);
 
         game.addTank(tank);
-
         tank.setDirection(Direction.Down);
 
+        Object monitor = new Object();
+
         try {
-            assertTrue(new FireCommand(1L, 1).execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
+        } catch (TankDoesNotExistException e) {
             fail();
         }
 
-        tank.setLastFireTime(System.currentTimeMillis());
+        tank.setLastFireTime(System.currentTimeMillis() - 600);
 
         try {
-            assertTrue(new FireCommand(1L, 1).execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
+        } catch (TankDoesNotExistException e) {
             fail();
         }
     }
@@ -71,14 +72,15 @@ public class FireCommandTest {
     // doesn't fire when too soon
     @Test
     public void execute_IncorrectTiming_FailsToFire() {
+        Object monitor = new Object();
         try {
-            assertTrue(new FireCommand(1L, 1).execute(tank));
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(tank));
+            assertFalse(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -87,10 +89,10 @@ public class FireCommandTest {
     // doesn't fire more than the max bullets
     @Test
     public void execute_MoreThanMaxBullets_FailsToFire() {
-
+        Object monitor = new Object();
         for (int i = 0; i < tank.getAllowedNumberOfBullets(); i++) {
             try {
-                assertTrue(new FireCommand(1L, 1).execute(tank));
+                assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
             } catch(TankDoesNotExistException e) {
                 fail();
             }
@@ -99,7 +101,7 @@ public class FireCommandTest {
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(tank));
+            assertFalse(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }

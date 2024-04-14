@@ -15,46 +15,46 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FireCommand implements Command {
-    private  long tankId;
+    private  long playableEntityId;
     private int bulletType;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
     private final int[] trackActiveBullets = {0, 0};
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
-    private  Object monitor; // possibly needed
+    private final Object monitor; // possibly needed
 
     /**
      * Fire Command Method that initializes values needed for execution.
-     * @param entityId
-     * @param bulletType
+     * @param playableEntityId The ID of the entity that is firing
+     * @param bulletType The type of bullet that is being fired
      */
-    public FireCommand(long entityId, int bulletType){
-        this.tankId = entityId;
+    public FireCommand(long playableEntityId, int bulletType, Object monitor) {
+        this.playableEntityId = playableEntityId;
         this.bulletType = bulletType;
+        this.monitor = monitor;
     }
 
     /**
      * FireCommands execute method that runs code originally in fire() from InMemoryGameRepo
      * @return True if success False if Failure
-     * @throws TankDoesNotExistException
+     * @throws TankDoesNotExistException If the entity does not exist
      */
     public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
 
         // Find tank
         if (playableEntity == null) {
-            throw new TankDoesNotExistException(tankId);
+            throw new TankDoesNotExistException(playableEntityId);
         }
 
         if(playableEntity.getNumberOfBullets() >= playableEntity.getAllowedNumberOfBullets())
             return false;
 
-        long millis = System.currentTimeMillis();
-        if(millis < playableEntity.getLastFireTime()/*>tank.getAllowedFireInterval()*/){
+        long milliseconds = System.currentTimeMillis();
+        if(milliseconds < playableEntity.getLastFireTime()/*>tank.getAllowedFireInterval()*/) {
             return false;
         }
 
-        //Log.i(TAG, "Cannot find user with id: " + tankId);
         Direction direction = playableEntity.getDirection();
         FieldHolder parent = playableEntity.getParent();
         playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets() + 1);
@@ -64,7 +64,7 @@ public class FireCommand implements Command {
             bulletType = 1;
         }
 
-        playableEntity.setLastFireTime(millis + bulletDelay[bulletType - 1]);
+        playableEntity.setLastFireTime(milliseconds + bulletDelay[bulletType - 1]);
 
         int bulletId=0;
         if(trackActiveBullets[0]==0){
@@ -75,17 +75,14 @@ public class FireCommand implements Command {
             trackActiveBullets[1] = 1;
         }
 
-        // Create a new bullet to fire
-        final Bullet bullet = new Bullet(tankId, direction, bulletDamage[bulletType-1]);
+        final Bullet bullet = new Bullet(playableEntityId, direction, bulletDamage[bulletType-1]);
         // Set the same parent for the bullet.
         // This should be only a one way reference.
         bullet.setParent(parent);
         bullet.setBulletId(bulletId);
         EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
 
-        // TODO make it nicer
         timer.schedule(new TimerTask() {
-
             @Override
             public void run() {
                 synchronized (monitor) {
@@ -96,9 +93,8 @@ public class FireCommand implements Command {
                     FieldHolder nextField = currentField.getNeighbor(direction);
 
                     // Is the bullet visible on the field?
-                    boolean isVisible = currentField.isPresent()
-                            && (currentField.getEntity() == bullet);
-
+                    boolean isVisible;
+                    isVisible = currentField.isPresent() && (currentField.getEntity() == bullet);
 
                     if (nextField.isPresent()) {
                         // Something is there, hit it

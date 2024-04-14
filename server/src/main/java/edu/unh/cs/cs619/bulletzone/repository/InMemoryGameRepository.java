@@ -126,9 +126,11 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean fire(long tankId, int bulletType) throws TankDoesNotExistException {
+    public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-           return new FireCommand(tankId, bulletType).execute(game.getTank(tankId)); ////
+            FireCommand fireCommand = new FireCommand(playableEntityId, bulletType, this.monitor);
+            PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+            return fireCommand.execute(playableEntity);
         }
     }
 

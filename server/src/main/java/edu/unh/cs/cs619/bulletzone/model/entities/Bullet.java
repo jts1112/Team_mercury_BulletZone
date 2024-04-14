@@ -1,22 +1,21 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
-
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public class Bullet extends FieldEntity {
 
-    private long tankId;
+    private long playableEntityId;
     private Direction direction;
     private int damage, bulletId;
 
-    public Bullet(long tankId, Direction direction, int damage) {
+    public Bullet(long playableEntityId, Direction direction, int damage) {
         this.damage = damage;
-        this.setTankId(tankId);
+        this.setOwner(playableEntityId);
         this.setDirection(direction);
     }
 
     @Override
     public int getIntValue() {
-        return (int) (2000000 + 1000 * tankId + damage * 10 + bulletId);
+        return (int) (2000000 + 1000 * playableEntityId + damage * 10 + bulletId);
     }
 
     @Override
@@ -26,15 +25,15 @@ public class Bullet extends FieldEntity {
 
     @Override
     public FieldEntity copy() {
-        return new Bullet(tankId, direction, damage);
+        return new Bullet(playableEntityId, direction, damage);
     }
 
-    public long getTankId() {
-        return tankId;
+    public long getPlayableEntityId() {
+        return playableEntityId;
     }
 
-    public void setTankId(long tankId) {
-        this.tankId = tankId;
+    public void setOwner(long playableEntityId) {
+        this.playableEntityId = playableEntityId;
     }
 
     public Direction getDirection() {

@@ -113,13 +113,7 @@ public class ActionController {
 
     @Background
     public void onButtonFire() {
-        // Log.d("ActionController", "Fire called.");
         BooleanWrapper fired = restClient.fire(currentUnitId);
-        if (fired == null) {
-            // Log.d("ActionController", "Fire returned null");
-        } else if (!fired.isResult()) {
-            // Log.d("ActionController", "Fire command failed");
-        }
     }
 
     public void leave() {

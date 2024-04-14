@@ -11,6 +11,7 @@ public class CommandPattern {
 
     private ArrayList<Command> commandstoExecute; // Array list containing commands
     private Tank tank;
+    private final Object monitor = new Object();
 
     //TODO TurnCommand turnCommand;
     //TODO MoveCommand moveCommand;
@@ -23,8 +24,10 @@ public class CommandPattern {
     public void addTurnCommand(long tankId, Direction direction){
         commandstoExecute.add(new TurnCommand(tankId, direction));
     }
-    public  void addFireCommand(long tankId, int bulletType){
-        commandstoExecute.add(new FireCommand(tankId, bulletType));
+    public  void addFireCommand(long tankId, int bulletType) {
+        synchronized (this.monitor) {
+            commandstoExecute.add(new FireCommand(tankId, bulletType, this.monitor));
+        }
     }
 
     /**
