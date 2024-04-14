@@ -1,4 +1,4 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import java.util.Optional;
 
@@ -8,6 +8,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public class FieldHolder {
 

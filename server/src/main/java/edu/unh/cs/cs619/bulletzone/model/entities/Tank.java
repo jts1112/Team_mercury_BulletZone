@@ -1,6 +1,8 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import org.greenrobot.eventbus.EventBus;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public class Tank extends PlayableEntity {
     private static final int INITIAL_LIFE = 100;

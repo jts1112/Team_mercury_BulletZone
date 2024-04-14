@@ -10,6 +10,11 @@ import java.util.concurrent.ConcurrentMap;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
+import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 public final class Game {
@@ -104,45 +109,6 @@ public final class Game {
         }
     }
 
-    // --------------------------------- Tank ---------------------------------
-
-    public ConcurrentMap<Long, Tank> getTanks() {
-        return tanks;
-    }
-
-    public void addTank(Tank tank) {
-        synchronized (tanks) {
-            tanks.put(tank.getId(), tank);
-            playersIP.put(tank.getIp(), tank.getId());
-        }
-        EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
-    }
-
-    public Tank getTank(Long tankId) {
-        return tanks.get(tankId);
-    }
-
-    public Tank getTank(String ip){
-        if (playersIP.containsKey(ip)){
-            return tanks.get(playersIP.get(ip));
-        }
-        return null;
-    }
-
-    public void removeTank(long tankId){
-        synchronized (tanks) {
-            Tank tank = tanks.remove(tankId);
-            if (tank != null) {
-                playersIP.remove(tank.getIp());
-            }
-        }
-    }
-
-    @Subscribe
-    public void removeTankEvent(Tank tank){
-        removeTank(tank.getId());
-    }
-
     // --------------------------------- Dropship ---------------------------------
 
     public ConcurrentMap<Long, Dropship> getDropships() {
@@ -180,6 +146,51 @@ public final class Game {
     @Subscribe
     public void removeDropshipEvent(Dropship dropship){
         removeDropship(dropship.getId());
+    }
+
+    public void repairAllDropships() {
+        for (Dropship dropship : dropships.values()) {
+            dropship.repairUnits();
+        }
+    }
+
+    // --------------------------------- Tank ---------------------------------
+
+    public ConcurrentMap<Long, Tank> getTanks() {
+        return tanks;
+    }
+
+    public void addTank(Tank tank) {
+        synchronized (tanks) {
+            tanks.put(tank.getId(), tank);
+            playersIP.put(tank.getIp(), tank.getId());
+        }
+        EventBus.getDefault().post(new SpawnEvent(tank.getIntValue(), tank.getPosition()));
+    }
+
+    public Tank getTank(Long tankId) {
+        return tanks.get(tankId);
+    }
+
+    public Tank getTank(String ip){
+        if (playersIP.containsKey(ip)){
+            return tanks.get(playersIP.get(ip));
+        }
+        return null;
+    }
+
+    public void removeTank(long tankId){
+        synchronized (tanks) {
+            Tank tank = tanks.remove(tankId);
+            if (tank != null) {
+                playersIP.remove(tank.getIp());
+            }
+        }
+    }
+
+    @Subscribe
+    public void removeTankEvent(Tank tank){
+        removeTank(tank.getId());
     }
 
     // --------------------------------- Miner ---------------------------------

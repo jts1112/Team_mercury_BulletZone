@@ -1,25 +1,28 @@
-package edu.unh.cs.cs619.bulletzone.model.events;
+package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public class TurnEvent extends GameEvent{
     @JsonProperty
     private int rawServerValue;
     @JsonProperty
-    private Direction oldDirection;
+    private String oldDirection;
     @JsonProperty
-    private Direction newDirection;
+    private String newDirection;
     @JsonProperty
     private int position;
 
     public TurnEvent() {}
 
-    public TurnEvent(int rawServerValue, Direction oldDir, Direction newDir, int pos) {
+    public TurnEvent(int rawServerValue, String oldDir, String newDir, int pos) {
         this.rawServerValue = rawServerValue;
         this.oldDirection = oldDir;
         this.newDirection = newDir;
         this.position = pos;
+    }
+
+    public void applyTo(int[][] board) {
+        board[position / 16][position % 16] = rawServerValue;
     }
 
     @Override

@@ -24,15 +24,13 @@ public class GridEventHandler {
     public void onUpdateGrid(GridUpdateEvent event) {
         int[][] gridData = event.gw.getGrid();
         int[][] terrainData = event.gw.getTerrainGrid();
-        Log.d("TerrainInfo", String.valueOf(terrainData[0][0]));
 
         if (gridModel != null) {
-//            gridModel.updateGrid(gridData); // TODO old
-            gridModel.updateGrid(gridData,terrainData);
+            gridModel.updateGrid(gridData, terrainData);
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
-            gridAdapter.setGridData(gridModel.getGrid(),terrainData);
+            gridAdapter.setGridData(gridModel.getGrid());
 
             // Log.d("grideventhandler", "new grid update ");
         }

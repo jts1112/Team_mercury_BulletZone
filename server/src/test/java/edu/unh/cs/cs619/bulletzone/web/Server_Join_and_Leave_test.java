@@ -18,14 +18,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestClientException;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.Dropship;
-import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
-import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**

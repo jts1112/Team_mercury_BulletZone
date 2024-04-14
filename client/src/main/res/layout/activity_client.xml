@@ -12,18 +12,27 @@
 
     <LinearLayout
         android:id="@+id/LinearLayoutDisplay"
-        android:layout_width="200dp"
+        android:layout_width="251dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/healthBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:max="100"
+            android:progress="0" />
 
         <GridView
             android:id="@+id/gridView"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
             android:layout_weight=".5"
+            android:background="#FFFFFF"
             android:numColumns="16"
-            tools:listitem="@layout/field_item"/>
+            tools:listitem="@layout/field_item" />
 
         <Button
             android:id="@+id/buttonTank"
@@ -113,8 +122,8 @@
             android:id="@+id/buttonLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:text="Leave" />
 
     </RelativeLayout>

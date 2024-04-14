@@ -2,14 +2,15 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 
 public class FireCommandTest {
     static Game game = new Game();

@@ -1,8 +1,12 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.commands;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 
 public class TurnCommand implements Command {
     private long playableEntityId;
-    private  Direction direction;
+    private Direction direction;
 
     /**
      * TurnCommand Constructor To initialize variables needed to execute

@@ -10,8 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.Dropship;
-import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class InMemoryGameRepositoryTest {

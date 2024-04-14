@@ -1,6 +1,8 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public abstract class PlayableEntity extends FieldEntity {
     protected long id;
