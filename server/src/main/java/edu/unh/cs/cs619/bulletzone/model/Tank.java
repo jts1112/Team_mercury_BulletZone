@@ -13,6 +13,7 @@ public class Tank extends FieldEntity {
     private int numberOfBullets;
     private int allowedNumberOfBullets;
     private int life;
+    private PowerUpComponent powerUp;
 
     private Direction direction;
 
@@ -26,6 +27,7 @@ public class Tank extends FieldEntity {
         allowedFireInterval = 1500;
         lastMoveTime = 0;
         allowedMoveInterval = 500;
+        powerUp = new ConcretePowerUpComponent();
     }
 
     @Override
@@ -129,4 +131,15 @@ public class Tank extends FieldEntity {
         return ip;
     }
 
+    public void pickupPowerUp(PowerUpType type) {
+        switch (type) {
+            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+        }
+    }
+
+    public PowerUpComponent dropPowerUp() {
+        PowerUpComponent temp = powerUp;
+
+    }
 }

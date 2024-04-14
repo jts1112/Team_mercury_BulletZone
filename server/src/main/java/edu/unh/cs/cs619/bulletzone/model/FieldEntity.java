@@ -10,7 +10,7 @@ public abstract class FieldEntity {
      * @return Integer representation of the current {@link edu.unh.cs.cs619.bulletzone.model.FieldEntity}
      */
     public abstract int getIntValue();
-
+ 
     public FieldHolder getParent() {
         return parent;
     }
