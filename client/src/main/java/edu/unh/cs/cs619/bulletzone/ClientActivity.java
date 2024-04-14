@@ -28,6 +28,9 @@ import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
 import edu.unh.cs.cs619.bulletzone.ui.GridModel;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+import kotlin.Unit;
+
 @SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
 public class ClientActivity extends Activity {
@@ -48,20 +51,21 @@ public class ClientActivity extends Activity {
     private GridModel gridModel;
     @ViewById
     protected ProgressBar healthBar;
-    /**
-     * Remote tank identifier
-     */
 
     /**
-     * Removed all unit ids in client activity to be used in actioncontroller
+     * Changed unitIds to a singleton which is passed to actioncontroller
+     * and imagemapper to distinguish between player and enemy units
      */
+    private UnitIds unitIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        gridModel = new GridModel();
+        // create instance of ids for gridmodel to use for distinguishing users entities
+        unitIds = UnitIds.getInstance();
+        gridModel = new GridModel(unitIds);
         mGridAdapter = new GridAdapter(this);
 
         GridView gridView = findViewById(R.id.gridView);
@@ -106,7 +110,7 @@ public class ClientActivity extends Activity {
     @AfterInject
     void afterInject() {
         // initialize actioncontroller
-        actionController.initialize(this);
+        actionController.initialize(this, unitIds);
     }
 
     @Background

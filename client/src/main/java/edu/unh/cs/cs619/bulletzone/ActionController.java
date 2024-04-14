@@ -40,7 +40,8 @@ public class ActionController {
     }
 
     // Method to initialize the ActionController with context
-    public void initialize(Context context) {
+    public void initialize(Context context, UnitIds ids) {
+        this.Ids = ids;
         restClient.setRestErrorHandler(bzRestErrorhandler);
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
@@ -55,9 +56,9 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids = new UnitIds(units.getResult(), units.getId1(), units.getId2());
+            Ids = UnitIds.getInstance();
+            Ids.setIds(units.getResult(), units.getId1(), units.getId2());
             currentUnitId = Ids.getDropshipId();
-            // Log.d("ActionController", "Dropship Id = " + Ids.getDropshipId());
             return currentUnitId;
         } catch (Exception ignored) {
         }

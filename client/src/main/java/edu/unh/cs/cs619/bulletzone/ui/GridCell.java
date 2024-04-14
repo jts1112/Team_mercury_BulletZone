@@ -56,6 +56,8 @@ public class GridCell {
                     this.entityRotation = 270; // 270 degrees for left
                     break;
             }
+        } else {
+            this.entityRotation = 0;
         }
     }
 }
