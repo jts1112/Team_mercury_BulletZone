@@ -77,7 +77,7 @@ public class MoveCommand implements Command {
         checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
         boolean isCompleted;
 
-        if (!nextField.isPresent()) {  // If nextField is empty
+        if (!nextField.isPresent() && (difficulty > 0)) {  // If nextField is empty
             int oldPos = entity.getPosition();
             FieldEntity parentEntity = parent.getEntity();
             if (parentEntity instanceof Dropship dropship) {
@@ -97,7 +97,7 @@ public class MoveCommand implements Command {
             EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
             isCompleted = true;
             // TODO remove difficulty
-            entity.setLastMoveTime(millis + (long)(entity.getAllowedMoveInterval()*difficulty));
+            entity.setLastMoveTime(millis + (long) (entity.getAllowedMoveInterval() * difficulty));
         } else {
             FieldEntity nextEntity = nextField.getEntity();
             if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship

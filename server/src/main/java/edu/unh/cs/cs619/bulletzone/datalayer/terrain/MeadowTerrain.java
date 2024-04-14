@@ -45,7 +45,7 @@ public class MeadowTerrain implements Terrain{
                 return 1;
             }
         }
-        return 1;
+        return -1;
     }
 
     @Override

@@ -69,8 +69,10 @@ public class GridAdapter extends BaseAdapter {
         holder.imageView.setImageResource(cell.getTerrainResourceID());
 
         // Set entity image on top of terrain
-        holder.imageView.setImageResource(cell.getEntityResourceID());
-        holder.imageView.setRotation(cell.getEntityRotation());
+        if (cell.getEntityResourceID() != 0 ) {
+            holder.imageView.setImageResource(cell.getEntityResourceID());
+            holder.imageView.setRotation(cell.getEntityRotation());
+        }
 
         return convertView;
     }

@@ -148,4 +148,14 @@ public class Dropship extends PlayableEntity {
     public void undockMiner(Miner miner) {
         dockedMiners.remove(miner);
     }
+
+    @Override
+    public Boolean isWheeled() {
+        return false;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return false;
+    }
 }

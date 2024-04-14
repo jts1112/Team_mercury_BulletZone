@@ -10,7 +10,7 @@ public class RockyTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
     public RockyTerrain(){
-
+        presentItem = 0;
     }
 
     public RockyTerrain(int presentItem){
@@ -48,7 +48,7 @@ public class RockyTerrain implements Terrain{
                 return 1.5;
             }
         }
-        return 1;
+        return -1;
     }
 
     @Override
