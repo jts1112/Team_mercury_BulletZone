@@ -106,15 +106,14 @@ public class ActionController {
         restClient.move(currentUnitId, direction);
     }
 
-    // Move and turn merged into one action for client side, server side differentiates turn/move
-//    @Background
-//    public void onButtonTurn(long tankId, byte direction) {
-//        restClient.turn(tankId, direction);
-//    }
 
     @Background
     public void onButtonFire() {
-        BooleanWrapper fired = restClient.fire(currentUnitId);
+        if (currentUnitId == Ids.getDropshipId()) {
+            BooleanWrapper fired = restClient.fire(currentUnitId, (byte) 3);
+        } else {
+            BooleanWrapper fired = restClient.fire(currentUnitId);
+        }
     }
 
     public void leave() {

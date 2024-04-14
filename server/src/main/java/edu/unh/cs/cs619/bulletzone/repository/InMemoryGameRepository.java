@@ -103,11 +103,6 @@ public class InMemoryGameRepository implements GameRepository {
             System.out.println("Moving entity: " + entityId);
             System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
 
-            if (playableEntity instanceof Dropship) {
-                System.out.println("Dropship move attempt blocked");
-                return false;
-            }
-
             MoveCommand moveCommand = new MoveCommand(entityId, direction);
             boolean moveResult = moveCommand.execute(playableEntity);
 
