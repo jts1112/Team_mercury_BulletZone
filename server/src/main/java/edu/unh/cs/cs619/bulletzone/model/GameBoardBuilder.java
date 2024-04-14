@@ -11,6 +11,7 @@ import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
