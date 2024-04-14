@@ -33,6 +33,7 @@ public class TitleScreenActivity extends AppCompatActivity {
     public Button accountButton;
     public Button inventoryButton;
     public Button storeButton;
+    public Button replayButton;
     public String devMsg = "Not Yet Implemented";
     public String loginMsg = "Please Sign in";
 
@@ -48,6 +49,7 @@ public class TitleScreenActivity extends AppCompatActivity {
         accountButton = findViewById(R.id.accountButton);
         inventoryButton = findViewById(R.id.inventoryButton);
         storeButton = findViewById(R.id.storeButton);
+        replayButton = findViewById(R.id.replayButton);
 
 
         playGameButton.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +77,13 @@ public class TitleScreenActivity extends AppCompatActivity {
         });
 
         storeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        replayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
