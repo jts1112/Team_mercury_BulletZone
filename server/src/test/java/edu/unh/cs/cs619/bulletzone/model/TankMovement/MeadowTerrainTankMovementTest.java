@@ -1,17 +1,21 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.TankMovement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Game;
+import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
-public class ForestTerrainTankMovementTest {
+public class MeadowTerrainTankMovementTest {
 
     static Game game = new Game();
     static Tank tank = new Tank(1, Direction.Up,"127.0.0.1");
@@ -26,22 +30,22 @@ public class ForestTerrainTankMovementTest {
     public void setup() {
         // Build empty board for testing
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,3).
-                setRowTerrain(1,3).
-                setRowTerrain(2,3).
-                setRowTerrain(3,3).
-                setRowTerrain(4,3).
-                setRowTerrain(5,3).
-                setRowTerrain(6,3).
-                setRowTerrain(7,3).
-                setRowTerrain(8,3).
-                setRowTerrain(9,3).
-                setRowTerrain(10,3).
-                setRowTerrain(11,3).
-                setRowTerrain(12,3).
-                setRowTerrain(13,3).
-                setRowTerrain(14,3).
-                setRowTerrain(15,3).
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,4).
+                setRowTerrain(1,4).
+                setRowTerrain(2,4).
+                setRowTerrain(3,4).
+                setRowTerrain(4,4).
+                setRowTerrain(5,4).
+                setRowTerrain(6,4).
+                setRowTerrain(7,4).
+                setRowTerrain(8,4).
+                setRowTerrain(9,4).
+                setRowTerrain(10,4).
+                setRowTerrain(11,4).
+                setRowTerrain(12,4).
+                setRowTerrain(13,4).
+                setRowTerrain(14,4).
+                setRowTerrain(15,4).
                 build());
 
 

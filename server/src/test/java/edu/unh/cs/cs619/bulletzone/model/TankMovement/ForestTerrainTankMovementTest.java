@@ -1,17 +1,21 @@
-package edu.unh.cs.cs619.bulletzone.model;
+package edu.unh.cs.cs619.bulletzone.model.TankMovement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.Game;
+import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
-public class MeadowTerrainTankMovementTest {
+public class ForestTerrainTankMovementTest {
 
     static Game game = new Game();
     static Tank tank = new Tank(1, Direction.Up,"127.0.0.1");
