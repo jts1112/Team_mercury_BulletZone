@@ -1,7 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
-public class Bullet extends FieldEntity {
+public class Bullet extends FieldEntity implements Vehicle{
 
     private long playableEntityId;
     private Direction direction;
@@ -58,5 +58,15 @@ public class Bullet extends FieldEntity {
 
     public int getBulletId(){
         return bulletId;
+    }
+
+    @Override
+    public Boolean isWheeled() {
+        return true;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Bullet;
@@ -94,6 +96,7 @@ public class FireCommand implements Command {
 
                     // Is the bullet visible on the field?
                     boolean isVisible;
+
                     isVisible = currentField.isPresent() && (currentField.getEntity() == bullet);
 
                     if (nextField.isPresent()) {
@@ -117,7 +120,7 @@ public class FireCommand implements Command {
                                 RemovalEvent removalEvent = new RemovalEvent(t.getPosition());
                                 EventBus.getDefault().post(removalEvent);
                             }
-                        } else if (nextField.getEntity() instanceof Wall w) {
+                        } else if (nextField.getEntity() instanceof Wall w ) {
                             // Check if the wall is destructible
                             if (w.getIntValue() > 1000 && w.getIntValue() <= 2000) {
                                 if (w.getLife() <= 0) {  // If 0 health
@@ -145,13 +148,26 @@ public class FireCommand implements Command {
                             currentField.clearField();
                         }
 
-                        int oldPos = bullet.getPosition();
-                        nextField.setFieldEntity(bullet);
-                        bullet.setParent(nextField);
-                        int newPos = bullet.getPosition();
-                        // Create new moveEvent
-                        MoveEvent moveEvent = new MoveEvent(bullet.getIntValue(), oldPos, newPos);
-                        EventBus.getDefault().post(moveEvent);
+//                        // bullets cant enter forest so destroy bullet.
+                        if (nextField.getTerrain().getDifficulty(bullet) < 0) {
+                            if (isVisible) {
+                                // Remove bullet from field
+                                currentField.clearField();
+                                RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
+                                EventBus.getDefault().post(removalEvent);
+                            }
+                            trackActiveBullets[bullet.getBulletId()]=0;
+                            playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
+                            cancel();
+                        } else {
+                            int oldPos = bullet.getPosition();
+                            nextField.setFieldEntity(bullet);
+                            bullet.setParent(nextField);
+                            int newPos = bullet.getPosition();
+                            // Create new moveEvent
+                            MoveEvent moveEvent = new MoveEvent(bullet.getIntValue(), oldPos, newPos);
+                            EventBus.getDefault().post(moveEvent);
+                        }
                     }
                 }
             }
@@ -159,4 +175,6 @@ public class FireCommand implements Command {
 
         return true;
     }
+
+
 }
