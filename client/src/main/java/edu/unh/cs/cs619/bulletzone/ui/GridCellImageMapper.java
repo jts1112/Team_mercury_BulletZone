@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -15,7 +16,7 @@ public class GridCellImageMapper {
 
     }
 
-    public int getImageResourceForCell(int cellValue) {
+    public int getImageResourceForCell(int cellValue, int terrainvalue) {
         int imageResource = R.drawable.grass_base1; // Default image resource
 
         // Map cell values to image resources
@@ -33,6 +34,19 @@ public class GridCellImageMapper {
                 imageResource = R.drawable.miner1;
             } else if (cellValue >= 30000000 && cellValue <= 40000000) {
                 imageResource = R.drawable.dropship1;
+            }
+        }
+        if (cellValue == 0) {
+            Log.d("TerrainValue", String.valueOf(terrainvalue));
+            if (terrainvalue >= 2000 && terrainvalue < 3000 ) { // rocky resource
+                imageResource = R.drawable.sandterrain1;
+            } else if (terrainvalue >= 3000 && terrainvalue < 4000) { // hills resource
+                imageResource = R.drawable.hills1;
+            } else if (terrainvalue >= 4000 && terrainvalue < 5000) { // forest resource
+                imageResource = R.drawable.forest1;
+            } else {
+                // else its a meadow terrain.
+                imageResource = R.drawable.grass_base1;
             }
         }
 

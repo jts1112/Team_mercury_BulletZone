@@ -1,16 +1,31 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import edu.unh.cs.cs619.bulletzone.R;
+
 public class GridCell {
     private int resourceID;
     private int rawValue;
     private int row;
     private int col;
 
+    private int terrainValue;
+
     public GridCell(int rawValue, int row, int col) {
         this.rawValue = rawValue;
         this.row = row;
         this.col = col;
         this.resourceID = getResourceIDForValue(rawValue);
+    }
+
+    public void setTerrainValue(int terrainValue) {
+        this.terrainValue = terrainValue;
+        if (rawValue == 0) {
+            resourceID = getResourceIDForValue(rawValue);
+        }
+    }
+
+    public int getTerrainValue() {
+        return terrainValue;
     }
 
     public int getResourceID() {
@@ -35,7 +50,7 @@ public class GridCell {
 
     private int getResourceIDForValue(int rawValue) {
         GridCellImageMapper map = new GridCellImageMapper();
-        return map.getImageResourceForCell(rawValue);
+        return map.getImageResourceForCell(rawValue,terrainValue); // TODO OLD
     }
 
     private int getRotationForValue(int rawValue) {

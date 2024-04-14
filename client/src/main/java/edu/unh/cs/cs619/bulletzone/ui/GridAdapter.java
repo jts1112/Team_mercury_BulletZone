@@ -16,8 +16,7 @@ public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private GridCell[][] gridData;
-
-    private int[][] Terrains;
+    private int[][] terrains;
     private GridCellImageMapper mapper;
 
     public GridAdapter(Context context) {
@@ -25,8 +24,9 @@ public class GridAdapter extends BaseAdapter {
         mapper = new GridCellImageMapper();
     }
 
-    public void setGridData(GridCell[][] gridData) {
+    public void setGridData(GridCell[][] gridData, int[][] terrainData) {
         this.gridData = gridData;
+        this.terrains = terrainData;
         notifyDataSetChanged();
     }
 
@@ -69,6 +69,8 @@ public class GridAdapter extends BaseAdapter {
         // Set the image resource to the ImageView
         holder.imageView.setImageResource(cell.getResourceID());
         holder.imageView.setRotation(cell.getRotation());
+
+
 
         return convertView;
     }

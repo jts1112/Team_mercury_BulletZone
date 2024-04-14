@@ -23,7 +23,7 @@ public class GridWrapper {
     }
 
     public void setTerrainGrid(int[][] Terraingrid){
-        this.terrainGrid = grid;
+        this.terrainGrid = Terraingrid;
     }
 
     public int[][] getTerrainGrid(){
