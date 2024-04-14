@@ -48,7 +48,7 @@ public class RockyTerrain implements Terrain{
                 return 1.5;
             }
         }
-        return 1;
+        return -1;
     }
 
     @Override

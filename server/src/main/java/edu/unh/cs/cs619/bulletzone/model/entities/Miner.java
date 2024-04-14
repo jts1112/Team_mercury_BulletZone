@@ -2,7 +2,7 @@ package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
-public class Miner extends PlayableEntity {
+public class Miner extends PlayableEntity{
     private static final int INITIAL_LIFE = 120;
     private static final int BULLET_DAMAGE = 15;
     private static final int FIRE_INTERVAL = 1500; // 1.5 secs
@@ -58,5 +58,15 @@ public class Miner extends PlayableEntity {
 
     public void setLastMineTime(int lastMineTime) {
         this.lastMineTime = lastMineTime;
+    }
+
+    @Override
+    public Boolean isWheeled() {
+        return true;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return false;
     }
 }

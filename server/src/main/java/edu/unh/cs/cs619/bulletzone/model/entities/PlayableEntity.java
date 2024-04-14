@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
-public abstract class PlayableEntity extends FieldEntity {
+public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected long id;
     protected long lastMoveTime;
     protected long lastFireTime;

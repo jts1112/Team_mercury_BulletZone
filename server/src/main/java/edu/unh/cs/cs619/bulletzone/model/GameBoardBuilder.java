@@ -86,6 +86,28 @@ public class GameBoardBuilder {
     }
 
     /**
+     * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
+     * @param rowNumber
+     * @param terrainType
+     */
+    public GameBoardBuilder setRowTerrain(int rowNumber,int terrainType){
+
+        for (int i = 0 ; i<fieldDimension;i++){
+            int index = rowNumber * fieldDimension + i;
+            if (terrainType == 1) { // rocky terrain
+                setRockyTerrain(index);
+            } else if (terrainType == 2) { // hilly terrain
+                setHillsTerrain(index);
+            } else if (terrainType == 3){ // forest terrain
+                setForestTerrain(index);
+            } else { // meadow
+                setMeadowTerrain(index);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Game board CreateFieldHolderGrid that was originally in InMemoryGameRepository
      * Creates the fieldholderGrid with the specified dimensions
      *
@@ -176,7 +198,25 @@ public class GameBoardBuilder {
                 setWall(25).
                 setWall(41).
                 setWall(57).
-                setWall(73);
+                setWall(73).
+                setRowTerrain(0,4).
+                setRowTerrain(1,4).
+                setRowTerrain(2,4).
+                setRowTerrain(3,4).
+                setRowTerrain(4,4).
+                setRowTerrain(5,4).
+                setRowTerrain(6,4).
+                setRowTerrain(7,4). // end of setting meadow terrain
+                setRowTerrain(8,1).
+                setRowTerrain(9,1).
+                setRowTerrain(10,1).
+                setRowTerrain(11,1).
+                setRowTerrain(12,1).
+                setRowTerrain(13,1).
+                setRowTerrain(14,3).
+                setRowTerrain(15,3).// end of setting Rocky Terrain
+                setForestTerrain(66).
+                setForestTerrain(67).setForestTerrain(68);
 
         fieldHolderGrid = newBoard.build();
         return this;

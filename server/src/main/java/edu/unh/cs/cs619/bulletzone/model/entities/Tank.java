@@ -48,4 +48,14 @@ public class Tank extends PlayableEntity {
     public int getIntValue() {
         return (int) (10_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
+
+    @Override
+    public Boolean isWheeled() {
+        return false;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return true;
+    }
 }
