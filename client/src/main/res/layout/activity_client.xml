@@ -115,7 +115,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/buttonFire"
             android:layout_centerHorizontal="true"
-            android:text="MINE" />
+            android:text="MINE"
+            android:visibility="gone"/>
 
 
         <Button
