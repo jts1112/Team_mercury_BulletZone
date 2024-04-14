@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,28 +21,15 @@ import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.util.LogUtil;
 
 @Component
 public class InMemoryGameRepository implements GameRepository {
 
-    /**
-     * Field dimensions
-     */
     private static final int FIELD_DIM = 16;
-
-    /**
-     * Bullet step time in milliseconds
-     */
     private static final int BULLET_PERIOD = 200;
-
-    /**
-     * Bullet's impact effect [life]
-     */
     private static final int BULLET_DAMAGE = 1;
 
-    /**
-     * Tank's default life [life]
-     */
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
@@ -48,6 +37,9 @@ public class InMemoryGameRepository implements GameRepository {
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
+
+    private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
+
 
     /**
      * Generates a new tank to join the game.
@@ -227,7 +219,8 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
-    private FieldHolder findFreeSpace(FieldHolder startingPoint) {
+    public FieldHolder findFreeSpace(FieldHolder startingPoint) {
+        boolean infoLog = false;
         int startIndex = game.getGameBoard().getBoard().indexOf(startingPoint);
         int x = startIndex % FIELD_DIM;
         int y = startIndex / FIELD_DIM;
@@ -235,23 +228,33 @@ public class InMemoryGameRepository implements GameRepository {
         int dy = -1;
         int maxSteps = 2 * (FIELD_DIM - 1);
 
+        LogUtil.log(log, infoLog, "Starting point: {}, Start index: {}, Start coordinates: ({}, {}), Max steps: {}",
+                startingPoint, startIndex, x, y, maxSteps);
+
         for (int i = 0; i < maxSteps; i++) {
+            LogUtil.log(log, infoLog, "Step: {}, Current coordinates: ({}, {})", i, x, y);
+
             if (0 <= x && x < FIELD_DIM && 0 <= y && y < FIELD_DIM) {
                 FieldHolder currentField = game.getGameBoard().getBoard().get(y * FIELD_DIM + x);
+                LogUtil.log(log, infoLog, "Current field: {}", currentField);
+
                 if (!currentField.isPresent()) {
+                    LogUtil.log(log, infoLog, "Free space found: {}", currentField);
                     return currentField;
                 }
-            }
-
-            if (x == (startIndex % FIELD_DIM) + dx && y == (startIndex / FIELD_DIM) + dy) {
+            } else {
+                log.warn("Out of bounds: ({}, {})", x, y);
                 int temp = dx;
                 dx = -dy;
                 dy = temp;
+                LogUtil.log(log, infoLog, "Direction changed: dx={}, dy={}", dx, dy);
             }
+
             x += dx;
             y += dy;
         }
 
+        LogUtil.log(log, infoLog, "No free space found");
         return null;
     }
 

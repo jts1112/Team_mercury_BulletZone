@@ -1,5 +1,9 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import edu.unh.cs.cs619.bulletzone.model.Game;
+import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,8 +16,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 
+import static org.junit.Assert.*;
+
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class InMemoryGameRepositoryTest {
+    private static final int FIELD_DIM = 16;
+
+
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -27,11 +36,11 @@ public class InMemoryGameRepositoryTest {
     @Test
     public void testJoin() throws Exception {
         Dropship dropship = repo.join("");
-        Assert.assertNotNull(dropship);
+        assertNotNull(dropship);
         Assert.assertTrue(dropship.getId() >= 0);
-        Assert.assertNotNull(dropship.getDirection());
+        assertNotNull(dropship.getDirection());
         Assert.assertTrue(dropship.getDirection() == Direction.Up);
-        Assert.assertNotNull(dropship.getParent());
+        assertNotNull(dropship.getParent());
     }
     /*
     @Test
@@ -65,4 +74,31 @@ public class InMemoryGameRepositoryTest {
     public void testLeave() throws Exception {
 
     }
+
+//    @Test
+//    public void testFindFreeSpace() {
+//        Game game = new Game();
+//        Object monitor = new Object();
+//        game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM, monitor).inMemoryGameReposiryInitialize().build());
+//
+//        FieldHolder startingPoint = game.getGameBoard().getBoard().get(FIELD_DIM / 2 * FIELD_DIM + FIELD_DIM / 2);
+//
+//        FieldHolder freeSpace = findFreeSpace(startingPoint);
+//        assertNotNull(freeSpace);
+//        assertFalse(freeSpace.isPresent());
+//
+//        int startIndex = game.getGameBoard().getBoard().indexOf(startingPoint);
+//        int x = startIndex % FIELD_DIM;
+//        int y = startIndex / FIELD_DIM;
+//        for (int i = -1; i <= 1; i++) {
+//            for (int j = -1; j <= 1; j++) {
+//                int index = (y + i) * FIELD_DIM + (x + j);
+//                if (index >= 0 && index < game.getGameBoard().getBoard().size()) {
+//                    game.getGameBoard().getBoard().get(index).setFieldEntity(new Tank(1L, Direction.Up, ""));
+//                }
+//            }
+//        }
+//        freeSpace = findFreeSpace(startingPoint);
+//        assertNull(freeSpace);
+//    }
 }
