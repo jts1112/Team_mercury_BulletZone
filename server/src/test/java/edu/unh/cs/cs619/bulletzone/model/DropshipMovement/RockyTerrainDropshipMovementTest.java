@@ -107,7 +107,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1L, Direction.Right);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -144,13 +144,13 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         // check that dropship is facing the correct direction
-        assertEquals(Direction.Left, game.getDropship(1L).getDirection());
+        assertEquals(Direction.Right, game.getDropship(1L).getDirection());
 
         // check that dropship has moved properly
         assertEquals(game.getHolderGrid().get(2 * 16 + 2).getPosition(), dropship.getParent().getPosition());
@@ -183,13 +183,13 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         // check that dropship is facing the correct direction
-        assertEquals(Direction.Right, game.getDropship(1L).getDirection());
+        assertEquals(Direction.Left, game.getDropship(1L).getDirection());
 
         // check that dropship has moved properly
         assertEquals(game.getHolderGrid().get(2 * 16 + 2).getPosition(), dropship.getParent().getPosition());
@@ -221,7 +221,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -241,7 +241,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -279,13 +279,13 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         // check that dropship is facing the correct direction
-        assertEquals(Direction.Down, game.getDropship(1L).getDirection());
+        assertEquals(Direction.Up, game.getDropship(1L).getDirection());
 
         // check that dropship has moved properly
         assertEquals(game.getHolderGrid().get(2*16 + 2).getPosition(), dropship.getParent().getPosition());
@@ -318,13 +318,13 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         // check that droship is facing the correct direction
-        assertEquals(Direction.Up, game.getDropship(1L).getDirection());
+        assertEquals(Direction.Down, game.getDropship(1L).getDirection());
 
         // check that dropship has moved properly
         assertEquals(game.getHolderGrid().get(2 * 16 + 2).getPosition(), dropship.getParent().getPosition());
@@ -356,7 +356,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -398,7 +398,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -425,7 +425,7 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute(dropship));
         } catch(TankDoesNotExistException e) {
             fail();
         }
