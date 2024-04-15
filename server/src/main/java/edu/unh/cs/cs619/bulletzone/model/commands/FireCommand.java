@@ -24,7 +24,8 @@ public class FireCommand implements Command {
     private final int[] trackActiveBullets = {0, 0};
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
-    private final Object monitor; // possibly needed
+    private final Object monitor;
+    private Bullet activeBullet;
 
     /**
      * Fire Command Method that initializes values needed for execution.
@@ -77,7 +78,19 @@ public class FireCommand implements Command {
             trackActiveBullets[1] = 1;
         }
 
+        if (activeBullet != null) {
+            FieldHolder currentField = activeBullet.getParent();
+            if (currentField.isPresent() && currentField.getEntity() == activeBullet) {
+                currentField.clearField();
+                RemovalEvent removalEvent = new RemovalEvent(activeBullet.getPosition());
+                EventBus.getDefault().post(removalEvent);
+            }
+            activeBullet = null;
+        }
+
         final Bullet bullet = new Bullet(playableEntityId, direction, bulletDamage[bulletType-1]);
+        activeBullet = bullet;
+
         // Set the same parent for the bullet.
         // This should be only a one way reference.
         bullet.setParent(parent);
@@ -101,33 +114,34 @@ public class FireCommand implements Command {
 
                     if (nextField.isPresent()) {
                         // Something is there, hit it
-                        FieldEntity entity = nextField.getEntity();
+                        FieldEntity nextEntity = nextField.getEntity();
                         int damageAmount = bullet.getDamage();
-                        entity.hit(damageAmount);
+                        nextEntity.hit(damageAmount);
 
                         // Create new damageEvent
-                        int position = entity.getPosition();
-                        DamageEvent damageEvent = new DamageEvent(position, entity.getIntValue());
+                        int position = nextEntity.getPosition();
+                        DamageEvent damageEvent = new DamageEvent(position, nextEntity.getIntValue());
                         EventBus.getDefault().post(damageEvent);
 
-                        if (nextField.getEntity() instanceof Tank t){
-                            System.out.println("tank is hit, tank life: " + t.getLife());
-                            if (t.getLife() <= 0 ){
-                                t.getParent().clearField();
-                                t.setParent(null);
+                        if (nextField.getEntity() instanceof PlayableEntity playableEntity) {
+                            System.out.println(playableEntity.getClass().getSimpleName()
+                                    + " is hit, life: " + playableEntity.getLife());
+                            if (playableEntity.getLife() <= 0) {
+                                playableEntity.getParent().clearField();
+                                playableEntity.setParent(null);
 
                                 // Create new removalEvent
-                                RemovalEvent removalEvent = new RemovalEvent(t.getPosition());
+                                RemovalEvent removalEvent = new RemovalEvent(playableEntity.getPosition());
                                 EventBus.getDefault().post(removalEvent);
                             }
-                        } else if (nextField.getEntity() instanceof Wall w ) {
+                        } else if (nextField.getEntity() instanceof Wall wall) {
                             // Check if the wall is destructible
-                            if (w.getIntValue() > 1000 && w.getIntValue() <= 2000) {
-                                if (w.getLife() <= 0) {  // If 0 health
-                                    w.getParent().clearField();
+                            if (wall.getIntValue() > 1000 && wall.getIntValue() <= 2000) {
+                                if (wall.getLife() <= 0) {  // If 0 health
+                                    wall.getParent().clearField();
 
                                     // Create new RemovalEvent
-                                    RemovalEvent removalEvent = new RemovalEvent(w.getPos());
+                                    RemovalEvent removalEvent = new RemovalEvent(wall.getPos());
                                     EventBus.getDefault().post(removalEvent);
                                 }
                             }
@@ -140,6 +154,7 @@ public class FireCommand implements Command {
                         }
                         trackActiveBullets[bullet.getBulletId()]=0;
                         playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
+                        activeBullet = null;
                         cancel();
 
                     } else {  // Nothing is there, move bullet along
@@ -147,8 +162,7 @@ public class FireCommand implements Command {
                             // Remove bullet from field
                             currentField.clearField();
                         }
-
-//                        // bullets cant enter forest so destroy bullet.
+                        // bullets cant enter forest so destroy bullet.
                         if (nextField.getTerrain().getDifficulty(bullet) < 0) {
                             if (isVisible) {
                                 // Remove bullet from field
@@ -158,6 +172,7 @@ public class FireCommand implements Command {
                             }
                             trackActiveBullets[bullet.getBulletId()]=0;
                             playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
+                            activeBullet = null;
                             cancel();
                         } else {
                             int oldPos = bullet.getPosition();

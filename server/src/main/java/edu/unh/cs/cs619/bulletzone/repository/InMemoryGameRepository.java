@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
@@ -143,12 +144,24 @@ public class InMemoryGameRepository implements GameRepository {
         }
         synchronized (this.monitor) {
             this.game = new Game();
-//            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
-            //TODO added
-//            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-//            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// change back to this  before the createFeildHolderGrid
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
+            startRepairTimer();
         }
+    }
+
+    private void startRepairTimer() {
+        Timer repairTimer = new Timer();
+        repairTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    for (Dropship dropship : game.getDropships().values()) {
+                        dropship.repairUnits();
+                        int repairedLife = Math.min(dropship.getLife() + 1, 300);
+                        dropship.setLife(repairedLife);
+                    }
+                }
+            }
+        }, 0, 1000);
     }
 
 
@@ -252,5 +265,7 @@ public class InMemoryGameRepository implements GameRepository {
         LogUtil.log(log, infoLog, "No free space found");
         return null;
     }
+
+
 
 }

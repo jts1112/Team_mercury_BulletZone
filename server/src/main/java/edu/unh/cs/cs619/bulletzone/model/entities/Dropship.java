@@ -97,10 +97,9 @@ public class Dropship extends PlayableEntity {
                 tank.setLife(repairedLife);
             }
         }
-        if (currentTime - lastRepairTime >= 1000) {
-            life = Math.min(life + 1, INITIAL_LIFE);
-            lastRepairTime = currentTime;
-        }
+
+        life = Math.min(life + 1, INITIAL_LIFE);
+        lastRepairTime = currentTime;
     }
 
     public int getNumMiners() {
