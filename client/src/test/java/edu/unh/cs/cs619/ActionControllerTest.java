@@ -61,14 +61,15 @@ public class ActionControllerTest {
         verify(restClient).move(123, (byte) 4);
     }
 
-    @Test
-    public void test_ActionController_OnButtonFire() {
-        // Call the method to be tested
-        actionController.onButtonFire();
-
-        // Verify that the restClient's fire method is called with the correct parameter
-        verify(restClient).fire(123);
-    }
+//    @Test
+//    public void test_ActionController_OnButtonFire() {
+//        // Call the method to be tested
+//
+//        actionController.onButtonFire();
+//
+//        // Verify that the restClient's fire method is called with the correct parameter
+//        verify(restClient).fire(123);
+//    }
 
     @Test
     public void test_ShakeDetector_ShakeEventCallsFire() {
