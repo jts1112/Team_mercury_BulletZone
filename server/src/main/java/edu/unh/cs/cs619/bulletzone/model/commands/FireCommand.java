@@ -20,11 +20,9 @@ public class FireCommand implements Command {
     private int bulletType;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
-    private final int[] trackActiveBullets = {0, 0};
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final Object monitor;
-    private Bullet activeBullet;
 
     /**
      * Fire Command Method that initializes values needed for execution.
@@ -43,14 +41,10 @@ public class FireCommand implements Command {
      * @throws TankDoesNotExistException If the entity does not exist
      */
     public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
-
         // Find tank
         if (playableEntity == null) {
             throw new TankDoesNotExistException(playableEntityId);
         }
-
-        if(playableEntity.getNumberOfBullets() >= playableEntity.getAllowedNumberOfBullets())
-            return false;
 
         long milliseconds = System.currentTimeMillis();
         if(milliseconds < playableEntity.getLastFireTime()/*>tank.getAllowedFireInterval()*/) {
@@ -59,49 +53,34 @@ public class FireCommand implements Command {
 
         Direction direction = playableEntity.getDirection();
         FieldHolder parent = playableEntity.getParent();
-        playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets() + 1);
 
-        if(!(bulletType>=1 && bulletType<=3)) {
+        if (!(bulletType>=1 && bulletType<=3)) {
             System.out.println("Bullet type must be 1, 2 or 3, set to 1 by default.");
             bulletType = 1;
         }
 
         playableEntity.setLastFireTime(milliseconds + bulletDelay[bulletType - 1]);
 
-        int bulletId=0;
-        if(trackActiveBullets[0]==0){
-            bulletId = 0;
-            trackActiveBullets[0] = 1;
-        }else if(trackActiveBullets[1]==0){
-            bulletId = 1;
-            trackActiveBullets[1] = 1;
-        }
-
-        if (activeBullet != null) {
-            FieldHolder currentField = activeBullet.getParent();
-            if (currentField.isPresent() && currentField.getEntity() == activeBullet) {
-                currentField.clearField();
-                RemovalEvent removalEvent = new RemovalEvent(activeBullet.getPosition());
-                EventBus.getDefault().post(removalEvent);
-            }
-            activeBullet = null;
-        }
-
         final Bullet bullet = new Bullet(playableEntityId, direction, bulletDamage[bulletType-1]);
-        activeBullet = bullet;
 
         // Set the same parent for the bullet.
         // This should be only a one way reference.
         bullet.setParent(parent);
-        bullet.setBulletId(bulletId);
+        bullet.setBulletId(1);
         EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
+
+        playableEntity.addBullet(bullet);
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 synchronized (monitor) {
+                    if (!playableEntity.getBullets().contains(bullet)) {
+                        cancel();
+                        return;
+                    }
                     System.out.println("Active Bullet: " + playableEntity.getNumberOfBullets() +
-                            "---- Bullet ID: "+bullet.getIntValue());
+                            "---- Bullet ID: " + bullet.getIntValue());
                     FieldHolder currentField = bullet.getParent();
                     Direction direction = bullet.getDirection();
                     FieldHolder nextField = currentField.getNeighbor(direction);
@@ -151,9 +130,7 @@ public class FireCommand implements Command {
                             RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
                             EventBus.getDefault().post(removalEvent);
                         }
-                        trackActiveBullets[bullet.getBulletId()] = 0;
-                        playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
-                        activeBullet = null;
+                        playableEntity.removeBullet(bullet);
                         cancel();
 
                     } else {  // Nothing is there, move bullet along
@@ -169,9 +146,7 @@ public class FireCommand implements Command {
                                 RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
                                 EventBus.getDefault().post(removalEvent);
                             }
-                            trackActiveBullets[bullet.getBulletId()]=0;
-                            playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
-                            activeBullet = null;
+                            playableEntity.removeBullet(bullet);
                             cancel();
                         } else {
                             int oldPos = bullet.getPosition();
@@ -189,6 +164,5 @@ public class FireCommand implements Command {
 
         return true;
     }
-
 
 }

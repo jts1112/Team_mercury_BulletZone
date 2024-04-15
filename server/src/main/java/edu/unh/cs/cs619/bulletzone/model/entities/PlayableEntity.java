@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 
 public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected long id;
@@ -19,7 +23,55 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected String ip;
     protected Direction direction;
 
-    // Getters and Setters
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
+
+    public void setBulletDamage(int bulletDamage) {
+        this.bulletDamage = bulletDamage;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(List<Bullet> bullets) {
+        this.bullets = bullets;
+    }
+
+    public void removeBullet(Bullet bullet) {
+        if (bullets.remove(bullet)) {
+            numberOfBullets = Math.max(0, numberOfBullets - 1);
+        }
+    }
+
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+        numberOfBullets++;
+        System.out.println("Num bullets: " + numberOfBullets + " allowed: " + allowedNumberOfBullets);
+        if (numberOfBullets > allowedNumberOfBullets) {
+            System.out.println("Num bullets: " + numberOfBullets + " allowed: " + allowedNumberOfBullets);
+            Bullet oldestBullet = bullets.remove(0);
+            FieldHolder currentField = oldestBullet.getParent();
+            if (currentField.isPresent() && currentField.getEntity() == oldestBullet) {
+                currentField.clearField();
+                RemovalEvent removalEvent = new RemovalEvent(oldestBullet.getPosition());
+                EventBus.getDefault().post(removalEvent);
+            }
+            numberOfBullets--;
+        }
+    }
+
+    protected List<Bullet> bullets = new ArrayList<>();
+
     public long getLastMoveTime() {
         return lastMoveTime;
     }
@@ -54,10 +106,6 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
     public int getNumberOfBullets() {
         return numberOfBullets;
-    }
-
-    public void setNumberOfBullets(int numberOfBullets) {
-        this.numberOfBullets = numberOfBullets;
     }
 
     public int getAllowedNumberOfBullets() {
