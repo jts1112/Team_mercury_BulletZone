@@ -47,12 +47,6 @@ public class Dropship extends PlayableEntity {
         return new Dropship(id, direction, ip);
     }
 
-    @Override
-    public void hit(int damage) {
-        life -= damage;
-        System.out.println("Dropship life: " + id + " : " + life);
-    }
-
     public boolean fire() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFireTime >= FIRE_INTERVAL) {
@@ -90,12 +84,14 @@ public class Dropship extends PlayableEntity {
                 int repairedLife = Math.min(miner.getLife() + 2, 120);
                 miner.setLife(repairedLife);
             }
+            System.out.println("Miner " + miner.getId() + " health: " + miner.getLife());
         }
         for (Tank tank : dockedTanks) {
             if (tank != null) {
                 int repairedLife = Math.min(tank.getLife() + 2, 100);
                 tank.setLife(repairedLife);
             }
+            System.out.println("Tank " + tank.getId() + " health: " + tank.getLife());
         }
 
         life = Math.min(life + 1, INITIAL_LIFE);
