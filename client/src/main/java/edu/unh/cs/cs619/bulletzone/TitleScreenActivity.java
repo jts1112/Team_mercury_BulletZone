@@ -48,7 +48,7 @@ public class TitleScreenActivity extends AppCompatActivity {
         accountButton = findViewById(R.id.accountButton);
         inventoryButton = findViewById(R.id.inventoryButton);
         storeButton = findViewById(R.id.storeButton);
-//        replayButton = findViewById(R.id.replayButton);
+        replayButton = findViewById(R.id.replayButton);
 
         playGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
