@@ -40,7 +40,8 @@ public class ActionController {
     }
 
     // Method to initialize the ActionController with context
-    public void initialize(Context context) {
+    public void initialize(Context context, UnitIds ids) {
+        this.Ids = ids;
         restClient.setRestErrorHandler(bzRestErrorhandler);
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
@@ -55,9 +56,9 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids = new UnitIds(units.getResult(), units.getId1(), units.getId2());
+            Ids = UnitIds.getInstance();
+            Ids.setIds(units.getResult(), units.getId1(), units.getId2());
             currentUnitId = Ids.getDropshipId();
-            // Log.d("ActionController", "Dropship Id = " + Ids.getDropshipId());
             return currentUnitId;
         } catch (Exception ignored) {
         }
@@ -105,15 +106,14 @@ public class ActionController {
         restClient.move(currentUnitId, direction);
     }
 
-    // Move and turn merged into one action for client side, server side differentiates turn/move
-//    @Background
-//    public void onButtonTurn(long tankId, byte direction) {
-//        restClient.turn(tankId, direction);
-//    }
 
     @Background
     public void onButtonFire() {
-        BooleanWrapper fired = restClient.fire(currentUnitId);
+        if (currentUnitId == Ids.getDropshipId()) {
+            BooleanWrapper fired = restClient.fire(currentUnitId, (byte) 3);
+        } else {
+            BooleanWrapper fired = restClient.fire(currentUnitId);
+        }
     }
 
     public void leave() {

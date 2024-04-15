@@ -56,7 +56,8 @@ public class MoveCommand implements Command {
         }
 
         int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
-        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)) {
+        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)
+        || entity instanceof Dropship) {
             // Set new direction
             entity.setDirection(desiredDirection);
 

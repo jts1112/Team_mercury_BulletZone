@@ -1,12 +1,14 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+
 public class GridModel {
     private GridCell[][] grid;
     private int[][] rawData;
     private GridCellImageMapper mapper;
 
-    public GridModel() {
-        mapper = new GridCellImageMapper();
+    public GridModel(UnitIds ids) {
+        mapper = new GridCellImageMapper(ids);
     }
 
     public void updateGrid(int[][] newData, int[][] newTerrainData) {

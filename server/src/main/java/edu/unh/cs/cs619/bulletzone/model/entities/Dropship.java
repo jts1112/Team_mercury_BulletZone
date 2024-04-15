@@ -10,7 +10,7 @@ public class Dropship extends PlayableEntity {
     private static final int BULLET_DAMAGE = 50;
     private static final int FIRE_INTERVAL = 2000;
     private static final int ALLOWED_NUM_BULLETS = 1;
-    private static final int MOVE_INTERVAL = -1;
+    private static final int MOVE_INTERVAL = 500;
 
     private int numMiners;
     private int numTanks;

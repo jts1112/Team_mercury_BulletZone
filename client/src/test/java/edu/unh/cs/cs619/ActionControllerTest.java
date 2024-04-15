@@ -75,7 +75,8 @@ public class ActionControllerTest {
         // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
         ActionController mockActionController = mock(ActionController.class);
-        mockActionController.initialize(mockContext);
+        UnitIds mockUnitIds = mock(UnitIds.class);
+        mockActionController.initialize(mockContext, mockUnitIds);
         mockActionController.setCurrentUnitId(123);
 
         // Create a mock SensorManager
