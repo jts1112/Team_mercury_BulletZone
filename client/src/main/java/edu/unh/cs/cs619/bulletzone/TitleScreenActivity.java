@@ -29,8 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 public class TitleScreenActivity extends AppCompatActivity {
 
     public Button playGameButton;
-    // Doubles as sign in button for logged out players
-    public Button accountButton;
+    public Button accountButton;     // Doubles as sign in button for logged out players
     public Button inventoryButton;
     public Button storeButton;
     public String devMsg = "Not Yet Implemented";
@@ -80,6 +79,18 @@ public class TitleScreenActivity extends AppCompatActivity {
                 Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
             }
         });
+<<<<<<< HEAD
+=======
+
+        replayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TitleScreenActivity.this,
+                        ReplayActivity.class);
+                startActivity(intent);
+            }
+        });
+>>>>>>> 38645b5 (Finished UI for Replay Activity and hooked it up to title screen activity.)
     }
 
     @Override
