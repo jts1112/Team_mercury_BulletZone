@@ -13,6 +13,8 @@ import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Optional;
+
 import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
 public class MoveCommand implements Command {
@@ -99,7 +101,10 @@ public class MoveCommand implements Command {
             // TODO remove difficulty
             entity.setLastMoveTime(millis + (long) (entity.getAllowedMoveInterval() * difficulty));
         } else {
-            FieldEntity nextEntity = nextField.getEntity();
+            FieldEntity nextEntity = nextField.getEntity(); // TODO OLD
+
+
+
             if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship
                 parent.clearField();
                 if (entity instanceof Tank tank) {
