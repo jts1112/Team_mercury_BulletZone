@@ -32,7 +32,6 @@ public class DamageEvent extends GameEvent {
         int row = position / 16;
         int col = position % 16;
         board[row][col] = rawServerValue;
-        Log.d("DamageEvent", "server val = " + rawServerValue);
         if (rawServerValue >= 10000000 && rawServerValue <= 20000000) {
             gameData.setTankLife(rawServerValue);
         } else if (rawServerValue >= 20000000 && rawServerValue <= 30000000) {

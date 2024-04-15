@@ -1,10 +1,13 @@
 package edu.unh.cs.cs619;
 
+import static org.mockito.Mockito.mock;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.unh.cs.cs619.bulletzone.events.DamageEvent;
+import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.MoveEvent;
 import edu.unh.cs.cs619.bulletzone.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.events.SpawnEvent;
@@ -12,11 +15,13 @@ import edu.unh.cs.cs619.bulletzone.events.SpawnEvent;
 
 public class BoardUpdateEventTest {
     private int[][] testBoard;
+    GameData gameData;
     private final int BOARD_SIZE = 16;
 
     @Before
     public void setup() {
         testBoard = new int[BOARD_SIZE][BOARD_SIZE];
+        gameData = mock(GameData.class);
     }
 
     @Test
@@ -28,8 +33,8 @@ public class BoardUpdateEventTest {
         int position = row * 16 + col;
         testBoard[row][col] = wallValue;
 
-        RemovalEvent removalEvent = new RemovalEvent(position);
-        removalEvent.applyTo(testBoard, null);
+
+        new RemovalEvent(5 * 16 + 5).applyTo(testBoard, gameData);
 
         Assert.assertEquals("Position should be empty after removal", 0, testBoard[row][col]);
     }
@@ -43,7 +48,8 @@ public class BoardUpdateEventTest {
 
         int damage = 200;
         int rawServerValue = 1000 + (initialHealth - damage);
-        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard, null);
+
+        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard, gameData);
 
         Assert.assertEquals("Wall's health should be reduced by 200", rawServerValue, testBoard[7][7]);
     }
@@ -54,7 +60,8 @@ public class BoardUpdateEventTest {
         int tankPosition = 3 * 16 + 3;
         int tankValue = 10000000 + 2220072;
 
-        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard, null);
+
+        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard, gameData);
 
         Assert.assertEquals("Tank should be spawned at position", tankValue, testBoard[3][3]);
     }
@@ -67,7 +74,8 @@ public class BoardUpdateEventTest {
 
         testBoard[2][2] = tankValue;
 
-        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard, null);
+
+        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard, gameData);
 
         Assert.assertEquals("Old position should be empty after move", 0, testBoard[2][2]);
         Assert.assertEquals("New position should contain tank after move", tankValue, testBoard[3][3]);
