@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -23,6 +24,8 @@ import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.BackgroundExecutor;
 
+import edu.unh.cs.cs619.bulletzone.events.GameData;
+import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
@@ -33,7 +36,7 @@ import kotlin.Unit;
 
 @SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
-public class ClientActivity extends Activity {
+public class ClientActivity extends Activity implements GameDataObserver {
 
 //    private static final String TAG = "ClientActivity";
     @Bean
@@ -49,8 +52,7 @@ public class ClientActivity extends Activity {
     @Bean
     protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
-    @ViewById
-    protected ProgressBar healthBar;
+    protected GameData gameData;
 
     /**
      * Changed unitIds to a singleton which is passed to actioncontroller
@@ -68,17 +70,21 @@ public class ClientActivity extends Activity {
         gridModel = new GridModel(unitIds);
         mGridAdapter = new GridAdapter(this);
 
+        gameData = new GameData(unitIds);
+
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
 
         // Initialize gridEventHandler after gridModel initialization
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
+        gameData.registerObserver(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         gridEventHandler.unregister();
+        gameData.unregisterObserver(this);
     }
 
     /**
@@ -121,16 +127,13 @@ public class ClientActivity extends Activity {
         } catch (Exception ignored) { }
     }
 
-//    public void updateGrid(GridWrapper gw) {
-//        mGridAdapter.updateList(gw.getGrid());
-//    }
-
     @SuppressLint("NonConstantResourceId")
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
             eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setGameData(gameData);
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -205,6 +208,33 @@ public class ClientActivity extends Activity {
             buttonRight.setVisibility(View.VISIBLE);
             buttonFire.setVisibility(View.VISIBLE);
         }
+    }
+
+    // Method to update tank life value in TextView
+    @Override
+    public void onTankLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView tankLife = findViewById(R.id.textViewTankLife);
+            tankLife.setText("Tank Armor: " + life);
+        });
+    }
+
+    // Method to update miner life value in TextView
+    @Override
+    public void onMinerLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView minerLife = findViewById(R.id.textViewMinerLife);
+            minerLife.setText("Miner Armor: " + life);
+        });
+    }
+
+    // Method to update dropship life value in TextView
+    @Override
+    public void onDropshipLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewDropshipLife);
+            dropshipLife.setText("Dropship Armor: " + life);
+        });
     }
 
     @SuppressLint("NonConstantResourceId")

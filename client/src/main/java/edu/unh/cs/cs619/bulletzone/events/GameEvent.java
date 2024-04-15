@@ -10,7 +10,7 @@ import java.util.Comparator;
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "move", value = MoveEvent.class),
         @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class),
-        @JsonSubTypes.Type(name = "delete", value = DamageEvent.class),
+        @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
         @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
 })
@@ -47,7 +47,7 @@ public abstract class GameEvent {
         return e1Time.compareTo(e2Time);
     };
 
-    abstract void applyTo(int [][]board);
+    abstract void applyTo(int [][]board, GameData gameData);
 
     @Override
     public String toString() {
