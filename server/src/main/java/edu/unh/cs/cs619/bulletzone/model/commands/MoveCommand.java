@@ -9,7 +9,6 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import org.greenrobot.eventbus.EventBus;
 
@@ -58,7 +57,8 @@ public class MoveCommand implements Command {
         }
 
         int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
-        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)) {
+        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)
+        || entity instanceof Dropship) {
             // Set new direction
             entity.setDirection(desiredDirection);
 
@@ -120,6 +120,7 @@ public class MoveCommand implements Command {
                 EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
                 isCompleted = true;
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
+                dropship.repairUnits();
             } else {
                 isCompleted = false;
             }
