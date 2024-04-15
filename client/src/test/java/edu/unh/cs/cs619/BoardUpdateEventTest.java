@@ -21,14 +21,17 @@ public class BoardUpdateEventTest {
 
     @Test
     public void testRemovalEvent() {
-
         int initialWallHealth = 500;
         int wallValue = 1000 + initialWallHealth;
-        testBoard[5][5] = wallValue;
+        int row = 5;
+        int col = 5;
+        int position = row * 16 + col;
+        testBoard[row][col] = wallValue;
 
-        new RemovalEvent(5 * 16 + 5).applyTo(testBoard);
+        RemovalEvent removalEvent = new RemovalEvent(position);
+        removalEvent.applyTo(testBoard, null);
 
-        Assert.assertEquals("Position should be empty after removal", 0, testBoard[5][5]);
+        Assert.assertEquals("Position should be empty after removal", 0, testBoard[row][col]);
     }
 
     @Test
@@ -40,7 +43,7 @@ public class BoardUpdateEventTest {
 
         int damage = 200;
         int rawServerValue = 1000 + (initialHealth - damage);
-        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard);
+        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard, null);
 
         Assert.assertEquals("Wall's health should be reduced by 200", rawServerValue, testBoard[7][7]);
     }
@@ -51,7 +54,7 @@ public class BoardUpdateEventTest {
         int tankPosition = 3 * 16 + 3;
         int tankValue = 10000000 + 2220072;
 
-        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard);
+        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard, null);
 
         Assert.assertEquals("Tank should be spawned at position", tankValue, testBoard[3][3]);
     }
@@ -64,7 +67,7 @@ public class BoardUpdateEventTest {
 
         testBoard[2][2] = tankValue;
 
-        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard);
+        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard, null);
 
         Assert.assertEquals("Old position should be empty after move", 0, testBoard[2][2]);
         Assert.assertEquals("New position should contain tank after move", tankValue, testBoard[3][3]);

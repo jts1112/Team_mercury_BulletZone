@@ -129,5 +129,9 @@ public class ActionController {
         restClient.leave(id);
     }
 
+    @Background
+    public void moveToPosition(int targetX, int targetY) {
+         restClient.moveToPosition(currentUnitId, targetX, targetY);
+    }
 
 }

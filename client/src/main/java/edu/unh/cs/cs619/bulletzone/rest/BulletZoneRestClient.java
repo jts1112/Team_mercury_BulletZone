@@ -57,6 +57,9 @@ public interface BulletZoneRestClient extends RestClientErrorHandling {
     @Put("/{entityId}/move/{direction}")
     BooleanWrapper move(@Path long entityId, @Path byte direction);
 
+    @Put("/{entityId}/moveTo/{targetX}/{targetY}")
+    BooleanWrapper moveToPosition(@Path long entityId, @Path int targetX, @Path int targetY);
+
     @Put("/{entityId}/turn/{direction}")
     BooleanWrapper turn(@Path long entityId, @Path byte direction);
 

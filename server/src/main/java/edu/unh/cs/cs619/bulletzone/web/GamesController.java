@@ -72,6 +72,17 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/moveTo/{targetX}/{targetY}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> moveTo(@PathVariable long entityId,
+                                          @PathVariable int targetX, @PathVariable int targetY)
+            throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException, InterruptedException {
+        boolean moved = gameRepository.moveTo(entityId, targetX, targetY);
+        BooleanWrapper response = new BooleanWrapper(moved);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

@@ -113,6 +113,71 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
+    public boolean moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException {
+        if (game.getDropship(entityId) != null) {
+            return false;
+        }
+        synchronized (this.monitor) {
+            PlayableEntity entity = game.getPlayableEntity(entityId);
+            if (entity == null) {
+                throw new TankDoesNotExistException(entityId);
+            }
+
+            FieldHolder currentField = entity.getParent();
+            int currentPosition = currentField.getPosition();
+            int currentX = currentPosition % FIELD_DIM;
+            int currentY = currentPosition / FIELD_DIM;
+
+            // Calculate the direction to move based on the target position
+            int dx = Integer.compare(targetX, currentX);
+            int dy = Integer.compare(targetY, currentY);
+
+            // Move the entity in the calculated direction until it reaches the target position
+            while (currentX != targetX || currentY != targetY) {
+                // X-axis movement
+                while (currentX != targetX) {
+                    Direction directionX = currentX < targetX ? Direction.Right : Direction.Left;
+                    boolean movedX = move(entityId, directionX);
+                    if (!movedX) {
+                        System.out.println("Unable to move further in X direction. Stopping.");
+                        break;
+                    }
+                    currentField = entity.getParent();
+                    currentPosition = currentField.getPosition();
+                    currentX = currentPosition % FIELD_DIM;
+                    currentY = currentPosition / FIELD_DIM;
+                    System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
+                    System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
+                    PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+                    int sleepTime = playableEntity.getAllowedMoveInterval();
+                    Thread.sleep(sleepTime);
+                }
+
+                // Y-axis movement
+                while (currentY != targetY) {
+                    Direction directionY = currentY < targetY ? Direction.Down : Direction.Up;
+                    boolean movedY = move(entityId, directionY);
+                    if (!movedY) {
+                        System.out.println("Unable to move further in Y direction. Stopping.");
+                        break;
+                    }
+                    currentField = entity.getParent();
+                    currentPosition = currentField.getPosition();
+                    currentX = currentPosition % FIELD_DIM;
+                    currentY = currentPosition / FIELD_DIM;
+                    // Debugging print statements
+                    System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
+                    System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
+                    PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+                    int sleepTime = playableEntity.getAllowedMoveInterval();
+                    Thread.sleep(sleepTime);
+                }
+            }
+
+            return true;
+        }
+    }
+
     @Override
     public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {

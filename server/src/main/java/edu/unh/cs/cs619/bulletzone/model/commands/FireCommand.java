@@ -98,7 +98,8 @@ public class FireCommand implements Command {
 
                         // Create new damageEvent
                         int position = nextEntity.getPosition();
-                        DamageEvent damageEvent = new DamageEvent(position, nextEntity.getIntValue());
+                        int rawServerValue = nextEntity.getIntValue();
+                        DamageEvent damageEvent = new DamageEvent(position, rawServerValue);
                         EventBus.getDefault().post(damageEvent);
 
                         if (nextField.getEntity() instanceof PlayableEntity playableEntity) {
