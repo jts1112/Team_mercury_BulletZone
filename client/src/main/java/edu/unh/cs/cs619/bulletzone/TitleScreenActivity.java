@@ -29,8 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 public class TitleScreenActivity extends AppCompatActivity {
 
     public Button playGameButton;
-    // Doubles as sign in button for logged out players
-    public Button accountButton;
+    public Button accountButton;     // Doubles as sign in button for logged out players
     public Button inventoryButton;
     public Button storeButton;
     public Button replayButton;
@@ -86,7 +85,9 @@ public class TitleScreenActivity extends AppCompatActivity {
         replayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(TitleScreenActivity.this, devMsg, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(TitleScreenActivity.this,
+                        ReplayActivity.class);
+                startActivity(intent);
             }
         });
     }
