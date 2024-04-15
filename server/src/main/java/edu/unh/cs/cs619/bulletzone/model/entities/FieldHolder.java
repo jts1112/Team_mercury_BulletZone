@@ -1,11 +1,14 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import javax.swing.text.html.Option;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
@@ -36,8 +39,9 @@ public class FieldHolder {
         return entityHolder.isPresent();
     }
 
-    public FieldEntity getEntity() {
-        return entityHolder.get();
+    public FieldEntity getEntity() { // TODO old
+//        return entityHolder.get();
+        return entityHolder.orElse(null);
     }
 
     public void setFieldEntity(FieldEntity entity) {
