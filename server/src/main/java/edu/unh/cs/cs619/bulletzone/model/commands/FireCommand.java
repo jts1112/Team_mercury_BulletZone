@@ -8,7 +8,6 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Bullet;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 import edu.unh.cs.cs619.bulletzone.model.events.*;
 import org.greenrobot.eventbus.EventBus;
@@ -152,7 +151,7 @@ public class FireCommand implements Command {
                             RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
                             EventBus.getDefault().post(removalEvent);
                         }
-                        trackActiveBullets[bullet.getBulletId()]=0;
+                        trackActiveBullets[bullet.getBulletId()] = 0;
                         playableEntity.setNumberOfBullets(playableEntity.getNumberOfBullets()-1);
                         activeBullet = null;
                         cancel();

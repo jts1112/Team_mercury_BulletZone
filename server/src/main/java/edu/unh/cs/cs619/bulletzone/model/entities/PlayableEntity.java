@@ -2,6 +2,8 @@ package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.greenrobot.eventbus.EventBus;
+
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
 public abstract class PlayableEntity extends FieldEntity implements Vehicle{
@@ -91,12 +93,15 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         return ip;
     }
 
-//    @Override
-//    public int getIntValue() {
-//        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
-//    }
-
     public boolean isDestroyed() {
         return life <= 0;
+    }
+
+    public void hit(int damage) {
+        life -= damage;
+        System.out.println("Tank life: " + id + " : " + life);
+        if (life <= 0) {
+            EventBus.getDefault().post(this);
+        }
     }
 }
