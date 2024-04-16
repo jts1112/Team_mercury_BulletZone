@@ -105,6 +105,17 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/mine",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> mine(@PathVariable long entityId)
+            throws TankDoesNotExistException
+    {
+        gameRepository.mine(entityId);
+        BooleanWrapper response = new BooleanWrapper(true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/leave",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

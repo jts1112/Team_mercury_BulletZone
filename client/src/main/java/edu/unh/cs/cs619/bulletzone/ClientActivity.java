@@ -247,6 +247,14 @@ public class ClientActivity extends Activity implements GameDataObserver {
         });
     }
 
+    @Override
+    public void onPlayerCreditUpdate(long creditVal) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewCredits);
+            dropshipLife.setText("Credits: " + creditVal);
+        });
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonLeave)
     @Background

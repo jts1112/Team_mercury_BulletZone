@@ -5,6 +5,10 @@ import java.util.List;
 
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
+/**
+ * GameData for client to know basic player info at runtime
+ * and update UI with observer pattern
+ */
 public class GameData {
     private UnitIds unitIds;
     private List<GameDataObserver> observers = new ArrayList<>();
@@ -24,7 +28,7 @@ public class GameData {
     private int tankFireRate;
 
     // Player credits
-    private int playerCredits;
+    private long playerCredits;
 
     // Constructor
     public GameData(UnitIds unitIds) {
@@ -72,6 +76,15 @@ public class GameData {
         }
     }
 
+    public void setPlayerCredits(long creditVal) {
+        this.playerCredits = creditVal;
+        notifyCreditObservers();
+    }
+
+    public long getPlayerCredits() {
+        return playerCredits;
+    }
+
     private void notifyTankLifeObservers() {
         for (GameDataObserver observer : observers) {
             observer.onTankLifeUpdate(tankLife);
@@ -87,6 +100,12 @@ public class GameData {
     private void notifyDropshipLifeObservers() {
         for (GameDataObserver observer : observers) {
             observer.onDropshipLifeUpdate(dropshipLife);
+        }
+    }
+
+    private void notifyCreditObservers() {
+        for (GameDataObserver observer : observers) {
+            observer.onPlayerCreditUpdate(playerCredits);
         }
     }
 }

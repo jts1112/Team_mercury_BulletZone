@@ -6,4 +6,6 @@ public interface GameDataObserver {
     void onMinerLifeUpdate(long minerLife);
 
     void onDropshipLifeUpdate(long dropshipLife);
+
+    void onPlayerCreditUpdate(long creditVal);
 }

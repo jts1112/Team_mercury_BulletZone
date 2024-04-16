@@ -6,14 +6,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.unh.cs.cs619.bulletzone.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.events.DamageEvent;
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.MoveEvent;
 import edu.unh.cs.cs619.bulletzone.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.events.SpawnEvent;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
 
-public class BoardUpdateEventTest {
+public class BoardUpdateTest {
     private int[][] testBoard;
     GameData gameData;
     private final int BOARD_SIZE = 16;
@@ -21,11 +23,13 @@ public class BoardUpdateEventTest {
     @Before
     public void setup() {
         testBoard = new int[BOARD_SIZE][BOARD_SIZE];
-        gameData = mock(GameData.class);
+        UnitIds ids = UnitIds.getInstance();
+        ids.setIds(0, 1, 2);
+        gameData = new GameData(ids);
     }
 
     @Test
-    public void testRemovalEvent() {
+    public void RemovalEvent_RemoveUpdate_ReturnsEmpty() {
         int initialWallHealth = 500;
         int wallValue = 1000 + initialWallHealth;
         int row = 5;
@@ -81,4 +85,33 @@ public class BoardUpdateEventTest {
         Assert.assertEquals("New position should contain tank after move", tankValue, testBoard[3][3]);
     }
 
+    @Test
+    public void CreditEvent_AddedCredits_ReturnsExpectedBalance() {
+        CreditEvent creditEvent = new CreditEvent(500, 100);
+
+        creditEvent.applyTo(null, gameData);
+
+        Assert.assertEquals("Player credits should be updated to 500", 500, gameData.getPlayerCredits());
+    }
+
+    @Test
+    public void GameData_DamageUpdates_UpdatesEachUnit() {
+        // Simulate damage to tank
+        new DamageEvent(1, 10020600).applyTo(testBoard, gameData);
+
+        // Verify tank life update
+        Assert.assertEquals("Tank life should be updated to 60", 60, gameData.getTankLife());
+
+        // Simulate damage to miner
+        new DamageEvent(2, 20010800).applyTo(testBoard, gameData);
+
+        // Verify miner life update
+        Assert.assertEquals("Miner life should be updated to 80", 80, gameData.getMinerLife());
+
+        // Simulate damage to dropship
+        new DamageEvent(3, 30002500).applyTo(testBoard, gameData);
+
+        // Verify dropship life update
+        Assert.assertEquals("Dropship life should be updated to 250", 250, gameData.getDropshipLife());
+    }
 }

@@ -32,7 +32,8 @@ public class ActionController {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
-    private UnitIds Ids;
+    // public only for testing
+    public UnitIds Ids;
     private long currentUnitId = -1;
     private ShakeDetector shakeDetector;
 
