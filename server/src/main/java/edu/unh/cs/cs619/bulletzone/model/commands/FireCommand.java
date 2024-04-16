@@ -20,7 +20,7 @@ public class FireCommand implements Command {
     private int bulletType;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
-    private final int[] bulletDamage = {10, 30, 50};
+    private final int[] bulletDamage = {15, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final Object monitor;
 
@@ -98,7 +98,8 @@ public class FireCommand implements Command {
 
                         // Create new damageEvent
                         int position = nextEntity.getPosition();
-                        DamageEvent damageEvent = new DamageEvent(position, nextEntity.getIntValue());
+                        int rawServerValue = nextEntity.getIntValue();
+                        DamageEvent damageEvent = new DamageEvent(position, rawServerValue);
                         EventBus.getDefault().post(damageEvent);
 
                         if (nextField.getEntity() instanceof PlayableEntity playableEntity) {

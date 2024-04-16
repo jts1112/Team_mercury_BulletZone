@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -59,7 +62,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
      * and imagemapper to distinguish between player and enemy units
      */
     private UnitIds unitIds;
+    private int tappedX = -1;
+    private int tappedY = -1;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,15 @@ public class ClientActivity extends Activity implements GameDataObserver {
         // Initialize gridEventHandler after gridModel initialization
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
         gameData.registerObserver(this);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int colX = position % gridView.getNumColumns();
+                int rowY = position / gridView.getNumColumns();
+                onGridItemTapped(colX, rowY);
+            }
+        });
     }
 
     @Override
@@ -106,12 +121,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
     };
     */
 
-    @AfterViews
-    protected void afterViewInjection() {
-        joinAsync();
-        SystemClock.sleep(500);
-        gridView.setAdapter(mGridAdapter);
-    }
 
     @AfterInject
     void afterInject() {
@@ -182,6 +191,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     }
 
     private void updateControlsForUnit(String unit) {
+        System.out.println("Updating controls for unit: " + unit);
         Button buttonMine = findViewById(R.id.buttonMine);
         Button buttonUp = findViewById(R.id.buttonUp);
         Button buttonDown = findViewById(R.id.buttonDown);
@@ -237,6 +247,14 @@ public class ClientActivity extends Activity implements GameDataObserver {
         });
     }
 
+    @Override
+    public void onPlayerCreditUpdate(long creditVal) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewCredits);
+            dropshipLife.setText("Credits: " + creditVal);
+        });
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonLeave)
     @Background
@@ -281,5 +299,51 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     public static void updateHealthBar() {
     // Firing and taking damage needs to work before we can test this.
+    }
+
+    @AfterViews
+    protected void afterViewInjection() {
+        joinAsync();
+        SystemClock.sleep(500);
+        gridView.setAdapter(mGridAdapter);
+    }
+
+    public void onGridItemTapped(int tappedX, int tappedY) {
+        this.tappedX = tappedX;
+        this.tappedY = tappedY;
+        System.out.println("GridItemTapped at: " + tappedX + ", " + tappedY);
+        showMoveToButton();
+    }
+
+    private void showMoveToButton() {
+        // Shows the "Move To" button
+        Button moveToButton = findViewById(R.id.buttonMoveTo);
+        moveToButton.setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Click(R.id.buttonMoveTo)
+    protected void onMoveToButtonClick() {
+        EditText editTextRow = findViewById(R.id.editTextRow);
+        EditText editTextColumn = findViewById(R.id.editTextColumn);
+
+        String rowString = editTextRow.getText().toString().trim();
+        String columnString = editTextColumn.getText().toString().trim();
+
+        if (!rowString.isEmpty() && !columnString.isEmpty()) {
+            int row = Integer.parseInt(rowString);
+            int column = Integer.parseInt(columnString);
+
+            // Perform the move action to the target position
+            actionController.moveToPosition(column, row);
+
+            // Clear the text boxes
+            editTextRow.setText("");
+            editTextColumn.setText("");
+        }
+    }
+
+    public void clickEvent(View view) {
+
     }
 }

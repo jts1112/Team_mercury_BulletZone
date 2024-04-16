@@ -32,7 +32,8 @@ public class ActionController {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
-    private UnitIds Ids;
+    // public only for testing
+    public UnitIds Ids;
     private long currentUnitId = -1;
     private ShakeDetector shakeDetector;
 
@@ -130,5 +131,9 @@ public class ActionController {
         restClient.leave(id);
     }
 
+    @Background
+    public void moveToPosition(int targetX, int targetY) {
+         restClient.moveToPosition(currentUnitId, targetX, targetY);
+    }
 
 }

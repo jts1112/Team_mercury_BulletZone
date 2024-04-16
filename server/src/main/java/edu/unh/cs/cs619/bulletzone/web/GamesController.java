@@ -72,6 +72,17 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/moveTo/{targetX}/{targetY}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> moveTo(@PathVariable long entityId,
+                                          @PathVariable int targetX, @PathVariable int targetY)
+            throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException, InterruptedException {
+        boolean moved = gameRepository.moveTo(entityId, targetX, targetY);
+        BooleanWrapper response = new BooleanWrapper(moved);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -92,6 +103,17 @@ class GamesController {
         boolean fired = gameRepository.fire(entityId, bulletType);
         BooleanWrapper response = new BooleanWrapper(fired);
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/mine",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> mine(@PathVariable long entityId)
+            throws TankDoesNotExistException
+    {
+        gameRepository.mine(entityId);
+        BooleanWrapper response = new BooleanWrapper(true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/leave",
