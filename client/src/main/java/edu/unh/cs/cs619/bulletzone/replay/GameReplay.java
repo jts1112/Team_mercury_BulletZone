@@ -1,26 +1,104 @@
 package edu.unh.cs.cs619.bulletzone.replay;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.JsonReader;
+
+import com.fasterxml.jackson.core.JsonParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 
 public class GameReplay {
     private class Snapshot {
-        long timestampJoin;
-        long timestampLeave;
+        int game_id;
+        long timeStamp;
         GridCell[][] gridData;
+
+        Snapshot(int game_id, long timeStamp, GridCell[][] gridData) {
+            this.timeStamp = timeStamp;
+            this.gridData = gridData;
+        }
+
+        Snapshot(int game_id, long timeStamp, JSONObject gridData) {
+            this.timeStamp = timeStamp;
+            try {
+                this.gridData = gridDataFromJSON(gridData);
+            } catch (JSONException e) {
+                this.gridData = new GridCell[16][16];
+            }
+        }
+
+        Snapshot() {
+            this.timeStamp = 0L;
+            this.gridData = new GridCell[16][16];
+        }
+
+        private GridCell[][] gridDataFromJSON(JSONObject json) throws JSONException {
+            GridCell[][] grid = new GridCell[16][16];
+            JSONArray rowsArray = json.getJSONArray("gridData");
+            for (int i = 0; i < rowsArray.length(); i++) {
+                JSONArray columnsArray = rowsArray.getJSONArray(i);
+                for (int j = 0; j < columnsArray.length(); j++) {
+                    JSONObject cellJSON = columnsArray.getJSONObject(j);
+                    grid[i][j] = new GridCell(cellJSON);
+                }
+            }
+            return grid;
+        }
+
+        private JSONObject gridDataToJson(GridCell[][] grid) throws JSONException {
+            JSONObject json = new JSONObject();
+            JSONArray rowsArray = new JSONArray();
+            for (int i = 0; i < 16; i++) {
+                JSONArray columnsArray = new JSONArray();
+                for (int j = 0; j < 16; j++) {
+                    JSONObject cellJson = grid[i][j].toJson();
+                    columnsArray.put(cellJson);
+                }
+                rowsArray.put(columnsArray);
+            }
+            json.put("gridData", rowsArray);
+            return json;
+        }
+
+        // Populate toJson method
+        private JSONObject toJson() throws JSONException {
+            JSONObject json = new JSONObject();
+            json.put("timeStamp", timeStamp);
+            json.put("gridData", gridDataToJson(gridData));
+            return json;
+        }
+
+        private void saveToDB(SQLiteDatabase db) {
+            ContentValues values = new ContentValues();
+
+            values.put("timestamp_join", timestampJoin);
+            values.put("timestamp_leave", timestampLeave);
+
+
+            db.insert("GameReplays", null, values);
+        }
     }
 
 
     ArrayList<Snapshot> snapshots = new ArrayList<>();
     int gameID;
+    long timestampJoin;
+    long timestampLeave;
 
     /**
      * Create a new GameReplay to put into the SQLite database
      */
     public GameReplay() {
-
-
 
     }
 
@@ -28,14 +106,74 @@ public class GameReplay {
      * Retrieve a previously created GameReplay from the SQLite database
      * @param gameID ID of the game to retrieve
      */
-    public GameReplay(long gameID) {
+    @SuppressLint("Range")
+    public GameReplay(int gameID, SQLiteDatabase db) {
+        // Populate gameID, timestampJoin, timestampLeave
+        this.gameID = gameID;
 
+        Cursor replayCursor = db.query(
+                "GameReplays",
+                null,
+                "id=?",
+                new String[] {String.valueOf(gameID)},
+                null,
+                null,
+                null
+        );
+
+        this.timestampJoin = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_join"));
+        this.timestampLeave = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_leave"));
+
+        replayCursor.close();
+
+        Cursor snapshotCursor = db.query(
+                "Snapshots",
+                null,
+                "game_id=?",
+                new String[] {String.valueOf(gameID)},
+                null,
+                null,
+                "timestamp"
+        );
+
+        // Process retrieved data
+        if (snapshotCursor != null && snapshotCursor.moveToFirst()) {
+            do {
+                long timestamp = snapshotCursor.getLong(snapshotCursor.getColumnIndex("timestamp"));
+                String jsonData = snapshotCursor.getString(snapshotCursor.getColumnIndex("grid_json"));
+                Snapshot ss;
+
+                try {
+                    ss = new Snapshot(timestamp, new JSONObject(jsonData));
+                } catch (JSONException e) {
+                    ss = new Snapshot();
+                }
+
+                this.snapshots.add(ss);
+
+            } while (snapshotCursor.moveToNext());
+            snapshotCursor.close();
+        }
     }
 
-    public void takeSnapshot() {
-
+    public void setTimestampJoin(long timestampJoin) {
+        this.timestampJoin = timestampJoin;
     }
 
+    public void setTimestampLeave(long timestampLeave) {
+        this.timestampLeave = timestampLeave;
+    }
 
+    public void takeSnapshot(GridCell[][] gridData) {
+        this.snapshots.add(new Snapshot(System.currentTimeMillis(), gridData));
+    }
 
+    public void saveToDB(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+
+        values.put("timestamp_join", timestampJoin);
+        values.put("timestamp_leave", timestampLeave);
+
+        db.insert("GameReplays", null, values);
+    }
 }

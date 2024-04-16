@@ -11,10 +11,21 @@ public class ReplayDBHelper extends SQLiteOpenHelper {
 
     // Define the SQL statement to create the replay table
     private static final String SQL_CREATE_REPLAY_TABLE =
-            "CREATE TABLE " + ReplayContract.ReplayEntry.TABLE_NAME + " (" +
-                    ReplayContract.ReplayEntry._ID + " INTEGER PRIMARY KEY," +
-                    // Define additional columns as needed
-                    ");";
+            "CREATE TABLE GameReplays (" +
+                    "game_id INTEGER PRIMARY KEY, " +
+                    "timestamp_join LONG," +
+                    "timestamp_leave LONG" +
+            ");";
+
+    // Define the DQL statement to create the snapshot table
+    private static final String SQL_CREATE_SNAPSHOT_TABLE =
+            "CREATE TABLE Snapshots (" +
+                    "id INTEGER PRIMARY KEY," +
+                    "game_replay_id INTEGER," +
+                    "grid_json TEXT," +
+                    "timestamp LONG," +
+                    "FOREIGN KEY (game_replay_id) REFERENCES GameReplays(id)" +
+            ");";
 
     public ReplayDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,6 +35,7 @@ public class ReplayDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Create the replay table
         db.execSQL(SQL_CREATE_REPLAY_TABLE);
+        db.execSQL(SQL_CREATE_SNAPSHOT_TABLE);
     }
 
     @Override

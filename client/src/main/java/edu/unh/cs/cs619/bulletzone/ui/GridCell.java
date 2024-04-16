@@ -2,6 +2,9 @@ package edu.unh.cs.cs619.bulletzone.ui;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GridCell {
     private int terrainResourceID;
     private int entityResourceID;
@@ -15,6 +18,15 @@ public class GridCell {
         this.entityRotation = 0;
         this.row = row;
         this.col = col;
+    }
+
+    // Constructor to create GridCell object from JSON
+    public GridCell(JSONObject json) throws JSONException {
+        this.terrainResourceID = json.getInt("terrainResourceID");
+        this.entityResourceID = json.getInt("entityResourceID");
+        this.entityRotation = json.getInt("entityRotation");
+        this.row = json.getInt("row");
+        this.col = json.getInt("col");
     }
 
     public int getTerrainResourceID() {
@@ -59,5 +71,16 @@ public class GridCell {
         } else {
             this.entityRotation = 0;
         }
+    }
+
+    // Method to convert GridCell object to JSON
+    public JSONObject toJson() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("terrainResourceID", terrainResourceID);
+        json.put("entityResourceID", entityResourceID);
+        json.put("entityRotation", entityRotation);
+        json.put("row", row);
+        json.put("col", col);
+        return json;
     }
 }
