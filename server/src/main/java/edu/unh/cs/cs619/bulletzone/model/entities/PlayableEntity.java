@@ -22,6 +22,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected int bulletDamage;
     protected String ip;
     protected Direction direction;
+    protected boolean hasActionQueued = false;
 
     public void setId(long id) {
         this.id = id;
@@ -151,5 +152,9 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         if (life <= 0) {
             EventBus.getDefault().post(this);
         }
+    }
+
+    public boolean isHasActionQueued() {
+        return hasActionQueued;
     }
 }
