@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.commands.CommandPattern;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
@@ -38,6 +39,8 @@ public class InMemoryGameRepository implements GameRepository {
     private final int[] bulletDamage = {10, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
+
+    private CommandPattern commands;
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
@@ -100,6 +103,11 @@ public class InMemoryGameRepository implements GameRepository {
     public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
         synchronized (this.monitor) {
             PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+
+//            // check if Command pattern has een created.
+//            if (commands == null){
+//                commands = new CommandPattern(playableEntity);
+//            }
 
             System.out.println("Moving entity: " + entityId);
             System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
