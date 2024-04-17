@@ -1,9 +1,12 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
+import org.greenrobot.eventbus.EventBus;
+
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 
 public class MineCommand implements Command {
 
@@ -23,9 +26,9 @@ public class MineCommand implements Command {
 
         FieldHolder parent = miner.getParent();
         Terrain terrain = parent.getTerrain();
-        double resourceVal = terrain.getrescourceValue();
+        int resourceVal = (int) terrain.getrescourceValue();
 
-
+        EventBus.getDefault().post(new CreditEvent(resourceVal));
 
         return true;
     }

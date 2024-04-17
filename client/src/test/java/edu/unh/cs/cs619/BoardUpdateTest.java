@@ -25,7 +25,7 @@ public class BoardUpdateTest {
         testBoard = new int[BOARD_SIZE][BOARD_SIZE];
         UnitIds ids = UnitIds.getInstance();
         ids.setIds(0, 1, 2);
-        gameData = new GameData(ids);
+        gameData = GameData.getInstance();
     }
 
     @Test
@@ -38,7 +38,7 @@ public class BoardUpdateTest {
         testBoard[row][col] = wallValue;
 
 
-        new RemovalEvent(5 * 16 + 5).applyTo(testBoard, gameData);
+        new RemovalEvent(5 * 16 + 5).applyTo(testBoard);
 
         Assert.assertEquals("Position should be empty after removal", 0, testBoard[row][col]);
     }
@@ -53,7 +53,7 @@ public class BoardUpdateTest {
         int damage = 200;
         int rawServerValue = 1000 + (initialHealth - damage);
 
-        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard, gameData);
+        new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard);
 
         Assert.assertEquals("Wall's health should be reduced by 200", rawServerValue, testBoard[7][7]);
     }
@@ -65,7 +65,7 @@ public class BoardUpdateTest {
         int tankValue = 10000000 + 2220072;
 
 
-        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard, gameData);
+        new SpawnEvent(tankValue, tankPosition).applyTo(testBoard);
 
         Assert.assertEquals("Tank should be spawned at position", tankValue, testBoard[3][3]);
     }
@@ -79,7 +79,7 @@ public class BoardUpdateTest {
         testBoard[2][2] = tankValue;
 
 
-        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard, gameData);
+        new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard);
 
         Assert.assertEquals("Old position should be empty after move", 0, testBoard[2][2]);
         Assert.assertEquals("New position should contain tank after move", tankValue, testBoard[3][3]);
@@ -87,9 +87,9 @@ public class BoardUpdateTest {
 
     @Test
     public void CreditEvent_AddedCredits_ReturnsExpectedBalance() {
-        CreditEvent creditEvent = new CreditEvent(500, 100);
+        CreditEvent creditEvent = new CreditEvent(500);
 
-        creditEvent.applyTo(null, gameData);
+        creditEvent.applyTo(null);
 
         Assert.assertEquals("Player credits should be updated to 500", 500, gameData.getPlayerCredits());
     }
@@ -97,19 +97,19 @@ public class BoardUpdateTest {
     @Test
     public void GameData_DamageUpdates_UpdatesEachUnit() {
         // Simulate damage to tank
-        new DamageEvent(1, 10020600).applyTo(testBoard, gameData);
+        new DamageEvent(1, 10020600).applyTo(testBoard);
 
         // Verify tank life update
         Assert.assertEquals("Tank life should be updated to 60", 60, gameData.getTankLife());
 
         // Simulate damage to miner
-        new DamageEvent(2, 20010800).applyTo(testBoard, gameData);
+        new DamageEvent(2, 20010800).applyTo(testBoard);
 
         // Verify miner life update
         Assert.assertEquals("Miner life should be updated to 80", 80, gameData.getMinerLife());
 
         // Simulate damage to dropship
-        new DamageEvent(3, 30002500).applyTo(testBoard, gameData);
+        new DamageEvent(3, 30002500).applyTo(testBoard);
 
         // Verify dropship life update
         Assert.assertEquals("Dropship life should be updated to 250", 250, gameData.getDropshipLife());

@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
@@ -34,8 +32,6 @@ import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
 import edu.unh.cs.cs619.bulletzone.ui.GridModel;
-import edu.unh.cs.cs619.bulletzone.util.UnitIds;
-import kotlin.Unit;
 
 @SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
@@ -58,10 +54,9 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected GameData gameData;
 
     /**
-     * Changed unitIds to a singleton which is passed to actioncontroller
+     * Changed unitIds to a singleton used in actioncontroller
      * and imagemapper to distinguish between player and enemy units
      */
-    private UnitIds unitIds;
     private int tappedX = -1;
     private int tappedY = -1;
 
@@ -71,12 +66,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        // create instance of ids for gridmodel to use for distinguishing users entities
-        unitIds = UnitIds.getInstance();
-        gridModel = new GridModel(unitIds);
+        gridModel = new GridModel();
         mGridAdapter = new GridAdapter(this);
 
-        gameData = new GameData(unitIds);
+        gameData = GameData.getInstance();
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -125,7 +118,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @AfterInject
     void afterInject() {
         // initialize actioncontroller
-        actionController.initialize(this, unitIds);
+        actionController.initialize(this);
     }
 
     @Background
@@ -142,7 +135,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
             eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
-            eventProcessor.setGameData(gameData);
+            eventProcessor.setGameData();
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -166,7 +159,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Background
     protected void onButtonFire() {
         actionController.onButtonFire();
-        updateHealthBar();
+    }
+
+    @Click(R.id.buttonMine)
+    @Background
+    protected void onButtonMine() {
+        actionController.onButtonMine();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -250,7 +248,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Override
     public void onPlayerCreditUpdate(long creditVal) {
         runOnUiThread(() -> {
-            TextView dropshipLife = findViewById(R.id.textViewCredits);
+            TextView dropshipLife = findViewById(R.id.textCreditsView);
             dropshipLife.setText("Credits: " + creditVal);
         });
     }
@@ -295,10 +293,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
     public void onBackPressed() {
         // super.onBackPressed();
         // Not calling **super**, disables back button in current screen.
-    }
-
-    public static void updateHealthBar() {
-    // Firing and taking damage needs to work before we can test this.
     }
 
     @AfterViews

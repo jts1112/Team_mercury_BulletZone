@@ -15,8 +15,8 @@ public class GameEventProcessor {
 
     public void setBoard(int[][] newBoard) { board = newBoard; }
 
-    public void setGameData(GameData gameData) {
-        this.gameData = gameData;
+    public void setGameData() {
+        this.gameData = GameData.getInstance();
     }
 
     public void start() {
@@ -30,6 +30,6 @@ public class GameEventProcessor {
     @Subscribe
     public void onNewEvent(GameEvent event) {
         Log.d("GameEventProcessor", "Applying " + event);
-        event.applyTo(board, gameData);
+        event.applyTo(board);
     }
 }

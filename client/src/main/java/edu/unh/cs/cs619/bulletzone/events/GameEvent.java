@@ -13,6 +13,7 @@ import java.util.Comparator;
         @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
         @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
+        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;
@@ -47,7 +48,7 @@ public abstract class GameEvent {
         return e1Time.compareTo(e2Time);
     };
 
-    abstract void applyTo(int [][]board, GameData gameData);
+    abstract void applyTo(int [][]board);
 
     @Override
     public String toString() {

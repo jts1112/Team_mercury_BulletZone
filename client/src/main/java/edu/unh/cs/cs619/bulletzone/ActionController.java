@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -41,8 +40,8 @@ public class ActionController {
     }
 
     // Method to initialize the ActionController with context
-    public void initialize(Context context, UnitIds ids) {
-        this.Ids = ids;
+    public void initialize(Context context) {
+        this.Ids = UnitIds.getInstance();
         restClient.setRestErrorHandler(bzRestErrorhandler);
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
@@ -57,8 +56,7 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids = UnitIds.getInstance();
-            Ids.setIds(units.getResult(), units.getId1(), units.getId2());
+            Ids.setIds(units.getResult(), units.getResult2(), units.getResult3());
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -115,6 +113,10 @@ public class ActionController {
         } else {
             BooleanWrapper fired = restClient.fire(currentUnitId);
         }
+    }
+
+    public void onButtonMine() {
+        restClient.mine(Ids.getMinerId());
     }
 
     public void leave() {

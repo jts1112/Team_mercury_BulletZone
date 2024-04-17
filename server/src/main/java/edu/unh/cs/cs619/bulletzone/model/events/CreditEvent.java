@@ -5,26 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CreditEvent extends GameEvent {
     @JsonProperty
-    private int balance;
-    @JsonProperty
     private int creditDif;
 
     public CreditEvent() {}
 
     /**
      * Constructor for testing only.
-     * @param balance The position of the entity to remove.
-     * @param creditDif The raw server value of the entity.
+     * @param creditDif value of credits added/subtracted
      */
-    public CreditEvent( int balance, int creditDif) {
-        this.balance = balance;
+    public CreditEvent(int creditDif) {
         this.creditDif = creditDif;
     }
 
 
     @Override
     public String toString() {
-        return "Added " + creditDif + " credits to a total of " + balance + super.toString();
+        return "Added " + creditDif + " credits to the bank " + super.toString();
     }
 }
 

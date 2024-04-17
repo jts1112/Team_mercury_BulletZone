@@ -7,19 +7,15 @@ import edu.unh.cs.cs619.bulletzone.R;
 
 public class CreditEvent extends GameEvent {
     @JsonProperty
-    private int balance;
-    @JsonProperty
     private int creditDif;
 
     public CreditEvent() {}
 
     /**
-     * Constructor for testing only.
-     * @param balance The position of the entity to remove.
-     * @param creditDif The raw server value of the entity.
+     * Constructor for testing only..
+     * @param creditDif difference in credits.
      */
-    public CreditEvent( int balance, int creditDif) {
-        this.balance = balance;
+    public CreditEvent(int creditDif) {
         this.creditDif = creditDif;
     }
 
@@ -28,12 +24,13 @@ public class CreditEvent extends GameEvent {
      * @param board The game board.
      */
     @Override
-    public void applyTo(int[][] board, GameData gameData) {
-        gameData.setPlayerCredits(balance);
+    public void applyTo(int[][] board) {
+        GameData gameData = GameData.getInstance();
+        gameData.addPlayerCredits(creditDif);
     }
 
     @Override
     public String toString() {
-        return "Added " + creditDif + " credits to a total of " + balance + super.toString();
+        return "Added " + creditDif + " credits to the bank " + super.toString();
     }
 }

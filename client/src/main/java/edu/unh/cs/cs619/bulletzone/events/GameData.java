@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.events;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import edu.unh.cs.cs619.bulletzone.util.UnitIds;
  * and update UI with observer pattern
  */
 public class GameData {
+    private static GameData instance;
     private UnitIds unitIds;
     private List<GameDataObserver> observers = new ArrayList<>();
 
@@ -31,8 +34,16 @@ public class GameData {
     private long playerCredits;
 
     // Constructor
-    public GameData(UnitIds unitIds) {
-        this.unitIds = unitIds;
+    public GameData() {
+        this.unitIds = UnitIds.getInstance();
+    }
+
+    // Method to get the singleton instance
+    public static GameData getInstance() {
+        if (instance == null) {
+            instance = new GameData();
+        }
+        return instance;
     }
 
     public void registerObserver(GameDataObserver observer) {
@@ -78,6 +89,12 @@ public class GameData {
 
     public void setPlayerCredits(long creditVal) {
         this.playerCredits = creditVal;
+        Log.d("GameData", "Credits set to " + playerCredits);
+    }
+
+    public void addPlayerCredits(long creditDif) {
+        this.playerCredits += creditDif;
+        Log.d("GameData", "Credits now at " + playerCredits);
         notifyCreditObservers();
     }
 

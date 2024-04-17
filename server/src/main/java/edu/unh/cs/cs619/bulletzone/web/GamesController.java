@@ -104,7 +104,7 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/mine",
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/mine",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> mine(@PathVariable long entityId)

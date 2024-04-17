@@ -21,7 +21,7 @@ public class SpawnEvent extends GameEvent {
     /*
      Public only for testing.
     */
-    public void applyTo(int[][] board, GameData gameData) {
+    public void applyTo(int[][] board) {
         board[position / 16][position % 16] = rawServerValue;
     }
 

@@ -24,7 +24,7 @@ public class MoveEvent extends GameEvent {
     /*
      Public only for testing.
     */
-    public void applyTo(int[][] board, GameData gameData) {
+    public void applyTo(int[][] board) {
         board[oldPosition / 16][oldPosition % 16] = 0; //clear old position
         board[newPosition / 16][newPosition % 16] = rawServerValue;
     }

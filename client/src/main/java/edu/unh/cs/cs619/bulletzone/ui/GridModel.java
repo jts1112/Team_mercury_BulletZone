@@ -7,8 +7,8 @@ public class GridModel {
     private int[][] rawData;
     private GridCellImageMapper mapper;
 
-    public GridModel(UnitIds ids) {
-        mapper = new GridCellImageMapper(ids);
+    public GridModel() {
+        mapper = new GridCellImageMapper();
     }
 
     public void updateGrid(int[][] newData, int[][] newTerrainData) {

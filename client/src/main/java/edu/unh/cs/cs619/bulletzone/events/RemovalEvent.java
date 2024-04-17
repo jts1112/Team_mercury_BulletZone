@@ -20,7 +20,7 @@ public class RemovalEvent extends GameEvent {
      * @param board The game board.
      */
     @Override
-    public void applyTo(int[][] board, GameData gameData) {
+    public void applyTo(int[][] board) {
         int row = position / 16;
         int col = position % 16;
         board[row][col] = 0;

@@ -1,9 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.events;
-import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import edu.unh.cs.cs619.bulletzone.R;
 
 public class DamageEvent extends GameEvent {
     @JsonProperty
@@ -28,7 +25,8 @@ public class DamageEvent extends GameEvent {
      * @param board The game board.
     */
     @Override
-    public void applyTo(int[][] board, GameData gameData) {
+    public void applyTo(int[][] board) {
+        GameData gameData = GameData.getInstance();
         int row = position / 16;
         int col = position % 16;
         board[row][col] = rawServerValue;

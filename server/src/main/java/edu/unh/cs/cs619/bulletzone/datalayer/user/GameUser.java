@@ -14,6 +14,7 @@ public class GameUser extends Entity {
     protected String name;
     protected String username;
     //password info not stored in game
+    protected int accountId;
     protected HashSet<OwnableEntity> ownedEntities = new HashSet<OwnableEntity>();
 
     public String getName() { return name; }
@@ -51,6 +52,14 @@ public class GameUser extends Entity {
             }
         }
         return ownedItems;
+    }
+
+    public void setAccountId(int id) {
+        this.accountId = id;
+    }
+
+    public int getAccountId() {
+        return accountId;
     }
 
     public Collection<OwnableEntity> getOwnedEntities() { return ownedEntities; }
