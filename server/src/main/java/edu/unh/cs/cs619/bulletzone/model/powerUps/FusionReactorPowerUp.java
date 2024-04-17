@@ -1,8 +1,11 @@
 package edu.unh.cs.cs619.bulletzone.model.powerUps;
 
 public class FusionReactorPowerUp extends PowerUpDecorator {
-    PowerUpComponent prevPowerUp;
 
+    /**
+     *
+     * @param powerUp parent powerup
+     */
     public FusionReactorPowerUp(PowerUpComponent powerUp) {
         super(powerUp, PowerUpType.FusionReactor);
     }

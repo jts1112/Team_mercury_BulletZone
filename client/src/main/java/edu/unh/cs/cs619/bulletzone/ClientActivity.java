@@ -167,6 +167,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
         actionController.onButtonMine();
     }
 
+    @Click(R.id.buttonEject)
+    @Background
+    protected void onButtonEjectPowerUp() {
+        actionController.onButtonEjectPowerUp();
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonTank)
     protected void onTankButtonClick() {
@@ -190,6 +196,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     private void updateControlsForUnit(String unit) {
         System.out.println("Updating controls for unit: " + unit);
+        Button buttonEjectPowerUp = findViewById(R.id.buttonEject);
         Button buttonMine = findViewById(R.id.buttonMine);
         Button buttonUp = findViewById(R.id.buttonUp);
         Button buttonDown = findViewById(R.id.buttonDown);
@@ -202,6 +209,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         // Show buttons based on the selected unit
         if ("miner".equals(unit)) {
             buttonMine.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
         } else if ("dropship".equals(unit)) {
 //            buttonFire.setVisibility(View.GONE);  // Dropships can fire.
             buttonUp.setVisibility(View.VISIBLE);
@@ -209,12 +217,14 @@ public class ClientActivity extends Activity implements GameDataObserver {
             buttonLeft.setVisibility(View.VISIBLE);
             buttonRight.setVisibility(View.VISIBLE);
             buttonFire.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
         } else { // Tank
             buttonUp.setVisibility(View.VISIBLE);
             buttonDown.setVisibility(View.VISIBLE);
             buttonLeft.setVisibility(View.VISIBLE);
             buttonRight.setVisibility(View.VISIBLE);
             buttonFire.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
         }
     }
 

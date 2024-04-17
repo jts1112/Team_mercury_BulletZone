@@ -13,10 +13,12 @@ public class ConcretePowerUpComponent implements PowerUpComponent {
         return fireDelay;
     }
 
+
     @Override
     public Optional<PowerUpComponent> getPrevPowerUp() {
         return Optional.empty();
     }
+
 
     @Override
     public Optional<PowerUpType> getPowerUpType() {

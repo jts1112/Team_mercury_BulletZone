@@ -72,6 +72,9 @@ public interface BulletZoneRestClient extends RestClientErrorHandling {
     @Put("/{entityId}/mine")
     BooleanWrapper mine(@Path long entityId);
 
+    @Put("/{entityId}/ejectPowerUp")
+    BooleanWrapper ejectPowerUp(@Path long entityId);
+
     @Delete("/{entityId}/leave")
     BooleanWrapper leave(@Path long entityId);
 

@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.web;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import edu.unh.cs.cs619.bulletzone.BulletZoneServer;
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
+
+import java.net.http.HttpRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

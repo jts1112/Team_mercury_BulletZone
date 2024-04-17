@@ -120,6 +120,10 @@ public class ActionController {
         restClient.mine(Ids.getMinerId());
     }
 
+    public void onButtonEjectPowerUp() {
+        restClient.ejectPowerUp(currentUnitId);
+    }
+
     public void leave() {
         restClient.leave(Ids.getDropshipId());
     }

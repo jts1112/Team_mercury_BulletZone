@@ -169,11 +169,18 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         } else {
             powerUp = prev.get();
             Optional<PowerUpType> type = temp.getPowerUpType();
-            return type.flatMap(powerUpType -> switch (powerUpType) {
-                case AntiGrav -> Optional.of(new AntiGravPowerUpEntity());
-                case FusionReactor -> Optional.of(new FusionReactorPowerUpEntity());
-                case Thingamajig -> Optional.empty();
-            });
+            if (type.isPresent()) {
+                switch (type.get()) {
+                    case AntiGrav:
+                        return Optional.of(new AntiGravPowerUpEntity());
+                    case FusionReactor:
+                        return Optional.of(new FusionReactorPowerUpEntity());
+                    case Thingamajig:
+                        // bank stuff here
+                        return Optional.empty();
+                }
+            }
+            return Optional.empty();
         }
     }
 

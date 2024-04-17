@@ -115,6 +115,17 @@ class GamesController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/ejectPowerUp/",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> ejectPowerUp(@PathVariable long entityId)
+            throws TankDoesNotExistException, LimitExceededException
+    {
+        boolean ejected = gameRepository.ejectPowerUp(entityId);
+        BooleanWrapper response = new BooleanWrapper(ejected);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/leave",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

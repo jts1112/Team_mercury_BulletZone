@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import edu.unh.cs.cs619.bulletzone.model.commands.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,16 +12,12 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.commands.CommandPattern;
-import edu.unh.cs.cs619.bulletzone.model.commands.MineCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
-import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
@@ -216,18 +213,40 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public void leave(long tankId) throws TankDoesNotExistException {
+    public boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException {
+        EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
+        PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+        return ejectPowerUpCommand.execute(playableEntity);
+    }
+
+    @Override
+    public void leave(long dropshipId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            if (!this.game.getTanks().containsKey(tankId)) {
-                throw new TankDoesNotExistException(tankId);
+            if (!this.game.getDropships().containsKey(dropshipId)) {
+                throw new TankDoesNotExistException(dropshipId);
             }
 
-            System.out.println("leave() called, tank ID: " + tankId);
+            System.out.println("leave() called, dropship ID: " + dropshipId);
 
-            Tank tank = game.getTanks().get(tankId);
-            FieldHolder parent = tank.getParent();
+            // remove dropship
+            Dropship dropship = game.getDropship(dropshipId);
+            FieldHolder parent = dropship.getParent();
             parent.clearField();
-            game.removeTank(tankId);
+            game.removeDropship(dropshipId);
+
+            // remove all tanks for a dropship
+            List<Long> tankIDs = dropship.getTankIds();
+            for (long tankId : tankIDs) {
+                game.getTank(tankId).getParent().clearField();
+                game.removeTank(tankId);
+            }
+
+            // remove all miners for a dropship
+            List<Long> minerIDs = dropship.getMinerIds();
+            for (long minerId : minerIDs) {
+                game.getMiner(minerId).getParent().clearField();
+                game.removeMiner(minerId);
+            }
         }
     }
 

@@ -6,6 +6,11 @@ public class PowerUpDecorator implements PowerUpComponent {
     PowerUpComponent prevPowerUp;
     Optional<PowerUpType> type = Optional.empty();
 
+    /**
+     *
+     * @param powerUp parent power-up
+     * @param type power-up type
+     */
     public PowerUpDecorator(PowerUpComponent powerUp, PowerUpType type) {
         prevPowerUp = powerUp;
         this.type = Optional.of(type);
@@ -21,10 +26,18 @@ public class PowerUpDecorator implements PowerUpComponent {
         return prevPowerUp.getFireInterval(fireDelay);
     }
 
+    /**
+     *
+     * @param powerUp parent power-up
+     */
     public void setPrevPowerUp(PowerUpComponent powerUp) {
         prevPowerUp = powerUp;
     }
 
+    /**
+     *
+     * @return parent power-up
+     */
     public Optional<PowerUpComponent> getPrevPowerUp() {
         return Optional.of(prevPowerUp);
     }

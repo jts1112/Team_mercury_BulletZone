@@ -42,23 +42,6 @@ public class InMemoryGameRepositoryTest {
         Assert.assertTrue(dropship.getDirection() == Direction.Up);
         assertNotNull(dropship.getParent());
     }
-    /*
-    @Test
-    public void testTurn() throws Exception {
-        Tank tank = repo.join("");
-        Assert.assertNotNull(tank);
-        Assert.assertTrue(tank.getId() >= 0);
-        Assert.assertNotNull(tank.getDirection());
-        Assert.assertTrue(tank.getDirection() == Direction.Up);
-        Assert.assertNotNull(tank.getParent());
-
-        Assert.assertTrue(repo.turn(tank.getId(), Direction.Right));
-        Assert.assertTrue(tank.getDirection() == Direction.Right);
-
-        thrown.expect(TankDoesNotExistException.class);
-        thrown.expectMessage("Tank '1000' does not exist");
-        repo.turn(1000, Direction.Right);
-    } */
 
     @Test
     public void testMove() throws Exception {
@@ -72,7 +55,22 @@ public class InMemoryGameRepositoryTest {
 
     @Test
     public void testLeave() throws Exception {
+        Dropship dropship = repo.join("127.0.0.1");
+        long minerId = repo.spawnMiner(dropship.getId());
+        long tankId = repo.spawnTank(dropship.getId());
+        long minerId2 = repo.spawnMiner(dropship.getId());
+        long tankId2 = repo.spawnTank(dropship.getId());
+        long minerId3 = repo.spawnMiner(dropship.getId());
+        long tankId3 = repo.spawnTank(dropship.getId());
 
+        repo.leave(dropship.getId());
+        assertNull(repo.getGame().getDropship(dropship.getId()));
+        assertNull(repo.getGame().getMiner(minerId));
+        assertNull(repo.getGame().getTank(tankId));
+        assertNull(repo.getGame().getMiner(minerId2));
+        assertNull(repo.getGame().getTank(tankId2));
+        assertNull(repo.getGame().getMiner(minerId3));
+        assertNull(repo.getGame().getTank(tankId3));
     }
 
 //    @Test
