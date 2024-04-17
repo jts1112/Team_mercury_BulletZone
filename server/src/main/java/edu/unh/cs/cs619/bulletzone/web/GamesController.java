@@ -72,6 +72,16 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/moveTo/{targetX}/{targetY}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<Void> moveTo(@PathVariable long entityId,
+                                @PathVariable int targetX, @PathVariable int targetY)
+            throws TankDoesNotExistException, InterruptedException {
+        gameRepository.moveTo(entityId, targetX, targetY);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -92,6 +102,17 @@ class GamesController {
         boolean fired = gameRepository.fire(entityId, bulletType);
         BooleanWrapper response = new BooleanWrapper(fired);
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/mine",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> mine(@PathVariable long entityId)
+            throws TankDoesNotExistException
+    {
+        gameRepository.mine(entityId);
+        BooleanWrapper response = new BooleanWrapper(true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/leave",

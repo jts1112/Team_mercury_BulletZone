@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.commands.MineCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
@@ -34,7 +36,7 @@ public class InMemoryGameRepository implements GameRepository {
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
     private Game game = null;
-    private final int[] bulletDamage = {10, 30, 50};
+    private final int[] bulletDamage = {15, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
 
@@ -103,11 +105,6 @@ public class InMemoryGameRepository implements GameRepository {
             System.out.println("Moving entity: " + entityId);
             System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
 
-            if (playableEntity instanceof Dropship) {
-                System.out.println("Dropship move attempt blocked");
-                return false;
-            }
-
             MoveCommand moveCommand = new MoveCommand(entityId, direction);
             boolean moveResult = moveCommand.execute(playableEntity);
 
@@ -117,6 +114,100 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
+    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException {
+        if (game.getDropship(entityId) != null) {
+            return ;
+        }
+        if (targetX < 0 || targetX >= FIELD_DIM || targetY < 0 || targetY >= FIELD_DIM) {
+            return ;
+        }
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    synchronized (monitor) {
+                        PlayableEntity entity = game.getPlayableEntity(entityId);
+                        if (entity == null) {
+                            throw new TankDoesNotExistException(entityId);
+                        }
+
+                        FieldHolder currentField = entity.getParent();
+                        int currentPosition = currentField.getPosition();
+                        int currentX = currentPosition % FIELD_DIM;
+                        int currentY = currentPosition / FIELD_DIM;
+
+                        boolean stoppedX = false;
+                        boolean stoppedY = false;
+                        boolean stoppedXTwice = false;
+                        boolean stoppedYTwice = false;
+
+                        PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+                        int sleepTime = playableEntity.getAllowedMoveInterval() * 2;
+
+                        while ((!playableEntity.isHasActionQueued() && ((currentX != targetX || currentY != targetY)))
+                                && !(stoppedXTwice || stoppedYTwice)) {
+
+                            stoppedXTwice = false;
+                            stoppedYTwice = false;
+
+                            // X movement
+                            while (!playableEntity.isHasActionQueued() && currentX != targetX) {
+                                Direction directionX = currentX < targetX ? Direction.Right : Direction.Left;
+                                MoveCommand moveCommand = new MoveCommand(entityId, directionX);
+                                boolean movedX = moveCommand.execute(playableEntity);
+                                if (!movedX) {
+                                    if (stoppedX) {
+                                        stoppedXTwice = true;
+                                    }
+                                    stoppedX = true;
+                                    System.out.println("Unable to move further in X direction. Stopping.");
+                                    break;
+                                }
+                                currentField = entity.getParent();
+                                currentPosition = currentField.getPosition();
+                                currentX = currentPosition % FIELD_DIM;
+                                currentY = currentPosition / FIELD_DIM;
+                                System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
+                                System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
+                                Thread.sleep(sleepTime);
+
+                                stoppedX = false;
+                            }
+
+                            // Y movement
+                            while (!playableEntity.isHasActionQueued() && currentY != targetY) {
+                                Direction directionY = currentY < targetY ? Direction.Down : Direction.Up;
+                                MoveCommand moveCommand = new MoveCommand(entityId, directionY);
+                                boolean movedY = moveCommand.execute(playableEntity);
+                                if (!movedY) {
+                                    if (stoppedY) {
+                                        stoppedYTwice = true;
+                                    }
+                                    stoppedY = true;
+                                    System.out.println("Unable to move further in Y direction. Stopping.");
+                                    break;
+                                }
+                                currentField = entity.getParent();
+                                currentPosition = currentField.getPosition();
+                                currentX = currentPosition % FIELD_DIM;
+                                currentY = currentPosition / FIELD_DIM;
+                                System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
+                                System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
+                                Thread.sleep(sleepTime);
+
+                                stoppedY = false;
+                            }
+                        }
+                    }
+                } catch (InterruptedException | TankDoesNotExistException e) {
+                    log.error("Error during moveTo operation", e);
+                }
+            }
+        }, 0);
+
+    }
+
     @Override
     public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
@@ -124,6 +215,31 @@ public class InMemoryGameRepository implements GameRepository {
             PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
             return fireCommand.execute(playableEntity);
         }
+    }
+
+    @Override
+    public void mine(long minerId) throws TankDoesNotExistException {
+        PlayableEntity miner = game.getMiner(minerId);
+        long fireTime = miner.getLastFireTime();
+        long moveTime = miner.getLastMoveTime();
+        Timer mineTimer = new Timer();
+        mineTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    if (miner.getLastFireTime() == fireTime && miner.getLastMoveTime() == moveTime) {
+                        MineCommand mineCommand = new MineCommand(minerId, monitor);
+                        try {
+                            mineCommand.execute(miner);
+                        } catch (TankDoesNotExistException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        mineTimer.cancel();
+                        mineTimer.purge();
+                    }
+                }
+            }
+        }, 1000, 1000);
     }
 
     @Override
@@ -148,12 +264,24 @@ public class InMemoryGameRepository implements GameRepository {
         }
         synchronized (this.monitor) {
             this.game = new Game();
-//            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
-            //TODO added
-//            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-//            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// change back to this  before the createFeildHolderGrid
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
+            startRepairTimer();
         }
+    }
+
+    private void startRepairTimer() {
+        Timer repairTimer = new Timer();
+        repairTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    for (Dropship dropship : game.getDropships().values()) {
+                        dropship.repairUnits();
+                        int repairedLife = Math.min(dropship.getLife() + 1, 300);
+                        dropship.setLife(repairedLife);
+                    }
+                }
+            }
+        }, 0, 1000);
     }
 
 
@@ -257,5 +385,7 @@ public class InMemoryGameRepository implements GameRepository {
         LogUtil.log(log, infoLog, "No free space found");
         return null;
     }
+
+
 
 }

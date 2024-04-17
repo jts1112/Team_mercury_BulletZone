@@ -11,6 +11,7 @@ import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
@@ -49,8 +50,10 @@ public class GameBoardBuilder {
      * @param index the index of the field holder grid
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder setWall(int destructValue,int index){
-        fieldHolderGrid.get(index).setFieldEntity(new Wall(destructValue, index));
+    public GameBoardBuilder setWall(int destructValue,int index) {
+        Wall wall = new Wall(destructValue, index);
+        fieldHolderGrid.get(index).setFieldEntity(wall);
+        wall.setParent(fieldHolderGrid.get(index));
         return this;
     }
 
@@ -61,7 +64,9 @@ public class GameBoardBuilder {
      * @return the GameBoardBuilderInstance
      */
     public GameBoardBuilder setWall(int index) {
-        fieldHolderGrid.get(index).setFieldEntity(new Wall());
+        Wall wall = new Wall();
+        fieldHolderGrid.get(index).setFieldEntity(wall);
+        wall.setParent(fieldHolderGrid.get(index));
         return this;
     }
 

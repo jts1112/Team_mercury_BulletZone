@@ -8,10 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -23,14 +27,19 @@ import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.BackgroundExecutor;
 
+import edu.unh.cs.cs619.bulletzone.events.GameData;
+import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
 import edu.unh.cs.cs619.bulletzone.ui.GridModel;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+import kotlin.Unit;
+
 @SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
-public class ClientActivity extends Activity {
+public class ClientActivity extends Activity implements GameDataObserver {
 
 //    private static final String TAG = "ClientActivity";
     @Bean
@@ -46,35 +55,51 @@ public class ClientActivity extends Activity {
     @Bean
     protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
-    @ViewById
-    protected ProgressBar healthBar;
-    /**
-     * Remote tank identifier
-     */
+    protected GameData gameData;
 
     /**
-     * Removed all unit ids in client activity to be used in actioncontroller
+     * Changed unitIds to a singleton which is passed to actioncontroller
+     * and imagemapper to distinguish between player and enemy units
      */
+    private UnitIds unitIds;
+    private int tappedX = -1;
+    private int tappedY = -1;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client);
 
-        gridModel = new GridModel();
+        // create instance of ids for gridmodel to use for distinguishing users entities
+        unitIds = UnitIds.getInstance();
+        gridModel = new GridModel(unitIds);
         mGridAdapter = new GridAdapter(this);
+
+        gameData = new GameData(unitIds);
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
 
         // Initialize gridEventHandler after gridModel initialization
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
+        gameData.registerObserver(this);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int colX = position % gridView.getNumColumns();
+                int rowY = position / gridView.getNumColumns();
+                onGridItemTapped(colX, rowY);
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         gridEventHandler.unregister();
+        gameData.unregisterObserver(this);
     }
 
     /**
@@ -96,17 +121,11 @@ public class ClientActivity extends Activity {
     };
     */
 
-    @AfterViews
-    protected void afterViewInjection() {
-        joinAsync();
-        SystemClock.sleep(500);
-        gridView.setAdapter(mGridAdapter);
-    }
 
     @AfterInject
     void afterInject() {
         // initialize actioncontroller
-        actionController.initialize(this);
+        actionController.initialize(this, unitIds);
     }
 
     @Background
@@ -117,16 +136,13 @@ public class ClientActivity extends Activity {
         } catch (Exception ignored) { }
     }
 
-//    public void updateGrid(GridWrapper gw) {
-//        mGridAdapter.updateList(gw.getGrid());
-//    }
-
     @SuppressLint("NonConstantResourceId")
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
             eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
+            eventProcessor.setGameData(gameData);
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
@@ -175,6 +191,7 @@ public class ClientActivity extends Activity {
     }
 
     private void updateControlsForUnit(String unit) {
+        System.out.println("Updating controls for unit: " + unit);
         Button buttonMine = findViewById(R.id.buttonMine);
         Button buttonUp = findViewById(R.id.buttonUp);
         Button buttonDown = findViewById(R.id.buttonDown);
@@ -201,6 +218,41 @@ public class ClientActivity extends Activity {
             buttonRight.setVisibility(View.VISIBLE);
             buttonFire.setVisibility(View.VISIBLE);
         }
+    }
+
+    // Method to update tank life value in TextView
+    @Override
+    public void onTankLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView tankLife = findViewById(R.id.textViewTankLife);
+            tankLife.setText("Tank Armor: " + life);
+        });
+    }
+
+    // Method to update miner life value in TextView
+    @Override
+    public void onMinerLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView minerLife = findViewById(R.id.textViewMinerLife);
+            minerLife.setText("Miner Armor: " + life);
+        });
+    }
+
+    // Method to update dropship life value in TextView
+    @Override
+    public void onDropshipLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewDropshipLife);
+            dropshipLife.setText("Dropship Armor: " + life);
+        });
+    }
+
+    @Override
+    public void onPlayerCreditUpdate(long creditVal) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewCredits);
+            dropshipLife.setText("Credits: " + creditVal);
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -247,5 +299,51 @@ public class ClientActivity extends Activity {
 
     public static void updateHealthBar() {
     // Firing and taking damage needs to work before we can test this.
+    }
+
+    @AfterViews
+    protected void afterViewInjection() {
+        joinAsync();
+        SystemClock.sleep(500);
+        gridView.setAdapter(mGridAdapter);
+    }
+
+    public void onGridItemTapped(int tappedX, int tappedY) {
+        this.tappedX = tappedX;
+        this.tappedY = tappedY;
+        System.out.println("GridItemTapped at: " + tappedX + ", " + tappedY);
+        showMoveToButton();
+    }
+
+    private void showMoveToButton() {
+        // Shows the "Move To" button
+        Button moveToButton = findViewById(R.id.buttonMoveTo);
+        moveToButton.setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Click(R.id.buttonMoveTo)
+    protected void onMoveToButtonClick() {
+        EditText editTextRow = findViewById(R.id.editTextRow);
+        EditText editTextColumn = findViewById(R.id.editTextColumn);
+
+        String rowString = editTextRow.getText().toString().trim();
+        String columnString = editTextColumn.getText().toString().trim();
+
+        if (!rowString.isEmpty() && !columnString.isEmpty()) {
+            int row = Integer.parseInt(rowString);
+            int column = Integer.parseInt(columnString);
+
+            // Perform the move action to the target position
+            actionController.moveToPosition(column, row);
+
+            // Clear the text boxes
+            editTextRow.setText("");
+            editTextColumn.setText("");
+        }
+    }
+
+    public void clickEvent(View view) {
+
     }
 }

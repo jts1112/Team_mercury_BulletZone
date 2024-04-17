@@ -19,10 +19,14 @@ public interface GameRepository {
     boolean fire(long tankId, int strength)
             throws TankDoesNotExistException, LimitExceededException;
 
+    void mine(long minerId) throws TankDoesNotExistException;
+
     public void leave(long tankId)
             throws TankDoesNotExistException;
 
-    // New ⬇️⬇️
+    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException;
+
+        // New ⬇️⬇️
     long spawnMiner(long dropshipId)
             throws TankDoesNotExistException, LimitExceededException;
 

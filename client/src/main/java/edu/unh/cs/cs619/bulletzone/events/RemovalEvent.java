@@ -4,6 +4,8 @@ public class RemovalEvent extends GameEvent {
     @JsonProperty
     private int position;
 
+    public RemovalEvent() {}
+
     /**
      * Constructor for testing only.
      * @param position The position of the entity to remove.
@@ -18,7 +20,7 @@ public class RemovalEvent extends GameEvent {
      * @param board The game board.
      */
     @Override
-    public void applyTo(int[][] board) {
+    public void applyTo(int[][] board, GameData gameData) {
         int row = position / 16;
         int col = position % 16;
         board[row][col] = 0;

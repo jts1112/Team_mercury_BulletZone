@@ -1,18 +1,16 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
-import android.content.Context;
-
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
-@EBean
 public class GridCellImageMapper {
 
+    private UnitIds Ids;
 
-    public GridCellImageMapper() {
-
+    public GridCellImageMapper(UnitIds ids) {
+        this.Ids = ids;
     }
 
     public int getTerrainImageResource(int cellValue) {
@@ -42,11 +40,23 @@ public class GridCellImageMapper {
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {
-            imageResource = R.drawable.tank_icon2;
+            if (Ids.getTankId() == (cellValue - 10000000) / 10000) {
+                imageResource = R.drawable.tank_icon2;
+            } else {
+                imageResource = R.drawable.tankicon4;
+            }
         } else if (cellValue >= 20000000 && cellValue <= 30000000) {
-            imageResource = R.drawable.miner1;
+            if (Ids.getMinerId() == (cellValue - 20000000) / 10000) {
+                imageResource = R.drawable.miner1;
+            } else {
+                imageResource = R.drawable.miner2;
+            }
         } else if (cellValue >= 30000000 && cellValue <= 40000000) {
-            imageResource = R.drawable.dropship1;
+            if (Ids.getDropshipId() == (cellValue - 30000000) / 10000) {
+                imageResource = R.drawable.dropship1;
+            } else {
+                imageResource = R.drawable.dropship2;
+            }
         }
 
         return imageResource;

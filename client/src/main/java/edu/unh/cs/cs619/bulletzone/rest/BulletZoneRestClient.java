@@ -25,7 +25,8 @@ import edu.unh.cs.cs619.bulletzone.util.ResultWrapper;
  * Created by simon on 10/1/14.
  */
 
-@Rest(rootUrl = "http://172.29.160.1:8080/games",
+//@Rest(rootUrl = "http://172.29.160.1:8080/games",
+@Rest(rootUrl = "http://172.16.32.109:8080/games", // Shane's ip
 //@Rest(rootUrl = "http://10.21.173.197:8080/games",
 //@Rest(rootUrl = "http://10.21.164.194:8080/games",
 //@Rest(rootUrl = "http://stman1.cs.unh.edu:61905/games",
@@ -55,6 +56,9 @@ public interface BulletZoneRestClient extends RestClientErrorHandling {
 
     @Put("/{entityId}/move/{direction}")
     BooleanWrapper move(@Path long entityId, @Path byte direction);
+
+    @Put("/{entityId}/moveTo/{targetX}/{targetY}")
+    BooleanWrapper moveToPosition(@Path long entityId, @Path int targetX, @Path int targetY);
 
     @Put("/{entityId}/turn/{direction}")
     BooleanWrapper turn(@Path long entityId, @Path byte direction);

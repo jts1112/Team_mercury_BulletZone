@@ -21,7 +21,7 @@ public class TurnEvent extends GameEvent{
         this.position = pos;
     }
 
-    public void applyTo(int[][] board) {
+    public void applyTo(int[][] board, GameData gameData) {
         board[position / 16][position % 16] = rawServerValue;
     }
 
