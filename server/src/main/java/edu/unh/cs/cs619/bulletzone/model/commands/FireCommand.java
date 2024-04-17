@@ -10,6 +10,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 import edu.unh.cs.cs619.bulletzone.model.events.*;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Timer;
@@ -124,6 +125,12 @@ public class FireCommand implements Command {
                                     EventBus.getDefault().post(removalEvent);
                                 }
                             }
+                        } else if (nextField.getEntity() instanceof PowerUpEntity powerUpEntity) {
+                            powerUpEntity.getParent().clearField();
+
+                            // Create new RemovalEvent
+                            RemovalEvent removalEvent = new RemovalEvent(powerUpEntity.getPos());
+                            EventBus.getDefault().post(removalEvent);
                         }
                         if (isVisible) {
                             // Remove bullet from field

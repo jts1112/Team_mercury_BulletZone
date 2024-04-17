@@ -2,13 +2,17 @@ package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.greenrobot.eventbus.EventBus;
+import edu.unh.cs.cs619.bulletzone.datalayer.item.GameItemRepository;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.*;
+import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
+import org.greenrobot.eventbus.EventBus;
 
 public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected long id;
@@ -73,6 +77,10 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
     protected List<Bullet> bullets = new ArrayList<>();
 
+    protected PowerUpComponent powerUp = new ConcretePowerUpComponent();
+    protected  GameItemRepository repo = new GameItemRepository();
+
+    // Getters and Setters
     public long getLastMoveTime() {
         return lastMoveTime;
     }
@@ -82,7 +90,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedMoveInterval() {
-        return allowedMoveInterval;
+        return powerUp.getMovementInterval(allowedMoveInterval);
     }
 
     public void setAllowedMoveInterval(int allowedMoveInterval) {
@@ -98,7 +106,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedFireInterval() {
-        return allowedFireInterval;
+        return powerUp.getFireInterval(allowedFireInterval);
     }
 
     public void setAllowedFireInterval(int allowedFireInterval) {
@@ -144,6 +152,29 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
     public boolean isDestroyed() {
         return life <= 0;
+    }
+
+    public void pickupPowerUp(PowerUpType type) {
+        switch (type) {
+            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+        }
+    }
+
+    public Optional<PowerUpEntity> dropPowerUp() {
+        PowerUpComponent temp = powerUp;
+        Optional<PowerUpComponent> prev = powerUp.getPrevPowerUp();
+        if (prev.isEmpty()) {
+            return Optional.empty();
+        } else {
+            powerUp = prev.get();
+            Optional<PowerUpType> type = temp.getPowerUpType();
+            return type.flatMap(powerUpType -> switch (powerUpType) {
+                case AntiGrav -> Optional.of(new AntiGravPowerUpEntity());
+                case FusionReactor -> Optional.of(new FusionReactorPowerUpEntity());
+                case Thingamajig -> Optional.empty();
+            });
+        }
     }
 
     public void hit(int damage) {
