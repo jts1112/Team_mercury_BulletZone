@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.commands.CommandPattern;
 import edu.unh.cs.cs619.bulletzone.model.commands.MineCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -39,6 +40,8 @@ public class InMemoryGameRepository implements GameRepository {
     private final int[] bulletDamage = {15, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
+
+    private  CommandPattern commands = null;
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
@@ -115,6 +118,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException {
+
         if (game.getDropship(entityId) != null) {
             return ;
         }
@@ -127,78 +131,47 @@ public class InMemoryGameRepository implements GameRepository {
             public void run() {
                 try {
                     synchronized (monitor) {
-                        PlayableEntity entity = game.getPlayableEntity(entityId);
-                        if (entity == null) {
+                        PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+                        if (playableEntity == null) {
                             throw new TankDoesNotExistException(entityId);
                         }
 
-                        FieldHolder currentField = entity.getParent();
+                        if (commands == null){
+                            commands = new CommandPattern(game);
+                        }
+
+                        FieldHolder currentField = playableEntity.getParent();
                         int currentPosition = currentField.getPosition();
                         int currentX = currentPosition % FIELD_DIM;
                         int currentY = currentPosition / FIELD_DIM;
 
-                        boolean stoppedX = false;
-                        boolean stoppedY = false;
-                        boolean stoppedXTwice = false;
-                        boolean stoppedYTwice = false;
-
-                        PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+//                        PlayableEntity playableEntity = game.getPlayableEntity(entityId); // similar was already declared above
                         int sleepTime = playableEntity.getAllowedMoveInterval() * 2;
 
-                        while ((!playableEntity.isHasActionQueued() && ((currentX != targetX || currentY != targetY)))
-                                && !(stoppedXTwice || stoppedYTwice)) {
+                        // if current x is less than then go left. else go right.
+                        // find direction need to move
 
-                            stoppedXTwice = false;
-                            stoppedYTwice = false;
-
-                            // X movement
-                            while (!playableEntity.isHasActionQueued() && currentX != targetX) {
-                                Direction directionX = currentX < targetX ? Direction.Right : Direction.Left;
-                                MoveCommand moveCommand = new MoveCommand(entityId, directionX);
-                                boolean movedX = moveCommand.execute(playableEntity);
-                                if (!movedX) {
-                                    if (stoppedX) {
-                                        stoppedXTwice = true;
-                                    }
-                                    stoppedX = true;
-                                    System.out.println("Unable to move further in X direction. Stopping.");
-                                    break;
-                                }
-                                currentField = entity.getParent();
-                                currentPosition = currentField.getPosition();
-                                currentX = currentPosition % FIELD_DIM;
-                                currentY = currentPosition / FIELD_DIM;
-                                System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
-                                System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
-                                Thread.sleep(sleepTime);
-
-                                stoppedX = false;
-                            }
-
-                            // Y movement
-                            while (!playableEntity.isHasActionQueued() && currentY != targetY) {
-                                Direction directionY = currentY < targetY ? Direction.Down : Direction.Up;
-                                MoveCommand moveCommand = new MoveCommand(entityId, directionY);
-                                boolean movedY = moveCommand.execute(playableEntity);
-                                if (!movedY) {
-                                    if (stoppedY) {
-                                        stoppedYTwice = true;
-                                    }
-                                    stoppedY = true;
-                                    System.out.println("Unable to move further in Y direction. Stopping.");
-                                    break;
-                                }
-                                currentField = entity.getParent();
-                                currentPosition = currentField.getPosition();
-                                currentX = currentPosition % FIELD_DIM;
-                                currentY = currentPosition / FIELD_DIM;
-                                System.out.println("Current Position: (" + currentX + ", " + currentY + ")");
-                                System.out.println("Target Position: (" + targetX + ", " + targetY + ")");
-                                Thread.sleep(sleepTime);
-
-                                stoppedY = false;
-                            }
+                        Direction directionX = currentX < targetX ? Direction.Right : Direction.Left;
+                        int initialX = playableEntity.getPosition() % FIELD_DIM;
+                        // add move command in the direction.
+                        if (playableEntity.getDirection() != directionX) { // if not facing the direction needed need to turn that direction
+                            commands.addMoveCommand(entityId, directionX);
                         }
+                        // while absolute value of difference
+                        for (int xposition = 0; xposition < Math.abs(targetX - currentX); xposition++) { // add commands to x direction.
+                            commands.addMoveCommand(entityId, directionX);
+                        }
+
+                        // start doing y commands
+                        Direction directionY = currentY < targetY ? Direction.Down : Direction.Up;
+                        int initialY = (int) Math.floor((double) playableEntity.getPosition() / FIELD_DIM);
+                        if (directionX != directionY) { // if not facing the direction needed to turn that directoin face that direction
+                            commands.addMoveCommand(entityId, directionY);
+                        }
+                        for (int yposition = 0; yposition < Math.abs(targetY - currentY); yposition++) {
+                            commands.addMoveCommand(entityId, directionY);
+                        }
+                        commands.executeCommands(sleepTime, playableEntity);
                     }
                 } catch (InterruptedException | TankDoesNotExistException e) {
                     log.error("Error during moveTo operation", e);

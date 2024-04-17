@@ -36,6 +36,7 @@ public class ActionController {
     private long currentUnitId = -1;
     private ShakeDetector shakeDetector;
 
+
     public ActionController() {
     }
 
