@@ -89,12 +89,12 @@ public class GameData {
 
     public void setPlayerCredits(long creditVal) {
         this.playerCredits = creditVal;
-        Log.d("GameData", "Credits set to " + playerCredits);
+//        Log.d("GameData", "Credits set to " + playerCredits);
     }
 
     public void addPlayerCredits(long creditDif) {
         this.playerCredits += creditDif;
-        Log.d("GameData", "Credits now at " + playerCredits);
+//        Log.d("GameData", "Credits now at " + playerCredits);
         notifyCreditObservers();
     }
 
