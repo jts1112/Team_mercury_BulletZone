@@ -24,7 +24,7 @@ public interface GameRepository {
     public void leave(long tankId)
             throws TankDoesNotExistException;
 
-    public boolean moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException;
+    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException;
 
         // New ⬇️⬇️
     long spawnMiner(long dropshipId)
