@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
+
 /**
  * @author Bence Cserna (bence@cserna.net)
  */

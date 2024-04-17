@@ -1,56 +1,45 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
-
-import org.androidannotations.annotations.AfterInject;
+import android.widget.ImageView;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.SystemService;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import edu.unh.cs.cs619.bulletzone.R;
-import edu.unh.cs.cs619.bulletzone.events.UpdateBoardEvent;
 
 @EBean
 public class GridAdapter extends BaseAdapter {
 
-    private final Object monitor = new Object();
-    @SystemService
-    protected LayoutInflater inflater;
-    private int[][] mEntities = new int[16][16];
+    private LayoutInflater inflater;
+    private GridCell[][] gridData;
 
-    public void updateList(int[][] entities) {
-        synchronized (monitor) {
-            this.mEntities = entities;
-            this.notifyDataSetChanged();
-        }
+    private int[][] Terrains;
+    private GridCellImageMapper mapper;
+
+    public GridAdapter(Context context) {
+        inflater = LayoutInflater.from(context);
+        mapper = new GridCellImageMapper();
     }
 
-    @AfterInject
-    protected void afterInject() {
-        EventBus.getDefault().register(this);
+    public void setGridData(GridCell[][] gridData) {
+        this.gridData = gridData;
+        notifyDataSetChanged();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleUpdate(UpdateBoardEvent event) {
-        this.notifyDataSetChanged();
-    }
-
-    public int[][] getBoard() { return mEntities; }
 
     @Override
     public int getCount() {
-        return 16 * 16;
+        return gridData != null ? gridData.length * gridData[0].length : 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return mEntities[(int) position / 16][position % 16];
+        int row = position / gridData[0].length;
+        int col = position % gridData[0].length;
+        return gridData[row][col];
     }
 
     @Override
@@ -60,34 +49,37 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.field_item, null);
+            convertView = inflater.inflate(R.layout.field_item, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = convertView.findViewById(R.id.gridImageView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        int row = position / 16;
-        int col = position % 16;
+        int row = position / gridData[0].length;
+        int col = position % gridData[0].length;
 
-        int val = mEntities[row][col];
+        GridCell cell = gridData[row][col];
 
-        if (convertView instanceof TextView) {
-            synchronized (monitor) {
-                if (val > 0) {
-                    if (val == 1000 || (val>1000&&val<=2000)) {
-                        ((TextView) convertView).setText("W");
-                    } else if (val >= 2000000 && val <= 3000000) {
-                        ((TextView) convertView).setText("B");
-                    } else if (val >= 10000000 && val <= 20000000) {
-                        ((TextView) convertView).setText("T");
-                    }
-                } else {
-                    ((TextView) convertView).setText("");
-                }
-            }
+        // Set terrain image
+        holder.imageView.setImageResource(cell.getTerrainResourceID());
+
+        // Set entity image on top of terrain
+        if (cell.getEntityResourceID() != 0 ) {
+            holder.imageView.setImageResource(cell.getEntityResourceID());
+            holder.imageView.setRotation(cell.getEntityRotation());
         }
 
         return convertView;
     }
+
+
+
+    static class ViewHolder {
+        ImageView imageView;
+    }
 }
-
-

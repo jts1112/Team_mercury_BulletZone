@@ -12,18 +12,45 @@
 
     <LinearLayout
         android:id="@+id/LinearLayoutDisplay"
-        android:layout_width="200dp"
+        android:layout_width="251dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <GridView
-            android:id="@+id/gridView"
+        <ProgressBar
+            android:id="@+id/healthBar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:layout_margin="16dp"
+            android:max="100"
+            android:progress="0" />
+
+        <GridView
+            android:id="@+id/gridView"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
             android:layout_weight=".5"
+            android:background="#FFFFFF"
             android:numColumns="16"
-            tools:listitem="@layout/field_item"/>
+            tools:listitem="@layout/field_item" />
+
+        <Button
+            android:id="@+id/buttonTank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tank" />
+
+        <Button
+            android:id="@+id/buttonMiner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Miner" />
+
+        <Button
+            android:id="@+id/buttonDropship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dropship" />
 
         <Switch
             android:id="@+id/eventSwitch"
@@ -31,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:text="Update using events" />
+
     </LinearLayout>
 
     <RelativeLayout
@@ -82,20 +110,21 @@
             android:text="@string/fire" />
 
         <Button
+            android:id="@+id/buttonMine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonFire"
+            android:layout_centerHorizontal="true"
+            android:text="MINE" />
+
+
+        <Button
             android:id="@+id/buttonLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:text="Leave" />
-
-        <Button
-            android:id="@+id/buttonLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Login" />
 
     </RelativeLayout>
 

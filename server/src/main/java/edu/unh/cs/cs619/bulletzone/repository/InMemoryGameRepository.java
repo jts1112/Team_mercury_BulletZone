@@ -1,44 +1,35 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.FieldHolder;
-import edu.unh.cs.cs619.bulletzone.model.FireCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.MoveCommand;
-import edu.unh.cs.cs619.bulletzone.model.Tank;
+import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
+import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
+import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import edu.unh.cs.cs619.bulletzone.util.LogUtil;
 
 @Component
 public class InMemoryGameRepository implements GameRepository {
 
-    /**
-     * Field dimensions
-     */
     private static final int FIELD_DIM = 16;
-
-    /**
-     * Bullet step time in milliseconds
-     */
     private static final int BULLET_PERIOD = 200;
-
-    /**
-     * Bullet's impact effect [life]
-     */
     private static final int BULLET_DAMAGE = 1;
 
-    /**
-     * Tank's default life [life]
-     */
-    private static final int TANK_LIFE = 100;
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
@@ -47,22 +38,31 @@ public class InMemoryGameRepository implements GameRepository {
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
 
+    private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
+
+
+    /**
+     * Generates a new tank to join the game.
+     * @param ip IP address of the tank.
+     * @return Generated Tank object.
+     */
     @Override
-    public Tank join(String ip) {
+    public Dropship join(String ip) {
         synchronized (this.monitor) {
-            Tank tank;
+            Dropship dropship;
             if (game == null) {
                 this.create();
             }
 
-            if( (tank = game.getTank(ip)) != null){
-                return tank;
+            // Check if a dropship with the same IP already exists in the game.
+            Dropship existingDropship = game.getDropship(ip);
+            if (existingDropship != null) {
+                return existingDropship;
             }
 
-            Long tankId = this.idGenerator.getAndIncrement();
+            Long dropshipId = this.idGenerator.getAndIncrement();
 
-            tank = new Tank(tankId, Direction.Up, ip);
-            tank.setLife(TANK_LIFE);
+            dropship = new Dropship(dropshipId, Direction.Up, ip);
 
             Random random = new Random();
             int x;
@@ -72,17 +72,16 @@ public class InMemoryGameRepository implements GameRepository {
             for (; ; ) {
                 x = random.nextInt(FIELD_DIM);
                 y = random.nextInt(FIELD_DIM);
+                // FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 FieldHolder fieldElement = game.getHolderGrid().get(x * FIELD_DIM + y);
                 if (!fieldElement.isPresent()) {
-                    fieldElement.setFieldEntity(tank);
-                    tank.setParent(fieldElement);
+                    fieldElement.setFieldEntity(dropship);
+                    dropship.setParent(fieldElement);
                     break;
                 }
             }
-
-            game.addTank(ip, tank);
-
-            return tank;
+            game.addDropship(dropship);
+            return dropship;
         }
     }
 
@@ -97,25 +96,38 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean move(long tankId, Direction direction)
-            throws TankDoesNotExistException {
+    public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            // Find tank
-            return new MoveCommand(tankId,direction).execute(game);
+            PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+
+            System.out.println("Moving entity: " + entityId);
+            System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
+
+            if (playableEntity instanceof Dropship) {
+                System.out.println("Dropship move attempt blocked");
+                return false;
+            }
+
+            MoveCommand moveCommand = new MoveCommand(entityId, direction);
+            boolean moveResult = moveCommand.execute(playableEntity);
+
+            System.out.println("Move result: " + moveResult);
+
+            return moveResult;
         }
     }
 
     @Override
-    public boolean fire(long tankId, int bulletType)
-            throws TankDoesNotExistException {
+    public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-           return new FireCommand(tankId,bulletType).execute(game);
+            FireCommand fireCommand = new FireCommand(playableEntityId, bulletType, this.monitor);
+            PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+            return fireCommand.execute(playableEntity);
         }
     }
 
     @Override
-    public void leave(long tankId)
-            throws TankDoesNotExistException {
+    public void leave(long tankId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
             if (!this.game.getTanks().containsKey(tankId)) {
                 throw new TankDoesNotExistException(tankId);
@@ -135,46 +147,115 @@ public class InMemoryGameRepository implements GameRepository {
             return;
         }
         synchronized (this.monitor) {
-
             this.game = new Game();
-
 //            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
             //TODO added
 //            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-
+//            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// change back to this  before the createFeildHolderGrid
+            game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
         }
     }
 
-    // TODO Removed since implemented in GameBoardBuilder
-    private void createFieldHolderGrid(Game game) {
+
+    // ------------ Spawn Methods ------------
+    @Override
+    public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
         synchronized (this.monitor) {
-            game.getHolderGrid().clear();
-            for (int i = 0; i < FIELD_DIM * FIELD_DIM; i++) {
-                game.getHolderGrid().add(new FieldHolder(i));
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new TankDoesNotExistException(dropshipId);
             }
 
-            FieldHolder targetHolder;
-            FieldHolder rightHolder;
-            FieldHolder downHolder;
+            if (dropship.getNumMiners() <= 0) {
+                List<Long> miners = dropship.getMinerIds();
+                return miners.get(0);
+            }
 
-            // Build connections
-            for (int i = 0; i < FIELD_DIM; i++) {
-                for (int j = 0; j < FIELD_DIM; j++) {
-                    targetHolder = game.getHolderGrid().get(i * FIELD_DIM + j);
-                    rightHolder = game.getHolderGrid().get(i * FIELD_DIM
-                            + ((j + 1) % FIELD_DIM));
-                    downHolder = game.getHolderGrid().get(((i + 1) % FIELD_DIM)
-                            * FIELD_DIM + j);
+            long minerId = this.idGenerator.getAndIncrement();
+            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
 
-                    targetHolder.addNeighbor(Direction.Right, rightHolder);
-                    rightHolder.addNeighbor(Direction.Left, targetHolder);
-
-                    targetHolder.addNeighbor(Direction.Down, downHolder);
-                    downHolder.addNeighbor(Direction.Up, targetHolder);
-                }
+            // Find a free space near the dropship to spawn the miner
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(miner);
+                miner.setParent(spawningPoint);
+                game.getMiners().put(minerId, miner);
+                dropship.setNumMiners(dropship.getNumMiners() - 1);
+                dropship.addMiner(minerId);
+                return minerId;
+            } else {
+                return dropshipId;
             }
         }
+    }
+
+    @Override
+    public long spawnTank(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
+        synchronized (this.monitor) {
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new TankDoesNotExistException(dropshipId);
+            }
+
+            if (dropship.getNumTanks() <= 0) {
+                List<Long> tanks = dropship.getTankIds();
+                return tanks.get(0);
+            }
+
+            long tankId = this.idGenerator.getAndIncrement();
+            Tank tank = new Tank(tankId, Direction.Up, dropship.getIp());
+
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(tank);
+                tank.setParent(spawningPoint);
+                game.getTanks().put(tankId, tank);
+                dropship.setNumTanks(dropship.getNumTanks() - 1);
+                dropship.addTank_(tankId);
+                return tankId;
+            } else {
+                return dropshipId;
+            }
+        }
+    }
+
+    public FieldHolder findFreeSpace(FieldHolder startingPoint) {
+        boolean infoLog = false;
+        int startIndex = game.getGameBoard().getBoard().indexOf(startingPoint);
+        int x = startIndex % FIELD_DIM;
+        int y = startIndex / FIELD_DIM;
+        int dx = 0;
+        int dy = -1;
+        int maxSteps = 2 * (FIELD_DIM - 1);
+
+        LogUtil.log(log, infoLog, "Starting point: {}, Start index: {}, Start coordinates: ({}, {}), Max steps: {}",
+                startingPoint, startIndex, x, y, maxSteps);
+
+        for (int i = 0; i < maxSteps; i++) {
+            LogUtil.log(log, infoLog, "Step: {}, Current coordinates: ({}, {})", i, x, y);
+
+            if (0 <= x && x < FIELD_DIM && 0 <= y && y < FIELD_DIM) {
+                FieldHolder currentField = game.getGameBoard().getBoard().get(y * FIELD_DIM + x);
+                LogUtil.log(log, infoLog, "Current field: {}", currentField);
+
+                if (!currentField.isPresent()) {
+                    LogUtil.log(log, infoLog, "Free space found: {}", currentField);
+                    return currentField;
+                }
+            } else {
+                log.warn("Out of bounds: ({}, {})", x, y);
+                int temp = dx;
+                dx = -dy;
+                dy = temp;
+                LogUtil.log(log, infoLog, "Direction changed: dx={}, dy={}", dx, dy);
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        LogUtil.log(log, infoLog, "No free space found");
+        return null;
     }
 
 }

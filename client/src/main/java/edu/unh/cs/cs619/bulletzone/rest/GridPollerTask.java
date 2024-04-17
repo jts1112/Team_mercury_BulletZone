@@ -1,4 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.rest;
+import static edu.unh.cs.cs619.bulletzone.ClientActivity.updateHealthBar;
+
+import android.util.Log;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
@@ -64,5 +67,7 @@ public class GridPollerTask {
     @UiThread
     public void onGridUpdate(GridWrapper gw) {
         EventBus.getDefault().post(new GridUpdateEvent(gw));
+        //Log.d("poller", "new gridupdateevent " + gw.getGrid());
+        updateHealthBar();  // Tentative
     }
 }

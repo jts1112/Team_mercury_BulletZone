@@ -16,16 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import com.google.common.base.Preconditions;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
-import edu.unh.cs.cs619.bulletzone.model.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.repository.GameRepository;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
-import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
 @RestController
@@ -41,61 +38,68 @@ class GamesController {
         this.gameRepository = gameRepository;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method=RequestMethod.POST, value="", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     ResponseEntity<LongWrapper> join(HttpServletRequest request) {
-        Tank tank;
         try {
-            tank = gameRepository.join(request.getRemoteAddr());
-            log.info("Player joined: tankId={} IP={}", tank.getId(), request.getRemoteAddr());
+            long dropshipId = gameRepository.join(request.getRemoteAddr()).getId();
+            long minerId = gameRepository.spawnMiner(dropshipId);
+            long tankId = gameRepository.spawnTank(dropshipId);
+            log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
+                    dropshipId, minerId, tankId, request.getRemoteAddr());
 
             return new ResponseEntity<LongWrapper>(
-                    new LongWrapper(tank.getId()),
+                    new LongWrapper(dropshipId, minerId, tankId),
                     HttpStatus.CREATED
             );
         } catch (RestClientException e) {
             e.printStackTrace();
+        } catch (LimitExceededException | TankDoesNotExistException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/move/{direction}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/move/{direction}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<BooleanWrapper> move(@PathVariable long tankId, @PathVariable byte direction)
-            throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException {
-        return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.move(tankId, Direction.fromByte(direction))),
-                HttpStatus.OK
-        );
+    ResponseEntity<BooleanWrapper> move(@PathVariable long entityId, @PathVariable byte direction)
+            throws TankDoesNotExistException, LimitExceededException, IllegalTransitionException
+    {
+        boolean moved = gameRepository.move(entityId, Direction.fromByte(direction));
+        BooleanWrapper response = new BooleanWrapper(moved);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<BooleanWrapper> fire(@PathVariable long tankId)
-            throws TankDoesNotExistException, LimitExceededException {
-        return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.fire(tankId, 1)),
-                HttpStatus.OK
-        );
+    ResponseEntity<BooleanWrapper> fire(@PathVariable long entityId)
+            throws TankDoesNotExistException, LimitExceededException
+    {
+        boolean fired = gameRepository.fire(entityId,1);
+        BooleanWrapper response = new BooleanWrapper(fired);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{tankId}/fire/{bulletType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/{bulletType}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<BooleanWrapper> fire(@PathVariable long tankId, @PathVariable int bulletType)
-            throws TankDoesNotExistException, LimitExceededException {
-        return new ResponseEntity<BooleanWrapper>(
-                new BooleanWrapper(gameRepository.fire(tankId, bulletType)),
-                HttpStatus.OK
-        );
+    ResponseEntity<BooleanWrapper> fire(@PathVariable long entityId, @PathVariable int bulletType)
+            throws TankDoesNotExistException, LimitExceededException
+    {
+        boolean fired = gameRepository.fire(entityId, bulletType);
+        BooleanWrapper response = new BooleanWrapper(fired);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "{tankId}/leave", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.DELETE, value = "{entityId}/leave",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    HttpStatus leave(@PathVariable long tankId)
-            throws TankDoesNotExistException {
+    HttpStatus leave(@PathVariable long entityId) throws TankDoesNotExistException {
         //System.out.println("Games Controller leave() called, tank ID: "+tankId);
-        gameRepository.leave(tankId);
+        gameRepository.leave(entityId);
         return HttpStatus.OK;
     }
 
@@ -103,5 +107,27 @@ class GamesController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     String handleBadRequests(Exception e) {
         return e.getMessage();
+    }
+
+
+    // ------------ Spawn Endpoints ------------
+    @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId)
+            throws LimitExceededException, TankDoesNotExistException {
+        long minerId = gameRepository.spawnMiner(dropshipId);
+        LongWrapper response = new LongWrapper(minerId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/tank",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<LongWrapper> spawnTank(@PathVariable long dropshipId)
+            throws LimitExceededException, TankDoesNotExistException {
+        long tankId = gameRepository.spawnTank(dropshipId);
+        LongWrapper response = new LongWrapper(tankId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -10,13 +10,16 @@ public class TurnEvent extends GameEvent{
     private Direction oldDirection;
     @JsonProperty
     private Direction newDirection;
+    @JsonProperty
+    private int position;
 
     public TurnEvent() {}
 
-    public TurnEvent(int rawServerValue, Direction oldDir, Direction newDir) {
+    public TurnEvent(int rawServerValue, Direction oldDir, Direction newDir, int pos) {
         this.rawServerValue = rawServerValue;
         this.oldDirection = oldDir;
         this.newDirection = newDir;
+        this.position = pos;
     }
 
     @Override
@@ -24,6 +27,7 @@ public class TurnEvent extends GameEvent{
         return "Turn " + rawServerValue +
                 " from " + oldDirection +
                 " to " + newDirection +
+                " on " + position +
                 super.toString();
     }
 }

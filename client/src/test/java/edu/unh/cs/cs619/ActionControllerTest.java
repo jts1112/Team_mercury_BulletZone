@@ -6,9 +6,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 import edu.unh.cs.cs619.bulletzone.ActionController;
+import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 import edu.unh.cs.cs619.bulletzone.util.ShakeDetector;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+import kotlin.Unit;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,34 +36,35 @@ public class ActionControllerTest {
         // Initialize the mock BulletZoneRestClient
         restClient = mock(BulletZoneRestClient.class);
         actionController = new ActionController();
+        actionController.setCurrentUnitId(123);
         actionController.restClient = restClient;
     }
 
     @Test
     public void test_ActionController_Join() {
         // Define the behavior of restClient
-        when(restClient.join()).thenReturn(new LongWrapper(123));
+        when(restClient.join()).thenReturn(new LongWrapper(123, 124, 125));
 
         // Call the method to be tested
-        long tankId = actionController.join();
+        long dropshipId = actionController.join();
 
         // Verify that the method returns the correct tank ID
-        assertEquals(123, tankId);
+        assertEquals(123, dropshipId);
     }
 
     @Test
     public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
-        actionController.onButtonMove(123, (byte) 1);
+        actionController.onButtonMove(R.id.buttonDown);
 
         // Verify that the restClient's move method is called with the correct parameters
-        verify(restClient).move(123, (byte) 1);
+        verify(restClient).move(123, (byte) 4);
     }
 
     @Test
     public void test_ActionController_OnButtonFire() {
         // Call the method to be tested
-        actionController.onButtonFire(123);
+        actionController.onButtonFire();
 
         // Verify that the restClient's fire method is called with the correct parameter
         verify(restClient).fire(123);
@@ -71,6 +76,7 @@ public class ActionControllerTest {
         Context mockContext = mock(Context.class);
         ActionController mockActionController = mock(ActionController.class);
         mockActionController.initialize(mockContext);
+        mockActionController.setCurrentUnitId(123);
 
         // Create a mock SensorManager
         SensorManager mockSensorManager = mock(SensorManager.class);
@@ -85,13 +91,13 @@ public class ActionControllerTest {
         System.out.println("ShakeDetector: " + shakeDetector);
 
         // Set the mock ActionController as the ShakeDetector's listener
-        shakeDetector.setOnShakeListener(() -> mockActionController.onButtonFire(anyLong()));
+        shakeDetector.setOnShakeListener(() -> mockActionController.onButtonFire());
 
         // Simulate a shake event
         shakeDetector.simulateShake();
 
         // verify that the onButtonFire method of the mock ActionController is called
-        verify(mockActionController).onButtonFire(anyLong());
+        verify(mockActionController).onButtonFire();
     }
 
     @Test

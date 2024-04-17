@@ -1,0 +1,166 @@
+package edu.unh.cs.cs619.bulletzone.model.entities;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalLong;
+
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+
+public class Dropship extends PlayableEntity {
+    private static final int INITIAL_LIFE = 300;
+    private static final int BULLET_DAMAGE = 50;
+    private static final int FIRE_INTERVAL = 2000;
+    private static final int ALLOWED_NUM_BULLETS = 1;
+    private static final int MOVE_INTERVAL = -1;
+
+    private int numMiners;
+    private int numTanks;
+    private long lastRepairTime;
+
+    private List<Long> tankIds;
+    private List<Long> minerIds;
+    private List<Tank> dockedTanks;
+    private List<Miner> dockedMiners;
+
+    public Dropship(long id, Direction direction, String ip) {
+        this.id = id;
+        this.direction = direction;
+        this.ip = ip;
+        this.life = INITIAL_LIFE;
+        this.numMiners = 1;
+        this.numTanks = 1;
+        this.numberOfBullets = 0;
+        this.lastFireTime = 0;
+        this.lastMoveTime = 0;
+        this.allowedMoveInterval = MOVE_INTERVAL;
+        this.allowedFireInterval = FIRE_INTERVAL;
+        this.allowedNumberOfBullets = ALLOWED_NUM_BULLETS;
+        this.bulletDamage = BULLET_DAMAGE;
+        this.tankIds = new ArrayList<>();
+        this.minerIds = new ArrayList<>();
+        this.lastRepairTime = 0;
+        this.dockedTanks = new ArrayList<>();
+        this.dockedMiners = new ArrayList<>();
+    }
+
+    @Override
+    public FieldEntity copy() {
+        return new Dropship(id, direction, ip);
+    }
+
+    @Override
+    public void hit(int damage) {
+        life -= damage;
+        System.out.println("Dropship life: " + id + " : " + life);
+    }
+
+    public boolean fire() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastFireTime >= FIRE_INTERVAL) {
+            lastFireTime = currentTime;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "D";
+    }
+
+    public void addMiner(long minerId) {
+        minerIds.add(minerId);
+    }
+
+    public void removeMiner(long minerId) {
+        minerIds.remove(minerId);
+    }
+
+    public void addTank_(long tankId) {
+        tankIds.add(tankId);
+    }
+
+    public void removeTank(long tankId) {
+        tankIds.remove(tankId);
+    }
+
+    public void repairUnits() {
+        long currentTime = System.currentTimeMillis();
+        for (Miner miner : dockedMiners) {
+            if (miner != null) {
+                int repairedLife = Math.min(miner.getLife() + 2, 120);
+                miner.setLife(repairedLife);
+            }
+        }
+        for (Tank tank : dockedTanks) {
+            if (tank != null) {
+                int repairedLife = Math.min(tank.getLife() + 2, 100);
+                tank.setLife(repairedLife);
+            }
+        }
+        if (currentTime - lastRepairTime >= 1000) {
+            life = Math.min(life + 1, INITIAL_LIFE);
+            lastRepairTime = currentTime;
+        }
+    }
+
+    public int getNumMiners() {
+        return numMiners;
+    }
+
+    public void setNumMiners(int numMiners) {
+        this.numMiners = numMiners;
+    }
+
+    public int getNumTanks() {
+        return numTanks;
+    }
+
+    public void setNumTanks(int numTanks) {
+        this.numTanks = numTanks;
+    }
+
+    public List<Long> getMinerIds() {
+        return minerIds;
+    }
+
+    public List<Long> getTankIds() {
+        return tankIds;
+    }
+
+    @Override
+    public int getIntValue() {
+        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
+    }
+
+    // ----------------------- Docking ------------------------
+    public void dockTank(Tank tank) {
+        dockedTanks.add(tank);
+        tank.setInDropship(this.id);
+    }
+
+    public void undockTank(Tank tank) {
+        dockedTanks.remove(tank);
+        tank.clearInDropship();
+    }
+
+    public void dockMiner(Miner miner) {
+        dockedMiners.add(miner);
+        miner.setInDropship(this.id);
+    }
+
+    public void undockMiner(Miner miner) {
+        dockedMiners.remove(miner);
+        miner.clearInDropship();
+    }
+
+    @Override
+    public Boolean isWheeled() {
+        return false;
+    }
+
+    @Override
+    public Boolean isTracked() {
+        return false;
+    }
+}

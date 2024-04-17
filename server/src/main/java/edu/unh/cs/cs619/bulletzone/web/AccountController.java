@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.web;
-
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,10 @@ import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
 import java.util.Optional;
 
+/**
+ * Handles account creation.
+ * Contains register and login endpoints.
+ */
 @RestController
 @RequestMapping(value = "/games/account")
 public class AccountController {
@@ -48,9 +51,11 @@ public class AccountController {
         log.debug("Register '" + name + "' with password '" + password + "'");
         // Return the response (true if account created)
         if (data.validateUser(name, password, true).isPresent()) {
-            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(true), HttpStatus.CREATED);
+            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(true),
+                    HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(false), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<BooleanWrapper>(new BooleanWrapper(false),
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -61,7 +66,8 @@ public class AccountController {
      * @param password The password
      * @return a response w/ the user ID with HttpStatus.OK if valid (or -1 with HttpStatus.UNAUTHORIZED if invalid)
      */
-    @RequestMapping(method = RequestMethod.PUT, value = "login/{name}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "login/{name}/{password}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity<LongWrapper> login(@PathVariable String name, @PathVariable String password)
@@ -70,8 +76,10 @@ public class AccountController {
         log.debug("Login '" + name + "' with password '" + password + "'");
         // Return the response (return user ID if valid login), -1 if not
         Optional<GameUser> userData = data.validateUser(name, password, false);
-        return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId()), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(new LongWrapper(-1), HttpStatus.UNAUTHORIZED));
+        return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId()),
+                        HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(new LongWrapper(-1),
+                        HttpStatus.UNAUTHORIZED));
     }
 
 }

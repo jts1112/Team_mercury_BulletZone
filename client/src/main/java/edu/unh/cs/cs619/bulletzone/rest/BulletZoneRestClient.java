@@ -25,7 +25,10 @@ import edu.unh.cs.cs619.bulletzone.util.ResultWrapper;
  * Created by simon on 10/1/14.
  */
 
-@Rest(rootUrl = "http://10.0.0.53:8080/games",
+@Rest(rootUrl = "http://172.29.160.1:8080/games",
+//@Rest(rootUrl = "http://10.21.173.197:8080/games",
+//@Rest(rootUrl = "http://10.21.164.194:8080/games",
+//@Rest(rootUrl = "http://stman1.cs.unh.edu:61905/games",
 //@Rest(rootUrl = "http://stman1.cs.unh.edu:6192/games",
 //@Rest(rootUrl = "http://stman1.cs.unh.edu:61902/games",
         converters = {StringHttpMessageConverter.class, MappingJackson2HttpMessageConverter.class}
@@ -50,15 +53,26 @@ public interface BulletZoneRestClient extends RestClientErrorHandling {
     @Put("/account/login/{username}/{password}")
     LongWrapper login(@Path String username, @Path String password);
 
-    @Put("/{tankId}/move/{direction}")
-    BooleanWrapper move(@Path long tankId, @Path byte direction);
+    @Put("/{entityId}/move/{direction}")
+    BooleanWrapper move(@Path long entityId, @Path byte direction);
 
-    @Put("/{tankId}/turn/{direction}")
-    BooleanWrapper turn(@Path long tankId, @Path byte direction);
+    @Put("/{entityId}/turn/{direction}")
+    BooleanWrapper turn(@Path long entityId, @Path byte direction);
 
-    @Put("/{tankId}/fire/1")
-    BooleanWrapper fire(@Path long tankId);
+    @Put("/{entityId}/fire/1")
+    BooleanWrapper fire(@Path long entityId);
 
-    @Delete("/{tankId}/leave")
-    BooleanWrapper leave(@Path long tankId);
+    @Put("/{entityId}/fire/{bulletType}")
+    BooleanWrapper fire(@Path long entityId, @Path byte bulletType);
+
+    @Delete("/{entityId}/leave")
+    BooleanWrapper leave(@Path long entityId);
+
+    // ------------ Spawn Endpoints ------------
+    @Put("/{dropshipId}/spawn/miner")
+    LongWrapper spawnMiner(@Path long dropshipId);
+
+    @Put("/{dropshipId}/spawn/tank")
+    LongWrapper spawnTank(@Path long dropshipId);
+
 }

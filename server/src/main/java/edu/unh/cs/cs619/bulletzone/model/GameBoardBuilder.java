@@ -7,14 +7,28 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import java.util.ArrayList;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
+
 public class GameBoardBuilder {
 
-    private ArrayList<FieldHolder>fieldHolderGrid;
+    private ArrayList<FieldHolder>fieldHolderGrid = new ArrayList<>();
+    int fieldDimension;
+    Object monitor;
 
     /**
      * Initial constructor
      */
-    public GameBoardBuilder() {
+    public GameBoardBuilder(int fieldDimension,Object monitor) {
+
+        // initializeing the grid by creating the field holder grid.
+        createFieldHolderGrid(fieldDimension, monitor);
+        this.fieldDimension = fieldDimension;
+        this.monitor = monitor;
     }
 
     /**
@@ -35,8 +49,8 @@ public class GameBoardBuilder {
      * @param index the index of the field holder grid
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder setDestructWall(int index){
-        fieldHolderGrid.get(index).setFieldEntity(new Wall(1500, index));
+    public GameBoardBuilder setWall(int destructValue,int index){
+        fieldHolderGrid.get(index).setFieldEntity(new Wall(destructValue, index));
         return this;
     }
 
@@ -51,6 +65,48 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setRockyTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new RockyTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setForestTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new ForestTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setMeadowTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new MeadowTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setHillsTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new HillsTerrain());
+        return this;
+    }
+
+    /**
+     * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
+     * @param rowNumber
+     * @param terrainType
+     */
+    public GameBoardBuilder setRowTerrain(int rowNumber,int terrainType){
+
+        for (int i = 0 ; i<fieldDimension;i++){
+            int index = rowNumber * fieldDimension + i;
+            if (terrainType == 1) { // rocky terrain
+                setRockyTerrain(index);
+            } else if (terrainType == 2) { // hilly terrain
+                setHillsTerrain(index);
+            } else if (terrainType == 3){ // forest terrain
+                setForestTerrain(index);
+            } else { // meadow
+                setMeadowTerrain(index);
+            }
+        }
+        return this;
+    }
+
     /**
      * Game board CreateFieldHolderGrid that was originally in InMemoryGameRepository
      * Creates the fieldholderGrid with the specified dimensions
@@ -59,7 +115,7 @@ public class GameBoardBuilder {
      * @param monitor monitor object needed to be passed
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder createFieldHolderGrid(int fieldDimension, Object monitor) {
+    private void createFieldHolderGrid(int fieldDimension, Object monitor) {
 
         synchronized (monitor) {
             if (this.fieldHolderGrid != null){
@@ -70,6 +126,7 @@ public class GameBoardBuilder {
 
             for (int i = 0; i < fieldDimension * fieldDimension; i++) {
                 fieldHolderGrid.add(new FieldHolder(i));
+                fieldHolderGrid.get(i).setTerrain(new RockyTerrain()); // TODO trying to make all terrain. remove set terrain once done
             }
 
             FieldHolder targetHolder;
@@ -93,7 +150,7 @@ public class GameBoardBuilder {
                 }
             }
         }
-        return this;
+//        return this;
     }
 
 
@@ -105,49 +162,64 @@ public class GameBoardBuilder {
         return this.fieldHolderGrid;
     }
 
+
     /**
      * Initialization that occurred within the InMemoryGameRepository
      * @return the updated game
      */
     public GameBoardBuilder inMemoryGameReposiryInitialize(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
-        fieldHolderGrid.get(1).setFieldEntity(new Wall());
-        fieldHolderGrid.get(2).setFieldEntity(new Wall());
-        fieldHolderGrid.get(3).setFieldEntity(new Wall());
+        GameBoardBuilder newBoard = new GameBoardBuilder(fieldDimension,monitor);
+        newBoard.setWall(1).
+                setWall(2).
+                setWall(3).
+                setWall(17).
+                setWall(1500,33).
+                setWall(1500,49).
+                setWall(1500,65).
+                setWall(34).
+                setWall(1500,66).
+                setWall(35).
+                setWall(51).
+                setWall(1500,67).
+                setWall(5).
+                setWall(21).
+                setWall(37).
+                setWall(53).
+                setWall(1500,69).
+                setWall(7).
+                setWall(23).
+                setWall(39).
+                setWall(1500,71).
+                setWall(8).
+                setWall(40).
+                setWall(1500,72).
+                setWall(9).
+                setWall(25).
+                setWall(41).
+                setWall(57).
+                setWall(73).
+                setRowTerrain(0,4).
+                setRowTerrain(1,4).
+                setRowTerrain(2,4).
+                setRowTerrain(3,4).
+                setRowTerrain(4,4).
+                setRowTerrain(5,4).
+                setRowTerrain(6,4).
+                setRowTerrain(7,4). // end of setting meadow terrain
+                setRowTerrain(8,1).
+                setRowTerrain(9,1).
+                setRowTerrain(10,1).
+                setRowTerrain(11,1).
+                setRowTerrain(12,1).
+                setRowTerrain(13,1).
+                setRowTerrain(14,3).
+                setRowTerrain(15,3).// end of setting Rocky Terrain
+                setForestTerrain(66).
+                setForestTerrain(67).setForestTerrain(68);
 
-        fieldHolderGrid.get(17).setFieldEntity(new Wall());
-        fieldHolderGrid.get(33).setFieldEntity(new Wall(1500, 33));
-        fieldHolderGrid.get(49).setFieldEntity(new Wall(1500, 49));
-        fieldHolderGrid.get(65).setFieldEntity(new Wall(1500, 65));
-
-        fieldHolderGrid.get(34).setFieldEntity(new Wall());
-        fieldHolderGrid.get(66).setFieldEntity(new Wall(1500, 66));
-
-        fieldHolderGrid.get(35).setFieldEntity(new Wall());
-        fieldHolderGrid.get(51).setFieldEntity(new Wall());
-        fieldHolderGrid.get(67).setFieldEntity(new Wall(1500, 67));
-
-        fieldHolderGrid.get(5).setFieldEntity(new Wall());
-        fieldHolderGrid.get(21).setFieldEntity(new Wall());
-        fieldHolderGrid.get(37).setFieldEntity(new Wall());
-        fieldHolderGrid.get(53).setFieldEntity(new Wall());
-        fieldHolderGrid.get(69).setFieldEntity(new Wall(1500, 69));
-
-        fieldHolderGrid.get(7).setFieldEntity(new Wall());
-        fieldHolderGrid.get(23).setFieldEntity(new Wall());
-        fieldHolderGrid.get(39).setFieldEntity(new Wall());
-        fieldHolderGrid.get(71).setFieldEntity(new Wall(1500, 71));
-
-        fieldHolderGrid.get(8).setFieldEntity(new Wall());
-        fieldHolderGrid.get(40).setFieldEntity(new Wall());
-        fieldHolderGrid.get(72).setFieldEntity(new Wall(1500, 72));
-
-        fieldHolderGrid.get(9).setFieldEntity(new Wall());
-        fieldHolderGrid.get(25).setFieldEntity(new Wall());
-        fieldHolderGrid.get(41).setFieldEntity(new Wall());
-        fieldHolderGrid.get(57).setFieldEntity(new Wall());
-        fieldHolderGrid.get(73).setFieldEntity(new Wall());
-        return  this;
+        fieldHolderGrid = newBoard.build();
+        return this;
     }
 
     /**

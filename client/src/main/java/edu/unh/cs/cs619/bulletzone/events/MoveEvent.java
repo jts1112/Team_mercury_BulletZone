@@ -10,6 +10,8 @@ public class MoveEvent extends GameEvent {
     @JsonProperty
     private int newPosition;
 
+    public MoveEvent() {}
+
     /*
      * Constructor for testing only.
      */

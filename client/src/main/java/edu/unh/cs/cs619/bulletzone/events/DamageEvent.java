@@ -7,16 +7,21 @@ public class DamageEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
 
-    /*
+    public DamageEvent() {}
+
+    /**
      * Constructor for testing only.
+     * @param position The position of the entity to remove.
+     * @param rawServerValue The raw server value of the entity.
      */
     public DamageEvent( int position, int rawServerValue) {
         this.position = position;
         this.rawServerValue = rawServerValue;
     }
 
-    /*
-    Public only for testing.
+    /**
+     * Public only for testing.
+     * @param board The game board.
     */
     @Override
     public void applyTo(int[][] board) {
