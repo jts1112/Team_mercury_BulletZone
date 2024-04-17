@@ -146,22 +146,18 @@ public class Dropship extends PlayableEntity {
     // ----------------------- Docking ------------------------
     public void dockTank(Tank tank) {
         dockedTanks.add(tank);
-        tank.setInDropship(this.id);
     }
 
     public void undockTank(Tank tank) {
         dockedTanks.remove(tank);
-        tank.clearInDropship();
     }
 
     public void dockMiner(Miner miner) {
         dockedMiners.add(miner);
-        miner.setInDropship(this.id);
     }
 
     public void undockMiner(Miner miner) {
         dockedMiners.remove(miner);
-        miner.clearInDropship();
     }
 
     @Override
