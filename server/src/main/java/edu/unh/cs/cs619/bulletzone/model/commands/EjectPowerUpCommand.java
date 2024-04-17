@@ -18,6 +18,13 @@ public class EjectPowerUpCommand implements Command {
     public EjectPowerUpCommand(long entityId) {
         this.entityId = entityId;
     }
+
+    /**
+     *
+     * @param entity entity ejecting the power-up
+     * @return if ejected
+     * @throws TankDoesNotExistException
+     */
     @Override
     public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
         if (entity == null) {
@@ -38,6 +45,14 @@ public class EjectPowerUpCommand implements Command {
 
             FieldHolder parent = entity.getParent();
             FieldHolder availableField;
+            // check in front of entity to allow for strategic power-up ejection
+            if ((availableField = parent.getNeighbor(entity.getDirection())) != null && !availableField.isPresent()) {
+                powerUp.get().setParent(availableField);
+                EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
+                return true;
+            }
+
+            // check all surrounding locations
             if ((availableField = parent.getNeighbor(Direction.Up)) != null && !availableField.isPresent()) {
                 powerUp.get().setParent(availableField);
                 EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
