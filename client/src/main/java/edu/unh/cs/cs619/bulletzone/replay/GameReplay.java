@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.JsonReader;
+import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonParser;
 
@@ -15,31 +16,47 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import edu.unh.cs.cs619.bulletzone.events.ReplayDBHelper;
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 
 public class GameReplay {
     private class Snapshot {
-        int game_id;
+        long game_id;
         long timeStamp;
         GridCell[][] gridData;
 
-        Snapshot(int game_id, long timeStamp, GridCell[][] gridData) {
-            this.timeStamp = timeStamp;
+        /**
+         * Creating a new object to store in the database
+         * @param game_id // ID of the current game being played
+         * @param gridData // Grid currently being displayed
+         */
+        Snapshot(long game_id, GridCell[][] gridData, SQLiteDatabase db) {
+            this.game_id = game_id;
             this.gridData = gridData;
+            this.timeStamp = System.currentTimeMillis();
+
+            ContentValues values = new ContentValues();
+
+            values.put("timestamp_join", timestampJoin);
+            values.put("timestamp_leave", timestampLeave);
+
+            db.insert("GameReplays", null, values);
         }
 
-        Snapshot(int game_id, long timeStamp, JSONObject gridData) {
+        /**
+         * Rebuilding object from the database
+         * @param game_id game ID from game
+         * @param timeStamp timestamp of snapshot
+         * @param gridData grid at the timestamp stored as a JSON object
+         */
+        Snapshot(long game_id, long timeStamp, JSONObject gridData) {
+            this.game_id = game_id;
             this.timeStamp = timeStamp;
             try {
                 this.gridData = gridDataFromJSON(gridData);
             } catch (JSONException e) {
                 this.gridData = new GridCell[16][16];
             }
-        }
-
-        Snapshot() {
-            this.timeStamp = 0L;
-            this.gridData = new GridCell[16][16];
         }
 
         private GridCell[][] gridDataFromJSON(JSONObject json) throws JSONException {
@@ -91,20 +108,28 @@ public class GameReplay {
 
 
     ArrayList<Snapshot> snapshots = new ArrayList<>();
-    int gameID;
+    long gameID;
     long timestampJoin;
     long timestampLeave;
 
     /**
      * Create a new GameReplay to put into the SQLite database
      */
-    public GameReplay() {
+    public GameReplay(SQLiteDatabase db) {
+        this.timestampJoin = System.currentTimeMillis();
+        this.timestampLeave = -1;
 
+        ContentValues values = new ContentValues();
+        values.put("timestamp_join", timestampJoin);
+        values.put("timestamp_leave", timestampLeave);
+
+        this.gameID = db.insert("GameReplays", null, values);
     }
 
     /**
      * Retrieve a previously created GameReplay from the SQLite database
      * @param gameID ID of the game to retrieve
+     * @param db instance of the local SQLiteDatabase
      */
     @SuppressLint("Range")
     public GameReplay(int gameID, SQLiteDatabase db) {
@@ -144,9 +169,10 @@ public class GameReplay {
                 Snapshot ss;
 
                 try {
-                    ss = new Snapshot(timestamp, new JSONObject(jsonData));
+                    ss = new Snapshot(gameID, timestamp, new JSONObject(jsonData));
                 } catch (JSONException e) {
-                    ss = new Snapshot();
+                    Log.d("GameReplay", "Error creating snapshot from the database.");
+                    ss = null;
                 }
 
                 this.snapshots.add(ss);
@@ -156,24 +182,24 @@ public class GameReplay {
         }
     }
 
-    public void setTimestampJoin(long timestampJoin) {
-        this.timestampJoin = timestampJoin;
+    public long getGameID() {
+        return gameID;
     }
 
+    /**
+     * Setter for the leaveMatch timestamp
+     * @param timestampLeave when the player left the match
+     */
     public void setTimestampLeave(long timestampLeave) {
         this.timestampLeave = timestampLeave;
     }
 
-    public void takeSnapshot(GridCell[][] gridData) {
-        this.snapshots.add(new Snapshot(System.currentTimeMillis(), gridData));
-    }
-
-    public void saveToDB(SQLiteDatabase db) {
-        ContentValues values = new ContentValues();
-
-        values.put("timestamp_join", timestampJoin);
-        values.put("timestamp_leave", timestampLeave);
-
-        db.insert("GameReplays", null, values);
+    /**
+     * Take a snapshot of the board and store it in the database
+     * @param gridData Grid data to store in the database
+     * @param db Database to store data in.
+     */
+    public void takeSnapshot(GridCell[][] gridData, SQLiteDatabase db) {
+        this.snapshots.add(new Snapshot(gameID, gridData, db));
     }
 }

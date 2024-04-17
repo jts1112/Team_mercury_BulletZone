@@ -6,13 +6,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import edu.unh.cs.cs619.bulletzone.events.ReplayDBHelper;
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 
 public class GameReplayManager {
 
     private static GameReplayManager instance;
-    private ArrayList<GameReplay> gameReplays = new ArrayList<>();
+    private static SQLiteDatabase db;
+//    private ArrayList<GameReplay> gameReplays = new ArrayList<>();
+    private final Stack<GameReplay> gameReplays = new Stack<>();
 
     private GameReplayManager() {
         // Private constructor to prevent external instantiation
@@ -29,7 +33,7 @@ public class GameReplayManager {
     private void initializeDatabase(Context context) {
         // Create or open the local SQLite database
         SQLiteOpenHelper dbHelper = new ReplayDBHelper(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db = dbHelper.getWritableDatabase();
 
         // Retrieve data from the database
         Cursor cursor = db.query("GameReplays", null,
@@ -58,14 +62,18 @@ public class GameReplayManager {
     }
 
     public void startRecording() {
-
+        this.gameReplays.push(new GameReplay(db));
     }
 
     public void endRecording() {
+        this.gameReplays.peek().setTimestampLeave(System.currentTimeMillis());
+    }
 
+    public void takeSnapshot(GridCell[][] gridData) {
+        this.gameReplays.peek().takeSnapshot(gridData, db);
     }
 
     public GameReplay getMostRecent() {
-        return null;
+        return this.gameReplays.peek();
     }
 }
