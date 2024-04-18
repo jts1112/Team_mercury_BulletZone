@@ -55,7 +55,7 @@
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Credits: 0"
+        android:text="Credits: 1000"
         android:textSize="16sp" />
 
     <TextView
@@ -178,6 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Update using events"
+            android:checked="true"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <Button

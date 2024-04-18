@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -78,14 +79,13 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
         gameData.registerObserver(this);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Automatically press the eventSwitch button after a delay
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int colX = position % gridView.getNumColumns();
-                int rowY = position / gridView.getNumColumns();
-                onGridItemTapped(colX, rowY);
+            public void run() {
+                onEventSwitch();
             }
-        });
+        }, 2000);
     }
 
     @Override
