@@ -9,8 +9,8 @@ public class GridCellImageMapper {
 
     private UnitIds Ids;
 
-    public GridCellImageMapper(UnitIds ids) {
-        this.Ids = ids;
+    public GridCellImageMapper() {
+        this.Ids = UnitIds.getInstance();
     }
 
     public int getTerrainImageResource(int cellValue) {
@@ -37,6 +37,10 @@ public class GridCellImageMapper {
             imageResource = R.drawable.wall5;
         } else if ((cellValue > 1000 && cellValue < 2000)) {
             imageResource = R.drawable.wall2;
+        } else if (cellValue == 2002)  {
+            imageResource = R.drawable.antigrav1;
+        } else if (cellValue == 2003)  {
+            imageResource = R.drawable.fusionreactor1;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {

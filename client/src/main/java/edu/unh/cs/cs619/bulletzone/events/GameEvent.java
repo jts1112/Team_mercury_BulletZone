@@ -10,9 +10,10 @@ import java.util.Comparator;
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "move", value = MoveEvent.class),
         @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class),
-        @JsonSubTypes.Type(name = "delete", value = DamageEvent.class),
+        @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
         @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
+        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;

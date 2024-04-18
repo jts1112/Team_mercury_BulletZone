@@ -31,15 +31,6 @@ public class Tank extends PlayableEntity {
     }
 
     @Override
-    public void hit(int damage) {
-        life -= damage;
-        System.out.println("Tank life: " + id + " : " + life);
-        if (life <= 0) {
-            EventBus.getDefault().post(this);
-        }
-    }
-
-    @Override
     public String toString() {
         return "T";
     }
@@ -58,4 +49,5 @@ public class Tank extends PlayableEntity {
     public Boolean isTracked() {
         return true;
     }
+
 }

@@ -1,9 +1,13 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 
 public class Dropship extends PlayableEntity {
     private static final int INITIAL_LIFE = 300;
@@ -47,12 +51,6 @@ public class Dropship extends PlayableEntity {
         return new Dropship(id, direction, ip);
     }
 
-    @Override
-    public void hit(int damage) {
-        life -= damage;
-        System.out.println("Dropship life: " + id + " : " + life);
-    }
-
     public boolean fire() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFireTime >= FIRE_INTERVAL) {
@@ -88,19 +86,32 @@ public class Dropship extends PlayableEntity {
         for (Miner miner : dockedMiners) {
             if (miner != null) {
                 int repairedLife = Math.min(miner.getLife() + 2, 120);
+                if (miner.getLife() != repairedLife) {
+                    DamageEvent dmgEvent = new DamageEvent(miner.getPosition(), miner.getIntValue());
+                    EventBus.getDefault().post(dmgEvent);
+                }
                 miner.setLife(repairedLife);
             }
+            System.out.println("Miner " + miner.getId() + " health: " + miner.getLife());
         }
         for (Tank tank : dockedTanks) {
             if (tank != null) {
                 int repairedLife = Math.min(tank.getLife() + 2, 100);
+                if (tank.getLife() != repairedLife) {
+                    DamageEvent dmgEvent = new DamageEvent(tank.getPosition(), tank.getIntValue());
+                    EventBus.getDefault().post(dmgEvent);
+                }
                 tank.setLife(repairedLife);
             }
+            System.out.println("Tank " + tank.getId() + " health: " + tank.getLife());
         }
-        if (currentTime - lastRepairTime >= 1000) {
-            life = Math.min(life + 1, INITIAL_LIFE);
-            lastRepairTime = currentTime;
+
+        int repairedLife = Math.min(life + 1, INITIAL_LIFE);
+        if (life != repairedLife) {
+            DamageEvent dmgEvent = new DamageEvent(getPosition(), getIntValue());
+            EventBus.getDefault().post(dmgEvent);
         }
+        lastRepairTime = currentTime;
     }
 
     public int getNumMiners() {

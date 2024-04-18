@@ -11,8 +11,13 @@ import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
 @EBean
 public class GameEventProcessor {
     private int[][] board;
+    private GameData gameData;
 
     public void setBoard(int[][] newBoard) { board = newBoard; }
+
+    public void setGameData() {
+        this.gameData = GameData.getInstance();
+    }
 
     public void start() {
         EventBus.getDefault().register(this);

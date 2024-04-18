@@ -9,9 +9,11 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Optional;
 
 import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
@@ -100,7 +102,10 @@ public class MoveCommand implements Command {
             // TODO remove difficulty
             entity.setLastMoveTime(millis + (long) (entity.getAllowedMoveInterval() * difficulty));
         } else {
-            FieldEntity nextEntity = nextField.getEntity();
+            FieldEntity nextEntity = nextField.getEntity(); // TODO OLD
+
+
+
             if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship
                 parent.clearField();
                 if (entity instanceof Tank tank) {
@@ -116,6 +121,18 @@ public class MoveCommand implements Command {
                 EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
                 isCompleted = true;
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
+                dropship.repairUnits();
+            } else if (nextEntity instanceof PowerUpEntity) {
+                entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
+
+                int oldPos = entity.getPosition();
+                entity.setParent(nextField);
+
+                int newPos = nextEntity.getPosition();
+                EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
+                isCompleted = true;
+                entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
+
             } else {
                 isCompleted = false;
             }
@@ -123,5 +140,4 @@ public class MoveCommand implements Command {
 
         return isCompleted;
     }
-
 }

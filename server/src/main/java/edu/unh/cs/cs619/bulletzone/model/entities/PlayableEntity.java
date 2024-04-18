@@ -2,7 +2,17 @@ package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.item.GameItemRepository;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.*;
+import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
+
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.greenrobot.eventbus.EventBus;
 
 public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected long id;
@@ -16,6 +26,59 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected int bulletDamage;
     protected String ip;
     protected Direction direction;
+    protected boolean hasActionQueued = false;
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
+
+    public void setBulletDamage(int bulletDamage) {
+        this.bulletDamage = bulletDamage;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(List<Bullet> bullets) {
+        this.bullets = bullets;
+    }
+
+    public void removeBullet(Bullet bullet) {
+        if (bullets.remove(bullet)) {
+            numberOfBullets = Math.max(0, numberOfBullets - 1);
+        }
+    }
+
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+        numberOfBullets++;
+        System.out.println("Num bullets: " + numberOfBullets + " allowed: " + allowedNumberOfBullets);
+        if (numberOfBullets > allowedNumberOfBullets) {
+            System.out.println("Num bullets: " + numberOfBullets + " allowed: " + allowedNumberOfBullets);
+            Bullet oldestBullet = bullets.remove(0);
+            FieldHolder currentField = oldestBullet.getParent();
+            if (currentField.isPresent() && currentField.getEntity() == oldestBullet) {
+                currentField.clearField();
+                RemovalEvent removalEvent = new RemovalEvent(oldestBullet.getPosition());
+                EventBus.getDefault().post(removalEvent);
+            }
+            numberOfBullets--;
+        }
+    }
+
+    protected List<Bullet> bullets = new ArrayList<>();
+
+    protected PowerUpComponent powerUp = new ConcretePowerUpComponent();
+    protected  GameItemRepository repo = new GameItemRepository();
 
     // Getters and Setters
     public long getLastMoveTime() {
@@ -27,7 +90,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedMoveInterval() {
-        return allowedMoveInterval;
+        return powerUp.getMovementInterval(allowedMoveInterval);
     }
 
     public void setAllowedMoveInterval(int allowedMoveInterval) {
@@ -43,7 +106,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedFireInterval() {
-        return allowedFireInterval;
+        return powerUp.getFireInterval(allowedFireInterval);
     }
 
     public void setAllowedFireInterval(int allowedFireInterval) {
@@ -52,10 +115,6 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
     public int getNumberOfBullets() {
         return numberOfBullets;
-    }
-
-    public void setNumberOfBullets(int numberOfBullets) {
-        this.numberOfBullets = numberOfBullets;
     }
 
     public int getAllowedNumberOfBullets() {
@@ -91,12 +150,49 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         return ip;
     }
 
-//    @Override
-//    public int getIntValue() {
-//        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
-//    }
-
     public boolean isDestroyed() {
         return life <= 0;
+    }
+
+    public void pickupPowerUp(PowerUpType type) {
+        switch (type) {
+            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+        }
+    }
+
+    public Optional<PowerUpEntity> dropPowerUp() {
+        PowerUpComponent temp = powerUp;
+        Optional<PowerUpComponent> prev = powerUp.getPrevPowerUp();
+        if (prev.isEmpty()) {
+            return Optional.empty();
+        } else {
+            powerUp = prev.get();
+            Optional<PowerUpType> type = temp.getPowerUpType();
+            if (type.isPresent()) {
+                switch (type.get()) {
+                    case AntiGrav:
+                        return Optional.of(new AntiGravPowerUpEntity());
+                    case FusionReactor:
+                        return Optional.of(new FusionReactorPowerUpEntity());
+                    case Thingamajig:
+                        // bank stuff here
+                        return Optional.empty();
+                }
+            }
+            return Optional.empty();
+        }
+    }
+
+    public void hit(int damage) {
+        life -= damage;
+        System.out.println("Tank life: " + id + " : " + life);
+        if (life <= 0) {
+            EventBus.getDefault().post(this);
+        }
+    }
+
+    public boolean isHasActionQueued() {
+        return hasActionQueued;
     }
 }

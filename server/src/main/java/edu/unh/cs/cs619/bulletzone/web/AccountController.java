@@ -76,7 +76,15 @@ public class AccountController {
         log.debug("Login '" + name + "' with password '" + password + "'");
         // Return the response (return user ID if valid login), -1 if not
         Optional<GameUser> userData = data.validateUser(name, password, false);
-        return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId()),
+        GameUser user;
+        int bal;
+        if (userData.isPresent()) {
+            user = userData.get();
+            bal = (int) data.getBankBalance(user);
+        } else {
+            bal = 1000;
+        }
+        return userData.map(gameUser -> new ResponseEntity<>(new LongWrapper(gameUser.getId(), bal, 0),
                         HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(new LongWrapper(-1),
                         HttpStatus.UNAUTHORIZED));

@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import edu.unh.cs.cs619.bulletzone.model.commands.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -7,17 +8,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
-import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
@@ -34,9 +34,11 @@ public class InMemoryGameRepository implements GameRepository {
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
     private Game game = null;
-    private final int[] bulletDamage = {10, 30, 50};
+    private final int[] bulletDamage = {15, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final int[] trackActiveBullets = {0, 0};
+
+    private  CommandPattern commands = null;
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
@@ -112,6 +114,70 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
+    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException {
+
+        if (game.getDropship(entityId) != null) {
+            return ;
+        }
+        if (targetX < 0 || targetX >= FIELD_DIM || targetY < 0 || targetY >= FIELD_DIM) {
+            return ;
+        }
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    synchronized (monitor) {
+                        PlayableEntity playableEntity = game.getPlayableEntity(entityId);
+                        if (playableEntity == null) {
+                            throw new TankDoesNotExistException(entityId);
+                        }
+
+                        if (commands == null){
+                            commands = new CommandPattern(game);
+                        }
+
+                        FieldHolder currentField = playableEntity.getParent();
+                        int currentPosition = currentField.getPosition();
+                        int currentX = currentPosition % FIELD_DIM;
+                        int currentY = currentPosition / FIELD_DIM;
+
+//                        PlayableEntity playableEntity = game.getPlayableEntity(entityId); // similar was already declared above
+                        int sleepTime = playableEntity.getAllowedMoveInterval() * 2;
+
+                        // if current x is less than then go left. else go right.
+                        // find direction need to move
+
+                        Direction directionX = currentX < targetX ? Direction.Right : Direction.Left;
+                        int initialX = playableEntity.getPosition() % FIELD_DIM;
+                        // add move command in the direction.
+                        if (playableEntity.getDirection() != directionX) { // if not facing the direction needed need to turn that direction
+                            commands.addMoveCommand(entityId, directionX);
+                        }
+                        // while absolute value of difference
+                        for (int xposition = 0; xposition < Math.abs(targetX - currentX); xposition++) { // add commands to x direction.
+                            commands.addMoveCommand(entityId, directionX);
+                        }
+
+                        // start doing y commands
+                        Direction directionY = currentY < targetY ? Direction.Down : Direction.Up;
+                        int initialY = (int) Math.floor((double) playableEntity.getPosition() / FIELD_DIM);
+                        if (directionX != directionY) { // if not facing the direction needed to turn that directoin face that direction
+                            commands.addMoveCommand(entityId, directionY);
+                        }
+                        for (int yposition = 0; yposition < Math.abs(targetY - currentY); yposition++) {
+                            commands.addMoveCommand(entityId, directionY);
+                        }
+                        commands.executeCommands(sleepTime, playableEntity);
+                    }
+                } catch (InterruptedException | TankDoesNotExistException e) {
+                    log.error("Error during moveTo operation", e);
+                }
+            }
+        }, 0);
+
+    }
+
     @Override
     public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
         synchronized (this.monitor) {
@@ -122,18 +188,65 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public void leave(long tankId) throws TankDoesNotExistException {
+    public void mine(long minerId) throws TankDoesNotExistException {
+        PlayableEntity miner = game.getMiner(minerId);
+        long fireTime = miner.getLastFireTime();
+        long moveTime = miner.getLastMoveTime();
+        Timer mineTimer = new Timer();
+        mineTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    if (miner.getLastFireTime() == fireTime && miner.getLastMoveTime() == moveTime) {
+                        MineCommand mineCommand = new MineCommand(minerId, monitor);
+                        try {
+                            mineCommand.execute(miner);
+                        } catch (TankDoesNotExistException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        mineTimer.cancel();
+                        mineTimer.purge();
+                    }
+                }
+            }
+        }, 1000, 1000);
+    }
+
+    @Override
+    public boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException {
+        EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
+        PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+        return ejectPowerUpCommand.execute(playableEntity);
+    }
+
+    @Override
+    public void leave(long dropshipId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
-            if (!this.game.getTanks().containsKey(tankId)) {
-                throw new TankDoesNotExistException(tankId);
+            if (!this.game.getDropships().containsKey(dropshipId)) {
+                throw new TankDoesNotExistException(dropshipId);
             }
 
-            System.out.println("leave() called, tank ID: " + tankId);
+            System.out.println("leave() called, dropship ID: " + dropshipId);
 
-            Tank tank = game.getTanks().get(tankId);
-            FieldHolder parent = tank.getParent();
+            // remove dropship
+            Dropship dropship = game.getDropship(dropshipId);
+            FieldHolder parent = dropship.getParent();
             parent.clearField();
-            game.removeTank(tankId);
+            game.removeDropship(dropshipId);
+
+            // remove all tanks for a dropship
+            List<Long> tankIDs = dropship.getTankIds();
+            for (long tankId : tankIDs) {
+                game.getTank(tankId).getParent().clearField();
+                game.removeTank(tankId);
+            }
+
+            // remove all miners for a dropship
+            List<Long> minerIDs = dropship.getMinerIds();
+            for (long minerId : minerIDs) {
+                game.getMiner(minerId).getParent().clearField();
+                game.removeMiner(minerId);
+            }
         }
     }
 
@@ -143,12 +256,24 @@ public class InMemoryGameRepository implements GameRepository {
         }
         synchronized (this.monitor) {
             this.game = new Game();
-//            createFieldHolderGrid(game); // TODO removed because added into gameboard bulder.
-            //TODO added
-//            game.getHolderGrid().addAll(new GameBoardBuilder(game.getHolderGrid()).inMemoryGameReposiryInitialize().build());// OLD before the createFeildHolderGrid
-//            game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());// change back to this  before the createFeildHolderGrid
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
+            startRepairTimer();
         }
+    }
+
+    private void startRepairTimer() {
+        Timer repairTimer = new Timer();
+        repairTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    for (Dropship dropship : game.getDropships().values()) {
+                        dropship.repairUnits();
+                        int repairedLife = Math.min(dropship.getLife() + 1, 300);
+                        dropship.setLife(repairedLife);
+                    }
+                }
+            }
+        }, 0, 1000);
     }
 
 
@@ -252,5 +377,7 @@ public class InMemoryGameRepository implements GameRepository {
         LogUtil.log(log, infoLog, "No free space found");
         return null;
     }
+
+
 
 }

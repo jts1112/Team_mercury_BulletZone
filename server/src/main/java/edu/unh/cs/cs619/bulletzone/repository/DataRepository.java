@@ -100,6 +100,7 @@ public class DataRepository {
         BankAccount bankAccount = bzdata.accounts.create();
         if (bankAccount != null) {
             bankAccount.setOwner(user);
+            user.setAccountId(bankAccount.getId());
             boolean balanceSet = bzdata.accounts.modifyBalance(bankAccount, 1000);
             if (balanceSet) {
                 log.debug("successfully initialized user's bank account with id: " + bankAccount.getId());
@@ -116,5 +117,9 @@ public class DataRepository {
             log.error("Failed to create bank account for user: " + user.getUsername());
             return false;
         }
+    }
+
+    public double getBankBalance(GameUser user) {
+        return bzdata.accounts.getAccount(user.getAccountId()).getBalance();
     }
 }

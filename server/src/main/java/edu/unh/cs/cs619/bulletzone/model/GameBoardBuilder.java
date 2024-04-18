@@ -50,8 +50,10 @@ public class GameBoardBuilder {
      * @param index the index of the field holder grid
      * @return the GameBoardBuilder instance
      */
-    public GameBoardBuilder setWall(int destructValue,int index){
-        fieldHolderGrid.get(index).setFieldEntity(new Wall(destructValue, index));
+    public GameBoardBuilder setWall(int destructValue,int index) {
+        Wall wall = new Wall(destructValue, index);
+        fieldHolderGrid.get(index).setFieldEntity(wall);
+        wall.setParent(fieldHolderGrid.get(index));
         return this;
     }
 
@@ -62,7 +64,9 @@ public class GameBoardBuilder {
      * @return the GameBoardBuilderInstance
      */
     public GameBoardBuilder setWall(int index) {
-        fieldHolderGrid.get(index).setFieldEntity(new Wall());
+        Wall wall = new Wall();
+        fieldHolderGrid.get(index).setFieldEntity(wall);
+        wall.setParent(fieldHolderGrid.get(index));
         return this;
     }
 
