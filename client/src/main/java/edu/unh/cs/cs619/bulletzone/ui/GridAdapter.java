@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import org.androidannotations.annotations.EBean;
 
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 
 @EBean
 public class GridAdapter extends BaseAdapter {
@@ -21,9 +22,10 @@ public class GridAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
-    public void setGridData(GridCell[][] gridData) {
+    public void setGridData(GridCell[][] gridData, GameReplayManager gameReplayManager) {
         this.gridData = gridData;
         notifyDataSetChanged();
+        gameReplayManager.takeSnapshot(gridData);
     }
 
     @Override

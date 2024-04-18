@@ -6,6 +6,7 @@ import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
 
 
@@ -13,10 +14,12 @@ public class GridEventHandler {
 
     private GridModel gridModel;
     private GridAdapter gridAdapter;
+    private GameReplayManager gameReplayManager;
 
-    public GridEventHandler(GridModel gridModel, GridAdapter gridAdapter) {
+    public GridEventHandler(GridModel gridModel, GridAdapter gridAdapter, GameReplayManager gameReplayManager) {
         this.gridModel = gridModel;
         this.gridAdapter = gridAdapter;
+        this.gameReplayManager = gameReplayManager;
         EventBus.getDefault().register(this); // Register with EventBus
     }
 
@@ -30,7 +33,7 @@ public class GridEventHandler {
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
-            gridAdapter.setGridData(gridModel.getGrid());
+            gridAdapter.setGridData(gridModel.getGrid(), gameReplayManager);
 
             // Log.d("grideventhandler", "new grid update ");
         }

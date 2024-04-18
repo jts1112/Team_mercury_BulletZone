@@ -24,6 +24,8 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.BackgroundExecutor;
 
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplay;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
@@ -58,6 +60,9 @@ public class ClientActivity extends Activity {
      */
     private UnitIds unitIds;
 
+    GameReplayManager gameReplayManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +76,10 @@ public class ClientActivity extends Activity {
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
 
+        gameReplayManager = GameReplayManager.getInstance(this);
+
         // Initialize gridEventHandler after gridModel initialization
-        gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
+        gridEventHandler = new GridEventHandler(gridModel, mGridAdapter, gameReplayManager);
     }
 
     @Override
@@ -118,6 +125,7 @@ public class ClientActivity extends Activity {
         try {
             actionController.join();
             gridPollTask.startPolling();
+            gameReplayManager.startRecording();
         } catch (Exception ignored) { }
     }
 
@@ -241,6 +249,7 @@ public class ClientActivity extends Activity {
         System.out.println("Leave called, leaving game");
         BackgroundExecutor.cancelAll("grid_poller_task", true);
         actionController.leave();
+        gameReplayManager.endRecording();
     }
 
     @Override
