@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import android.os.SystemClock;
+
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,7 +278,6 @@ public class InMemoryGameRepository implements GameRepository {
         }, 0, 1000);
     }
 
-
     // ------------ Spawn Methods ------------
     @Override
     public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
@@ -285,7 +286,6 @@ public class InMemoryGameRepository implements GameRepository {
             if (dropship == null) {
                 throw new TankDoesNotExistException(dropshipId);
             }
-
             if (dropship.getNumMiners() <= 0) {
                 List<Long> miners = dropship.getMinerIds();
                 return miners.get(0);

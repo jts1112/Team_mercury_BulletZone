@@ -3,6 +3,7 @@ package edu.unh.cs.cs619.bulletzone.model.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.item.GameItemRepository;
+import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.*;
@@ -176,7 +177,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
                     case FusionReactor:
                         return Optional.of(new FusionReactorPowerUpEntity());
                     case Thingamajig:
-                        // bank stuff here
+                        EventBus.getDefault().post(new CreditEvent(1000));
                         return Optional.empty();
                 }
             }
