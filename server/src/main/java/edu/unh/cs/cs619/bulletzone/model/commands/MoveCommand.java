@@ -125,6 +125,8 @@ public class MoveCommand implements Command {
             } else if (nextEntity instanceof PowerUpEntity) {
                 entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
 
+                nextEntity.getParent().getTerrain().setPresentItem(0); // remove the current powerUp
+
                 int oldPos = entity.getPosition();
                 entity.setParent(nextField);
 

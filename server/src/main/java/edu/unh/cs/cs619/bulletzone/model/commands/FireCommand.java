@@ -130,6 +130,7 @@ public class FireCommand implements Command {
 
                             // Create new RemovalEvent
                             RemovalEvent removalEvent = new RemovalEvent(powerUpEntity.getPos());
+                            currentField.getTerrain().setPresentItem(0); // set no present item in fieldholder.
                             EventBus.getDefault().post(removalEvent);
                         }
                         if (isVisible) {
