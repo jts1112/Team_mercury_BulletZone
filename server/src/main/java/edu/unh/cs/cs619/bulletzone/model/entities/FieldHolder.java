@@ -8,8 +8,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.swing.text.html.Option;
-
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 
@@ -19,6 +17,8 @@ public class FieldHolder {
     private Optional<FieldEntity> entityHolder = Optional.empty();
     private final int position;
     private Terrain terrain;
+
+
 
     public FieldHolder(int pos) {
         this.position = pos;
@@ -54,6 +54,7 @@ public class FieldHolder {
             entityHolder = Optional.empty();
         }
     }
+
 
     public Terrain getTerrain(){
         return this.terrain;

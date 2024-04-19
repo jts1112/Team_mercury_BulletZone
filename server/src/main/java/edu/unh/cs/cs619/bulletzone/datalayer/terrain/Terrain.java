@@ -8,4 +8,8 @@ public interface Terrain {
     double getrescourceValue();
     int getIntValue();
 
+    public int getPresentItem();
+
+    public void setPresentItem(int presentItem);
+
 }

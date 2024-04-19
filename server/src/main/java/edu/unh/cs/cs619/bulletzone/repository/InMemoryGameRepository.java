@@ -1,28 +1,36 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
-import android.os.SystemClock;
+
+//import android.health.connect.datatypes.units.Power;
 
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
+
+import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
+import edu.unh.cs.cs619.bulletzone.model.entities.AntiGravPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
+import edu.unh.cs.cs619.bulletzone.model.entities.FusionReactorPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.util.LogUtil;
 
 @Component
@@ -260,6 +268,7 @@ public class InMemoryGameRepository implements GameRepository {
             this.game = new Game();
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
             startRepairTimer();
+            startPowerUpSpawnTimer();
         }
     }
 
@@ -379,5 +388,49 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
 
+
+
+    //------------- Power Up Spawning -----------------//
+
+    private void startPowerUpSpawnTimer() {
+        Timer powerUpSpawnTimer = new Timer();
+        powerUpSpawnTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+
+                    spawnPowerUp(); // Spawn A powerup
+                }
+            }
+        }, 0, 10000); // Spawn a power-up every 10 seconds
+    }
+
+
+    private void spawnPowerUp() {
+        // Generate random coordinates for the power-up
+        Random random = new Random();
+        int x = Math.abs(random.nextInt(FIELD_DIM));
+        int y = Math.abs(random.nextInt(FIELD_DIM));
+        int lottery = Math.abs(random.nextInt(100));
+        // get a random space.
+        FieldHolder spawnLocation =findFreeSpace(game.getHolderGrid().get(x*y));
+
+        // Create a power-up instance and add it to the game world
+        Optional<PowerUpEntity> powerUp = Optional.empty();
+        if(lottery >= 0 && lottery <= 40) {
+            //        PowerUpEntity powerUp = new Thing // TODO add thingamajig
+            spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
+        } else if (lottery >= 41 && lottery <= 70) {
+            powerUp = Optional.of(new AntiGravPowerUpEntity(spawnLocation.getPosition()));
+            spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
+        } else { // it has to be a FusionReactor
+            powerUp = Optional.of(new FusionReactorPowerUpEntity(spawnLocation.getPosition()));
+            spawnLocation.getTerrain().setPresentItem(3);
+        }
+
+        if (powerUp.isPresent()) {
+            powerUp.get().setParent(spawnLocation);
+            EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
+        }
+    }
 
 }
