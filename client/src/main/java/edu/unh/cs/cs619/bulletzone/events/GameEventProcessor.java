@@ -23,7 +23,7 @@ public class GameEventProcessor {
 
     @Subscribe
     public void onNewEvent(GameEvent event) {
-        Log.d("GameEventProcessor", "Applying " + event);
+        //Log.d("GameEventProcessor", "Applying " + event);
         event.applyTo(board);
     }
 }

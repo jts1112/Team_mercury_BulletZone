@@ -43,6 +43,19 @@ public class GameReplay {
             db.insert("GameReplays", null, values);
         }
 
+        // testing
+        Snapshot(long game_id, GridCell[][] gridData, SQLiteDatabase db, ContentValues values) {
+            this.game_id = game_id;
+            this.gridData = gridData;
+            this.timeStamp = System.currentTimeMillis();
+
+
+            values.put("timestamp_join", timestampJoin);
+            values.put("timestamp_leave", timestampLeave);
+
+            db.insert("GameReplays", null, values);
+        }
+
         /**
          * Rebuilding object from the database
          * @param game_id game ID from game
@@ -126,6 +139,17 @@ public class GameReplay {
         this.gameID = db.insert("GameReplays", null, values);
     }
 
+    // testing only
+    public GameReplay(SQLiteDatabase db, ContentValues values) {
+        this.timestampJoin = System.currentTimeMillis();
+        this.timestampLeave = -1;
+
+        values.put("timestamp_join", timestampJoin);
+        values.put("timestamp_leave", timestampLeave);
+
+        this.gameID = db.insert("GameReplays", null, values);
+    }
+
     /**
      * Retrieve a previously created GameReplay from the SQLite database
      * @param gameID ID of the game to retrieve
@@ -139,22 +163,28 @@ public class GameReplay {
         Cursor replayCursor = db.query(
                 "GameReplays",
                 null,
-                "id=?",
+                "game_id=?",
                 new String[] {String.valueOf(gameID)},
                 null,
                 null,
                 null
         );
 
-        this.timestampJoin = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_join"));
-        this.timestampLeave = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_leave"));
+        if (replayCursor != null && replayCursor.moveToFirst()) {
+            // Retrieve data from the cursor
+            this.timestampJoin = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_join"));
+            this.timestampLeave = replayCursor.getLong(replayCursor.getColumnIndex("timestamp_leave"));
 
-        replayCursor.close();
+            replayCursor.close();
+        } else {
+            // Handle case where there are no rows returned by the query
+            Log.e("GameReplay", "No rows found in GameReplays table for gameID: " + gameID);
+        }
 
         Cursor snapshotCursor = db.query(
                 "Snapshots",
                 null,
-                "game_id=?",
+                "game_replay_id=?",
                 new String[] {String.valueOf(gameID)},
                 null,
                 null,
@@ -194,6 +224,23 @@ public class GameReplay {
         this.timestampLeave = timestampLeave;
     }
 
+    // Getters and setters for testing mainly
+    public long getTimestampLeave() {
+        return timestampLeave;
+    }
+
+    public long getTimestampJoin() {
+        return timestampJoin;
+    }
+
+    public long getSnapshotSize() {
+        return this.snapshots.size();
+    }
+
+    public void setTimestampJoin(long timestampJoin) {
+        this.timestampJoin = timestampJoin;
+    }
+
     /**
      * Take a snapshot of the board and store it in the database
      * @param gridData Grid data to store in the database
@@ -201,5 +248,10 @@ public class GameReplay {
      */
     public void takeSnapshot(GridCell[][] gridData, SQLiteDatabase db) {
         this.snapshots.add(new Snapshot(gameID, gridData, db));
+    }
+
+    //testing
+    public void takeSnapshot(GridCell[][] gridData, SQLiteDatabase db, ContentValues val) {
+        this.snapshots.add(new Snapshot(gameID, gridData, db, val));
     }
 }

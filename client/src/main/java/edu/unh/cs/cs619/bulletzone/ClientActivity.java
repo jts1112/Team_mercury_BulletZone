@@ -54,6 +54,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
     protected GameData gameData;
+    protected GameReplayManager replay;
 
     /**
      * Changed unitIds to a singleton used in actioncontroller
@@ -72,7 +73,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
         mGridAdapter = new GridAdapter(this);
 
         gameData = GameData.getInstance();
-        //GameReplayManager.getInstance(this);
+        replay = GameReplayManager.getInstance(this);
+        replay.startRecording();
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -95,6 +97,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         super.onDestroy();
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
+        replay.endRecording();
     }
 
     /**
@@ -128,6 +131,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         try {
             actionController.join();
             gridPollTask.startPolling();
+            onPlayerCreditUpdate(gameData.getPlayerCredits());
         } catch (Exception ignored) { }
     }
 
