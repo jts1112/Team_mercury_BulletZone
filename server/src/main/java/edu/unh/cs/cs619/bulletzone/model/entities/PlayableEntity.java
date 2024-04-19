@@ -155,12 +155,23 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         return life <= 0;
     }
 
+//    public void pickupPowerUp(PowerUpType type) {
+//        switch (type) {
+//            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+//            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+//            case Thingamajig :
+//                EventBus.getDefault().post(new CreditEvent(1000));
+//        }
+//    }
+
     public void pickupPowerUp(PowerUpType type) {
         switch (type) {
             case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
             case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+            case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
         }
     }
+
 
     public Optional<PowerUpEntity> dropPowerUp() {
         PowerUpComponent temp = powerUp;
@@ -177,7 +188,6 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
                     case FusionReactor:
                         return Optional.of(new FusionReactorPowerUpEntity());
                     case Thingamajig:
-                        EventBus.getDefault().post(new CreditEvent(1000));
                         return Optional.empty();
                 }
             }
