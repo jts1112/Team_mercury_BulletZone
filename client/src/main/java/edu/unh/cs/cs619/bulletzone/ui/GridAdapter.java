@@ -13,6 +13,7 @@ import org.androidannotations.annotations.EBean;
 
 import edu.unh.cs.cs619.bulletzone.ClientActivity;
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 
 @EBean
 public class GridAdapter extends BaseAdapter {

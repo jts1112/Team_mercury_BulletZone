@@ -1,7 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
-import edu.unh.cs.cs619.bulletzone.util.UnitIds;
-
 public class GridModel {
     private GridCell[][] grid;
     private int[][] rawData;
