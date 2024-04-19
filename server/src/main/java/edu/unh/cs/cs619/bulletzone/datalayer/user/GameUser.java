@@ -15,6 +15,8 @@ public class GameUser extends Entity {
     protected String username;
     //password info not stored in game
     protected int accountId;
+    protected String ipAddress;
+
     protected HashSet<OwnableEntity> ownedEntities = new HashSet<OwnableEntity>();
 
     public String getName() { return name; }
@@ -64,12 +66,16 @@ public class GameUser extends Entity {
 
     public Collection<OwnableEntity> getOwnedEntities() { return ownedEntities; }
 
+    public String getIpAddress() {
+        return ipAddress;
+    }
     //----------------------------------END OF PUBLIC METHODS--------------------------------------
 
     GameUser(GameUserRecord rec) {
         super(rec);
         name = rec.name;
         username = rec.username;
+        ipAddress = rec.ipAddress;
     }
 
     void addPermissionTarget(OwnableEntity pt) {

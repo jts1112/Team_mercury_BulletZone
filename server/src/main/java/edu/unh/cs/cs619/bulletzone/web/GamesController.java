@@ -1,5 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.web;
-
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,9 @@ class GamesController {
     @ResponseBody
     ResponseEntity<LongWrapper> join(HttpServletRequest request) {
         try {
-            long dropshipId = gameRepository.join(request.getRemoteAddr()).getId();
+            String ip = request.getRemoteAddr();
+            Dropship dropship = gameRepository.join(ip);
+            long dropshipId = dropship.getId();
             long minerId = gameRepository.spawnMiner(dropshipId);
             long tankId = gameRepository.spawnTank(dropshipId);
             log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",

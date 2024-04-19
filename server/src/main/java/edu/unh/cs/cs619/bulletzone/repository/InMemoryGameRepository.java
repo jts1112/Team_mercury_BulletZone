@@ -3,6 +3,7 @@ package edu.unh.cs.cs619.bulletzone.repository;
 
 //import android.health.connect.datatypes.units.Power;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,22 +38,20 @@ import edu.unh.cs.cs619.bulletzone.util.LogUtil;
 public class InMemoryGameRepository implements GameRepository {
 
     private static final int FIELD_DIM = 16;
-    private static final int BULLET_PERIOD = 200;
-    private static final int BULLET_DAMAGE = 1;
+
 
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
     private Game game = null;
-    private final int[] bulletDamage = {15, 30, 50};
-    private final int[] bulletDelay = {500, 1000, 1500};
-    private final int[] trackActiveBullets = {0, 0};
 
     private  CommandPattern commands = null;
-
+    private final DataRepository data;
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
-
+    public InMemoryGameRepository() {
+        this.data = DataRepositoryFactory.getInstance();
+    }
     /**
      * Generates a new tank to join the game.
      * @param ip IP address of the tank.
@@ -72,7 +71,7 @@ public class InMemoryGameRepository implements GameRepository {
                 return existingDropship;
             }
 
-            Long dropshipId = this.idGenerator.getAndIncrement();
+            long dropshipId = this.idGenerator.getAndIncrement();
 
             dropship = new Dropship(dropshipId, Direction.Up, ip);
 
@@ -256,6 +255,16 @@ public class InMemoryGameRepository implements GameRepository {
             for (long minerId : minerIDs) {
                 game.getMiner(minerId).getParent().clearField();
                 game.removeMiner(minerId);
+            }
+            GameUser user = data.getUser(dropship.getIp());
+            if (user != null) {
+                boolean balanceModified;
+                balanceModified = data.modifyBalance(user.getAccountId(), -1000);
+                if (balanceModified) {
+                    System.out.println("Balance modified successfully");
+                } else {
+                    System.out.println("Balance modification failed");
+                }
             }
         }
     }
