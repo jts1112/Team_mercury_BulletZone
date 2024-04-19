@@ -186,6 +186,8 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
                 case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
                 default -> System.out.println("Default pickup case hit");
             }
+        } else {
+            System.out.println("PowerUpType is null, unable to pickup");
         }
     }
 
