@@ -81,6 +81,7 @@ public class MoveCommand implements Command {
         boolean isCompleted;
 
         if (!nextField.isPresent() && (difficulty > 0)) {  // If nextField is empty
+            System.out.println("Move Case 1 !nextField.isPresent()=" + !nextField.isPresent() + "   difficulty=" + difficulty);
             int oldPos = entity.getPosition();
             FieldEntity parentEntity = parent.getEntity();
             if (parentEntity instanceof Dropship dropship) {
@@ -102,11 +103,13 @@ public class MoveCommand implements Command {
             // TODO remove difficulty
             entity.setLastMoveTime(millis + (long) (entity.getAllowedMoveInterval() * difficulty));
         } else {
+            System.out.println("Move Case 2");
             FieldEntity nextEntity = nextField.getEntity(); // TODO OLD
 
 
 
             if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship
+                System.out.println("Move Case 2a");
                 parent.clearField();
                 if (entity instanceof Tank tank) {
                     dropship.dockTank(tank);
@@ -123,19 +126,25 @@ public class MoveCommand implements Command {
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
                 dropship.repairUnits();
             } else if (nextEntity instanceof PowerUpEntity) {
-                entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
-
-                nextEntity.getParent().getTerrain().setPresentItem(0); // remove the current powerUp
+//                entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
 
                 int oldPos = entity.getPosition();
-                entity.setParent(nextField);
 
-                int newPos = nextEntity.getPosition();
+                nextEntity.getParent().getTerrain().setPresentItem(0); // remove the current powerUp
+                nextEntity.getParent().clearField();
+                nextEntity.setParent(null);
+
+                entity.getParent().clearField();
+                entity.setParent(nextField);
+                nextField.setFieldEntity(entity);
+
+                int newPos = entity.getPosition();
                 EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
                 isCompleted = true;
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
 
             } else {
+                System.out.println("Move isCompleted false");
                 isCompleted = false;
             }
         }
