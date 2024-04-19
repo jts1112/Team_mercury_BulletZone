@@ -91,7 +91,9 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedMoveInterval() {
-        return powerUp.getMovementInterval(allowedMoveInterval);
+        int interval = powerUp.getMovementInterval(allowedMoveInterval);
+        System.out.println("move interval: " + interval);
+        return interval;
     }
 
     public void setAllowedMoveInterval(int allowedMoveInterval) {
@@ -107,7 +109,9 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public int getAllowedFireInterval() {
-        return powerUp.getFireInterval(allowedFireInterval);
+        int interval = powerUp.getFireInterval(allowedFireInterval);
+        System.out.println("fire interval: " + interval);
+        return interval;
     }
 
     public void setAllowedFireInterval(int allowedFireInterval) {
@@ -155,7 +159,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         return life <= 0;
     }
 
-//    public void pickupPowerUp(PowerUpType type) {
+//    public void pickupPowerUp(PowerUpType type) { // TODO OLD OLD
 //        switch (type) {
 //            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
 //            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
@@ -164,11 +168,26 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 //        }
 //    }
 
+//    public void pickupPowerUp(PowerUpType type) { // TODO OLD
+//        switch (type) {
+//            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+//            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+//            case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
+//        }
+//    }
+
+
     public void pickupPowerUp(PowerUpType type) {
-        switch (type) {
-            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
-            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
-            case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
+        if (type != null) {
+            System.out.println("picked up " + type);
+            switch (type) {
+                case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
+                case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
+                case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
+                default -> System.out.println("Default pickup case hit");
+            }
+        } else {
+            System.out.println("PowerUpType is null, unable to pickup");
         }
     }
 

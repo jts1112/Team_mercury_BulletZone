@@ -30,6 +30,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.entities.ThingamajigEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.util.LogUtil;
@@ -415,30 +416,37 @@ public class InMemoryGameRepository implements GameRepository {
 
 
     private void spawnPowerUp() {
-        // Generate random coordinates for the power-up
-        Random random = new Random();
-        int x = Math.abs(random.nextInt(FIELD_DIM));
-        int y = Math.abs(random.nextInt(FIELD_DIM));
-        int lottery = Math.abs(random.nextInt(100));
-        // get a random space.
-        FieldHolder spawnLocation =findFreeSpace(game.getHolderGrid().get(x*y));
+        synchronized (this.monitor) {
+            // Generate random coordinates for the power-up
+            Random random = new Random();
+            int x = Math.abs(random.nextInt(FIELD_DIM));
+            int y = Math.abs(random.nextInt(FIELD_DIM));
+            int lottery = Math.abs(random.nextInt(100));
+            // get a random space.
+            FieldHolder spawnLocation = findFreeSpace(game.getHolderGrid().get(x * y));
+            // Create a power-up instance and add it to the game world
+            PowerUpEntity powerUp;
+            if (lottery >= 0 && lottery <= 40) {
+                System.out.println("Setting thingamajig power-up in spawn");
+                powerUp = new ThingamajigEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
+            } else if (lottery >= 41 && lottery <= 70) {
+                System.out.println("Setting AntiGrav power-up in spawn");
+                powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
+            } else { // it has to be a FusionReactor
+                System.out.println("Setting Fusion Reactor power-up in spawn");
+                powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(3);
+            }
 
-        // Create a power-up instance and add it to the game world
-        Optional<PowerUpEntity> powerUp = Optional.empty();
-        if(lottery >= 0 && lottery <= 40) {
-            //        PowerUpEntity powerUp = new Thing // TODO add thingamajig
-            spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
-        } else if (lottery >= 41 && lottery <= 70) {
-            powerUp = Optional.of(new AntiGravPowerUpEntity(spawnLocation.getPosition()));
-            spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
-        } else { // it has to be a FusionReactor
-            powerUp = Optional.of(new FusionReactorPowerUpEntity(spawnLocation.getPosition()));
-            spawnLocation.getTerrain().setPresentItem(3);
-        }
+            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
 
-        if (powerUp.isPresent()) {
-            powerUp.get().setParent(spawnLocation);
-            EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
+            spawnLocation.clearField();
+            spawnLocation.setFieldEntity(powerUp);
+            powerUp.setParent(spawnLocation);
+            EventBus.getDefault().post(new SpawnEvent(powerUp.getIntValue(), powerUp.getPos()));
+
         }
     }
 

@@ -5,7 +5,7 @@ import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class ThingamajigEntity extends PowerUpEntity {
     int pos;
-    PowerUpType type = PowerUpType.AntiGrav;
+    PowerUpType type = PowerUpType.Thingamajig;
 
     @Override
     public int getIntValue() {
@@ -13,7 +13,7 @@ public class ThingamajigEntity extends PowerUpEntity {
     }
 
     @Override
-    public FieldEntity copy() {return new AntiGravPowerUpEntity();}
+    public FieldEntity copy() {return new ThingamajigEntity();}
 
     public ThingamajigEntity() {}
 
@@ -24,5 +24,14 @@ public class ThingamajigEntity extends PowerUpEntity {
     @Override
     public String toString() {
         return "T";
+    }
+
+    /**
+     *
+     * @return powerUpType
+     */
+    @Override
+    public PowerUpType getType() {
+        return type;
     }
 }
