@@ -16,14 +16,26 @@ public class GridCellImageMapper {
     public int getTerrainImageResource(int cellValue) {
         int imageResource = R.drawable.grass_base1; // Default meadow image resource
 
+        int powerUp = 0;
+
         // Map cell values to image resources
         if (cellValue > 0) {
             if ((cellValue >= 2000 && cellValue < 3000)) {
                 imageResource = R.drawable.rocky1;
+                powerUp = cellValue - 2000;
             } else if ((cellValue >= 3000 && cellValue < 4000)) {
                 imageResource = R.drawable.hills1;
+                powerUp = cellValue - 3000;
             } else if ((cellValue >= 4000 && cellValue < 5000)) {
                 imageResource = R.drawable.forest1;
+                powerUp = cellValue - 4000;
+            }
+            if (powerUp == 1) {
+                imageResource = R.drawable.thingamajig1;
+            } else if (powerUp == 2)  {
+                imageResource = R.drawable.antigrav1;
+            } else if (cellValue == 3)  {
+                imageResource = R.drawable.fusionreactor1;
             }
         }
 
@@ -37,10 +49,6 @@ public class GridCellImageMapper {
             imageResource = R.drawable.wall5;
         } else if ((cellValue > 1000 && cellValue < 2000)) {
             imageResource = R.drawable.wall2;
-        } else if (cellValue == 2002)  {
-            imageResource = R.drawable.antigrav1;
-        } else if (cellValue == 2003)  {
-            imageResource = R.drawable.fusionreactor1;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {

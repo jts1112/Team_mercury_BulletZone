@@ -6,18 +6,12 @@ import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import edu.unh.cs.cs619.bulletzone.rest.GridUpdateEvent;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 
 @EBean
 public class GameEventProcessor {
     private int[][] board;
-    private GameData gameData;
-
     public void setBoard(int[][] newBoard) { board = newBoard; }
-
-    public void setGameData() {
-        this.gameData = GameData.getInstance();
-    }
 
     public void start() {
         EventBus.getDefault().register(this);

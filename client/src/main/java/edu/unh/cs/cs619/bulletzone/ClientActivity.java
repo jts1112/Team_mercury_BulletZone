@@ -29,6 +29,7 @@ import org.androidannotations.api.BackgroundExecutor;
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 import edu.unh.cs.cs619.bulletzone.rest.GridPollerTask;
 import edu.unh.cs.cs619.bulletzone.ui.GridAdapter;
 import edu.unh.cs.cs619.bulletzone.ui.GridEventHandler;
@@ -71,6 +72,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         mGridAdapter = new GridAdapter(this);
 
         gameData = GameData.getInstance();
+        //GameReplayManager.getInstance(this);
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -79,7 +81,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
         gameData.registerObserver(this);
 
-        // Automatically press the eventSwitch button after a delay
+        // Automatically activate eventSwitch after a delay
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +137,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
             eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
-            eventProcessor.setGameData();
             eventProcessor.start();
         } else {
             Log.d("EventSwitch", "OFF");
