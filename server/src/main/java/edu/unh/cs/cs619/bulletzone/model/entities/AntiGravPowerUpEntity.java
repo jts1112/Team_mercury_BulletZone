@@ -25,4 +25,13 @@ public class AntiGravPowerUpEntity extends PowerUpEntity {
     public String toString() {
         return "A";
     }
+
+    /**
+     *
+     * @return powerUpType
+     */
+    @Override
+    public PowerUpType getType() {
+        return type;
+    }
 }

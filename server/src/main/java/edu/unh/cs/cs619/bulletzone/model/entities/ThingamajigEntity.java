@@ -25,4 +25,13 @@ public class ThingamajigEntity extends PowerUpEntity {
     public String toString() {
         return "T";
     }
+
+    /**
+     *
+     * @return powerUpType
+     */
+    @Override
+    public PowerUpType getType() {
+        return type;
+    }
 }
