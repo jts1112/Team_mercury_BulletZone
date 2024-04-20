@@ -81,8 +81,9 @@ public class AuthenticationController {
         try {
             BooleanWrapper result = future.get(10, TimeUnit.SECONDS);
             if (result == null) {
-                return true;
+                return false;
             }
+            return result.isResult();
         } catch (TimeoutException e) {
             Log.d("AuthenticationActvity", "Registration operation timed out");
             future.cancel(true);
@@ -91,7 +92,6 @@ public class AuthenticationController {
             e.printStackTrace();
             return false;
         }
-        return false;
     }
 
     /**
