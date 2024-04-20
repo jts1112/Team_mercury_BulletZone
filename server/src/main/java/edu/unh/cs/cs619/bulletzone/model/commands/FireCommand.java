@@ -131,6 +131,7 @@ public class FireCommand implements Command {
                             // Create new RemovalEvent
                             RemovalEvent removalEvent = new RemovalEvent(powerUpEntity.getPos());
                             nextField.getTerrain().setPresentItem(0); // set no present item in fieldholder. // TODO added
+
                             EventBus.getDefault().post(removalEvent);
                         }
                         if (isVisible) {

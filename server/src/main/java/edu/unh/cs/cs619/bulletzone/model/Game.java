@@ -26,6 +26,8 @@ public final class Game {
 //    private final ArrayList<FieldHolder> holderGrid = new ArrayList<>(); // TODO removed
     private final GameBoard gameBoard = new GameBoard(FIELD_DIM);
 
+    private int numberOfPlayers;
+    private int numberOfPowerUps;
     private final ConcurrentMap<Long, Dropship> dropships = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, Tank> tanks = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, Miner> miners = new ConcurrentHashMap<>(); // Add this line
@@ -231,4 +233,27 @@ public final class Game {
     public void removeMinerEvent(Miner miner){
         removeMiner(miner.getId());
     }
+
+    //--- Power up Methods ---- // just keep track of power ups on the field
+    public int getnumPowerups(){
+        return this.numberOfPowerUps;
+    }
+
+    public void incrementnumPowerups(){
+        this.numberOfPowerUps +=1;
+    }
+
+    public void decrementnumPowerups(){
+        if (numberOfPowerUps > 0) {
+            this.numberOfPowerUps -= 1;
+        }
+    }
+
+
+    // ---- Player count Methods ---- // keep track of number of players. since dropship count didnt work
+
+
 }
+
+
+

@@ -12,6 +12,7 @@ import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -178,12 +179,13 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
 
     public void pickupPowerUp(PowerUpType type) {
+        Random random = new Random();
         if (type != null) {
             System.out.println("picked up " + type);
             switch (type) {
                 case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
                 case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
-                case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
+                case Thingamajig -> EventBus.getDefault().post(new CreditEvent(random.nextInt(100) + 50)); // give a random number amount of credits that averages 100
                 default -> System.out.println("Default pickup case hit");
             }
         } else {
