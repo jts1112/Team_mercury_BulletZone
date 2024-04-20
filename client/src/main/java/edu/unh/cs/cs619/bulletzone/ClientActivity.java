@@ -175,6 +175,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Click(R.id.buttonEject)
     @Background
     protected void onButtonEjectPowerUp() {
+        System.out.println("Client ejecting power-up button pressed");
         actionController.onButtonEjectPowerUp();
     }
 

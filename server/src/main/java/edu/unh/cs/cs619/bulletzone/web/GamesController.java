@@ -117,7 +117,7 @@ class GamesController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/ejectPowerUp/",
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/ejectPowerUp",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<BooleanWrapper> ejectPowerUp(@PathVariable long entityId)
