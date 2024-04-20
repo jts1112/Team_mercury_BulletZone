@@ -170,7 +170,10 @@ public class DataRepository {
 
     public GameUser getUser(String ip) {
         Stream<GameUser> stream = bzdata.users.getUsers().stream();
-        Stream<GameUser> filteredStream = stream.filter(u -> u.getIpAddress().equals(ip));
+        Stream<GameUser> filteredStream = stream.filter(u -> {
+            String ipAddress = u.getIpAddress();
+            return ipAddress != null && ipAddress.equals(ip);
+        });
         Optional<GameUser> user = filteredStream.findFirst();
         return user.orElse(null);
     }

@@ -126,7 +126,8 @@ public class MoveCommand implements Command {
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
                 dropship.repairUnits();
             } else if (nextEntity instanceof PowerUpEntity) {
-//                entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
+                System.out.println("In move command. Power-up type is: " + ((PowerUpEntity) nextEntity).getType());
+                entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
 
                 int oldPos = entity.getPosition();
 

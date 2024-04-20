@@ -27,4 +27,13 @@ public class FusionReactorPowerUpEntity extends PowerUpEntity {
     public String toString() {
         return "F";
     }
+
+    /**
+     *
+     * @return powerUpType
+     */
+    @Override
+    public PowerUpType getType() {
+        return type;
+    }
 }
