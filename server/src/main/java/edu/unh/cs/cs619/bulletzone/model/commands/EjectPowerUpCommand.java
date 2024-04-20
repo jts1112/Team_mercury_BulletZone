@@ -9,6 +9,7 @@ import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpComponent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -27,6 +28,7 @@ public class EjectPowerUpCommand implements Command {
      */
     @Override
     public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
+        System.out.println("Currently ejecting powerup");
         if (entity == null) {
             throw new TankDoesNotExistException(entityId);
         }

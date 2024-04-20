@@ -13,11 +13,19 @@ class GameUserRecord extends EntityRecord {
     String username;
     byte[] passwordHash;
     byte[] passwordSalt;
+    protected String ipAddress;
 
     GameUserRecord(String guName, String guUsername) {
         super(EntityType.User);
         name = guName;
         username = guUsername;
+    }
+
+    GameUserRecord(String guName, String guUsername, String guIpAddress) {
+        super(EntityType.User);
+        name = guName;
+        username = guUsername;
+        ipAddress = guIpAddress;
     }
 
     GameUserRecord(ResultSet userResult) {

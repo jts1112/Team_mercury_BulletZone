@@ -3,6 +3,7 @@ package edu.unh.cs.cs619.bulletzone.repository;
 
 //import android.health.connect.datatypes.units.Power;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,22 +39,20 @@ import edu.unh.cs.cs619.bulletzone.util.LogUtil;
 public class InMemoryGameRepository implements GameRepository {
 
     private static final int FIELD_DIM = 16;
-    private static final int BULLET_PERIOD = 200;
-    private static final int BULLET_DAMAGE = 1;
+
 
     private final Timer timer = new Timer();
     private final AtomicLong idGenerator = new AtomicLong();
     private final Object monitor = new Object();
     private Game game = null;
-    private final int[] bulletDamage = {15, 30, 50};
-    private final int[] bulletDelay = {500, 1000, 1500};
-    private final int[] trackActiveBullets = {0, 0};
 
     private  CommandPattern commands = null;
-
+    private final DataRepository data;
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
-
+    public InMemoryGameRepository() {
+        this.data = DataRepositoryFactory.getInstance();
+    }
     /**
      * Generates a new tank to join the game.
      * @param ip IP address of the tank.
@@ -73,7 +72,7 @@ public class InMemoryGameRepository implements GameRepository {
                 return existingDropship;
             }
 
-            Long dropshipId = this.idGenerator.getAndIncrement();
+            long dropshipId = this.idGenerator.getAndIncrement();
 
             dropship = new Dropship(dropshipId, Direction.Up, ip);
 
@@ -227,6 +226,7 @@ public class InMemoryGameRepository implements GameRepository {
     public boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException {
         EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+        game.incrementnumPowerups();
         return ejectPowerUpCommand.execute(playableEntity);
     }
 
@@ -257,6 +257,16 @@ public class InMemoryGameRepository implements GameRepository {
             for (long minerId : minerIDs) {
                 game.getMiner(minerId).getParent().clearField();
                 game.removeMiner(minerId);
+            }
+            GameUser user = data.getUser(dropship.getIp());
+            if (user != null) {
+                boolean balanceModified;
+                balanceModified = data.modifyBalance(user.getAccountId(), -1000);
+                if (balanceModified) {
+                    System.out.println("Balance modified successfully");
+                } else {
+                    System.out.println("Balance modification failed");
+                }
             }
         }
     }
@@ -395,14 +405,29 @@ public class InMemoryGameRepository implements GameRepository {
 
     private void startPowerUpSpawnTimer() {
         Timer powerUpSpawnTimer = new Timer();
+        Random random = new Random();
+        /**
+         * The probability of showing a new item should be calculated
+         * as 25% * P/(N + 1), where P is the number of Players currently in
+         * the game and N is the number of items already on the board (N is
+         * decremented whenever an item is picked up)
+         */
+
+        // probability out of 100 that a power up spawns.
         powerUpSpawnTimer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 synchronized (monitor) {
 
+                    int probability = (int) ((.25 * ((float) game.getDropships().size()/(float)(game.getnumPowerups() + 1))) * 100);
+                    int lottery = random.nextInt(100);
+                    System.out.println("Current Powerup Spawn Probability" + probability);
+                    System.out.println(game.getDropships().size());
+                    if (lottery < probability) {
                     spawnPowerUp(); // Spawn A powerup
+                    }
                 }
             }
-        }, 0, 10000); // Spawn a power-up every 10 seconds
+        }, 0, 1000); // Attempt to spawn every second.
     }
 
 
@@ -417,11 +442,11 @@ public class InMemoryGameRepository implements GameRepository {
             FieldHolder spawnLocation = findFreeSpace(game.getHolderGrid().get(x * y));
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
-            if (lottery >= 0 && lottery <= 40) {
+            if (lottery >= 0 && lottery <= 33) {
                 System.out.println("Setting thingamajig power-up in spawn");
                 powerUp = new ThingamajigEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
-            } else if (lottery >= 41 && lottery <= 70) {
+            } else if (lottery >= 34 && lottery <= 66) {
                 System.out.println("Setting AntiGrav power-up in spawn");
                 powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
@@ -432,6 +457,9 @@ public class InMemoryGameRepository implements GameRepository {
             }
 
             System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
+
+            // increment current powerup counter.
+            game.incrementnumPowerups();
 
             spawnLocation.clearField();
             spawnLocation.setFieldEntity(powerUp);

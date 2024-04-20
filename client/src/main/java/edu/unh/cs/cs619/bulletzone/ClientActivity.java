@@ -54,6 +54,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected ActionController actionController;  // Add new controller for rest calls
     private GridModel gridModel;
     protected GameData gameData;
+    protected GameReplayManager replay;
 
     /**
      * Changed unitIds to a singleton used in actioncontroller
@@ -72,7 +73,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
         mGridAdapter = new GridAdapter(this);
 
         gameData = GameData.getInstance();
-        //GameReplayManager.getInstance(this);
+        replay = GameReplayManager.getInstance(this);
+        replay.startRecording();
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -95,6 +97,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         super.onDestroy();
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
+        replay.endRecording();
     }
 
     /**
@@ -128,6 +131,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         try {
             actionController.join();
             gridPollTask.startPolling();
+            onPlayerCreditUpdate(gameData.getPlayerCredits());
         } catch (Exception ignored) { }
     }
 
@@ -272,24 +276,33 @@ public class ClientActivity extends Activity implements GameDataObserver {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new AlertDialog.Builder(ClientActivity.this)
-                        .setTitle("Leave Game")
-                        .setMessage("Are you sure you want to leave?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Player clicked yes. Leave game
-                                System.out.println("leaveGame() called");
+                long playerCredits = gameData.getPlayerCredits();
+                if (playerCredits >= 1000) {
+                    new AlertDialog.Builder(ClientActivity.this)
+                            .setTitle("Leave Game")
+                            .setMessage("Confirm to spend 1000 credits to leave.")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Player clicked yes. Leave game
+                                    System.out.println("leaveGame() called");
 
-                                Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
-                                startActivity(intent);
-
-//                                BackgroundExecutor.cancelAll("grid_poller_task", true);
-//                                actionController.leave(tankId);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null) // do nothing if user clicks no
-                        .show();
+                                    // minus 1000 credits from the player
+                                    gameData.addPlayerCredits(-1000);
+                                    leaveAsync();
+                                    Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null) // do nothing if user clicks no
+                            .show();
+                } else {
+                    new AlertDialog.Builder(ClientActivity.this)
+                            .setTitle("Leave Game")
+                            .setMessage("You do not have enough credits to leave.")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                }
             }
         });
     }

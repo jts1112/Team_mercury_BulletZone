@@ -76,11 +76,22 @@ public class AuthenticationController {
      * @param password Password for new account provided by user.
      */
     public boolean register(String username, String password) {
-        BooleanWrapper result = restClient.register(username, password);
-        if (result == null) {
+        Future<BooleanWrapper> future = executorService.submit(() -> restClient.register(username, password));
+
+        try {
+            BooleanWrapper result = future.get(10, TimeUnit.SECONDS);
+            if (result == null) {
+                return false;
+            }
+            return result.isResult();
+        } catch (TimeoutException e) {
+            Log.d("AuthenticationActvity", "Registration operation timed out");
+            future.cancel(true);
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
             return false;
         }
-        return result.isResult();
     }
 
     /**
