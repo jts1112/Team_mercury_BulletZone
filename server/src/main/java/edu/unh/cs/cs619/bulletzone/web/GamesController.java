@@ -1,5 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.web;
-
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,9 @@ class GamesController {
     @ResponseBody
     ResponseEntity<LongWrapper> join(HttpServletRequest request) {
         try {
-            long dropshipId = gameRepository.join(request.getRemoteAddr()).getId();
+            String ip = request.getRemoteAddr();
+            Dropship dropship = gameRepository.join(ip);
+            long dropshipId = dropship.getId();
             long minerId = gameRepository.spawnMiner(dropshipId);
             long tankId = gameRepository.spawnTank(dropshipId);
             log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
@@ -72,6 +74,16 @@ class GamesController {
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/moveTo/{targetX}/{targetY}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<Void> moveTo(@PathVariable long entityId,
+                                @PathVariable int targetX, @PathVariable int targetY)
+            throws TankDoesNotExistException, InterruptedException {
+        gameRepository.moveTo(entityId, targetX, targetY);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/fire/",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -91,6 +103,28 @@ class GamesController {
     {
         boolean fired = gameRepository.fire(entityId, bulletType);
         BooleanWrapper response = new BooleanWrapper(fired);
+        return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/mine",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> mine(@PathVariable long entityId)
+            throws TankDoesNotExistException
+    {
+        gameRepository.mine(entityId);
+        BooleanWrapper response = new BooleanWrapper(true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/ejectPowerUp/",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> ejectPowerUp(@PathVariable long entityId)
+            throws TankDoesNotExistException, LimitExceededException
+    {
+        boolean ejected = gameRepository.ejectPowerUp(entityId);
+        BooleanWrapper response = new BooleanWrapper(ejected);
         return new ResponseEntity<BooleanWrapper>(response, HttpStatus.OK);
     }
 

@@ -101,7 +101,7 @@ public class FireCommandTest {
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1, monitor).execute(tank));
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }

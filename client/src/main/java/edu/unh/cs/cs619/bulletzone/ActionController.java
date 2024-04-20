@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -32,16 +31,18 @@ public class ActionController {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
-    private UnitIds Ids;
+    // public only for testing
+    public UnitIds Ids;
     private long currentUnitId = -1;
     private ShakeDetector shakeDetector;
+
 
     public ActionController() {
     }
 
     // Method to initialize the ActionController with context
-    public void initialize(Context context, UnitIds ids) {
-        this.Ids = ids;
+    public void initialize(Context context) {
+        this.Ids = UnitIds.getInstance();
         restClient.setRestErrorHandler(bzRestErrorhandler);
         shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
@@ -56,8 +57,7 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids = UnitIds.getInstance();
-            Ids.setIds(units.getResult(), units.getId1(), units.getId2());
+            Ids.setIds(units.getResult(), units.getResult2(), units.getResult3());
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -116,6 +116,14 @@ public class ActionController {
         }
     }
 
+    public void onButtonMine() {
+        restClient.mine(Ids.getMinerId());
+    }
+
+    public void onButtonEjectPowerUp() {
+        restClient.ejectPowerUp(currentUnitId);
+    }
+
     public void leave() {
         restClient.leave(Ids.getDropshipId());
     }
@@ -129,5 +137,9 @@ public class ActionController {
         restClient.leave(id);
     }
 
+    @Background
+    public void moveToPosition(int targetX, int targetY) {
+         restClient.moveToPosition(currentUnitId, targetX, targetY);
+    }
 
 }

@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
@@ -49,6 +51,41 @@ public class DataRepository {
      * @param create true if the user should be created, or false otherwise
      * @return GameUser corresponding to the username/password if successful, null otherwise
      */
+    public Optional<GameUser> validateUser(String username, String password, String ipAddress, boolean create) {
+        //TODO: something that invokes users.createUser(name, password) or
+        //      users.validateLogin(name, password) as appropriate, maybe does other bookkeeping
+
+        if (create) {
+            GameUser returnedUser = bzdata.users.createUser(username, username, password, ipAddress);
+            if (returnedUser != null) {
+                if (!setupInitialBankAccount(returnedUser)) {
+                    log.warn("Failed to perform initial bank account for user: " + returnedUser.getUsername());
+                    if (!setupInitialBankAccount(returnedUser)) {
+                        // we've failed initial setup on the user's bank account too many times and have thus failed to
+                        // create the user, attempting to delete the user and returning nothing
+                        String tempUsername = returnedUser.getUsername();
+                        if (bzdata.users.delete(returnedUser.getId())) {
+                            log.warn("Failed to create user: " + tempUsername + ", successfully deleted");
+                        } else {
+                            log.error("Failed to create and cleanup user: " + tempUsername);
+                        };
+                        return Optional.empty();
+                    }
+                }
+                return Optional.of(returnedUser);
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            GameUser returnedUser = bzdata.users.validateLogin(username, password);
+            if (returnedUser != null) {
+                return Optional.of(returnedUser);
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
     public Optional<GameUser> validateUser(String username, String password, boolean create) {
         //TODO: something that invokes users.createUser(name, password) or
         //      users.validateLogin(name, password) as appropriate, maybe does other bookkeeping
@@ -100,6 +137,7 @@ public class DataRepository {
         BankAccount bankAccount = bzdata.accounts.create();
         if (bankAccount != null) {
             bankAccount.setOwner(user);
+            user.setAccountId(bankAccount.getId());
             boolean balanceSet = bzdata.accounts.modifyBalance(bankAccount, 1000);
             if (balanceSet) {
                 log.debug("successfully initialized user's bank account with id: " + bankAccount.getId());
@@ -116,5 +154,27 @@ public class DataRepository {
             log.error("Failed to create bank account for user: " + user.getUsername());
             return false;
         }
+    }
+
+    public double getBankBalance(GameUser user) {
+        return bzdata.accounts.getAccount(user.getAccountId()).getBalance();
+    }
+
+    public boolean modifyBalance(int accountId, double amount) {
+        BankAccount account = bzdata.accounts.getAccount(accountId);
+        if (account != null) {
+            return bzdata.accounts.modifyBalance(account, amount);
+        }
+        return false;
+    }
+
+    public GameUser getUser(String ip) {
+        Stream<GameUser> stream = bzdata.users.getUsers().stream();
+        Stream<GameUser> filteredStream = stream.filter(u -> {
+            String ipAddress = u.getIpAddress();
+            return ipAddress != null && ipAddress.equals(ip);
+        });
+        Optional<GameUser> user = filteredStream.findFirst();
+        return user.orElse(null);
     }
 }

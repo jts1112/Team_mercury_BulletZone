@@ -1,5 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +9,7 @@ import java.util.Optional;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
+import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 
 public class GameBoard {
     private Game game;

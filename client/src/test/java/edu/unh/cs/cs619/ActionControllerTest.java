@@ -35,9 +35,12 @@ public class ActionControllerTest {
     public void setUp() {
         // Initialize the mock BulletZoneRestClient
         restClient = mock(BulletZoneRestClient.class);
+        UnitIds ids = UnitIds.getInstance();
+        ids.setIds(121, 122, 123);
         actionController = new ActionController();
         actionController.setCurrentUnitId(123);
         actionController.restClient = restClient;
+        actionController.Ids = ids;
     }
 
     @Test
@@ -62,8 +65,9 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void test_ActionController_OnButtonFire() {
+    public void OnButtonFire_NormalTankFire_CallsFireOnTankId() {
         // Call the method to be tested
+
         actionController.onButtonFire();
 
         // Verify that the restClient's fire method is called with the correct parameter
@@ -71,12 +75,21 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void test_ShakeDetector_ShakeEventCallsFire() {
+    public void OnButtonFire_DropshipFire_CallsFireWithBulletType3() {
+        // change id to dropship
+        actionController.setCurrentUnitId(121);
+        actionController.onButtonFire();
+
+        // Verify that the restClient's fire method is called with the correct parameter
+        verify(restClient).fire(121, (byte) 3);
+    }
+
+    @Test
+    public void OnFire_ShakeDetector_ShakeEventCallsFire() {
         // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
         ActionController mockActionController = mock(ActionController.class);
-        UnitIds mockUnitIds = mock(UnitIds.class);
-        mockActionController.initialize(mockContext, mockUnitIds);
+        mockActionController.initialize(mockContext);
         mockActionController.setCurrentUnitId(123);
 
         // Create a mock SensorManager

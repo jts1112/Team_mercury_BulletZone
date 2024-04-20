@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import java.util.HashMap;
@@ -16,6 +17,8 @@ public class FieldHolder {
     private Optional<FieldEntity> entityHolder = Optional.empty();
     private final int position;
     private Terrain terrain;
+
+
 
     public FieldHolder(int pos) {
         this.position = pos;
@@ -36,8 +39,9 @@ public class FieldHolder {
         return entityHolder.isPresent();
     }
 
-    public FieldEntity getEntity() {
-        return entityHolder.get();
+    public FieldEntity getEntity() { // TODO old
+//        return entityHolder.get();
+        return entityHolder.orElse(null);
     }
 
     public void setFieldEntity(FieldEntity entity) {
@@ -50,6 +54,7 @@ public class FieldHolder {
             entityHolder = Optional.empty();
         }
     }
+
 
     public Terrain getTerrain(){
         return this.terrain;

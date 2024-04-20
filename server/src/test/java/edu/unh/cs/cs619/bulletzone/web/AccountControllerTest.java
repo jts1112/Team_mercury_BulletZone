@@ -17,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.crypto.Data;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
 import edu.unh.cs.cs619.bulletzone.datalayer.core.Entity;
@@ -64,7 +63,6 @@ public class AccountControllerTest {
         GameUser validUser = database.users.createUser("Jack","username","password");
 
         when(dataRepository.validateUser("username","password",false)).thenReturn(Optional.ofNullable(validUser));
-
         // Invoke the login method
         ResponseEntity<LongWrapper> responseEntity = controller.login("username", "password");
 

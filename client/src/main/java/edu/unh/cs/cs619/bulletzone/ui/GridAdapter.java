@@ -7,18 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import org.androidannotations.annotations.EBean;
 
+import edu.unh.cs.cs619.bulletzone.ClientActivity;
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 
 @EBean
 public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private GridCell[][] gridData;
+    private Context context;
 
     public GridAdapter(Context context) {
         inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     public void setGridData(GridCell[][] gridData) {
@@ -45,37 +51,51 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        final View row;
         ViewHolder holder;
-
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.field_item, parent, false);
+            row = inflater.inflate(R.layout.field_item, parent, false);
             holder = new ViewHolder();
-            holder.imageView = convertView.findViewById(R.id.gridImageView);
-            convertView.setTag(holder);
+            holder.imageView = (ImageView) row.findViewById(R.id.gridImageView);
+            row.setTag(holder);
         } else {
+            row = convertView;
             holder = (ViewHolder) convertView.getTag();
         }
 
-        int row = position / gridData[0].length;
-        int col = position % gridData[0].length;
-
-        GridCell cell = gridData[row][col];
+        int colX = position % gridData[0].length;
+        int rowY = position / gridData[0].length;
+        GridCell cell = gridData[rowY][colX];
 
         // Set terrain image
         holder.imageView.setImageResource(cell.getTerrainResourceID());
 
         // Set entity image on top of terrain
-        if (cell.getEntityResourceID() != 0 ) {
+        if (cell.getEntityResourceID() != 0) {
             holder.imageView.setImageResource(cell.getEntityResourceID());
         }
+
         holder.imageView.setRotation(cell.getEntityRotation());
 
-        return convertView;
+        row.setId(position);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context instanceof ClientActivity) {
+                    Toast.makeText(context, "Clicked" + row.getId() + "!!",
+                            Toast.LENGTH_SHORT).show();
+                    ((ClientActivity) context).onGridItemTapped(colX, rowY);
+                }
+            }
+        });
+
+        return row;
     }
-
-
 
     static class ViewHolder {
         ImageView imageView;
     }
+
 }
