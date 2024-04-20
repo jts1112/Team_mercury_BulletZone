@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="10dp"
-    android:layout_height="10dp"
-    android:background="@android:color/holo_green_dark"></TextView>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridImageView"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:scaleType="fitXY"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+
+        />
+</FrameLayout>

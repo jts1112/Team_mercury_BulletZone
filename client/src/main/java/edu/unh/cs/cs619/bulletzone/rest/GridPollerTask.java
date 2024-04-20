@@ -1,5 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.rest;
 
+
+import android.util.Log;
+
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
@@ -64,5 +67,6 @@ public class GridPollerTask {
     @UiThread
     public void onGridUpdate(GridWrapper gw) {
         EventBus.getDefault().post(new GridUpdateEvent(gw));
+        //Log.d("poller", "new gridupdateevent " + gw.getGrid());
     }
 }

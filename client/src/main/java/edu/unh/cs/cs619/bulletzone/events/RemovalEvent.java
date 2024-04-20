@@ -4,11 +4,13 @@ public class RemovalEvent extends GameEvent {
     @JsonProperty
     private int position;
 
+    public RemovalEvent() {}
+
     /**
      * Constructor for testing only.
      * @param position The position of the entity to remove.
      */
-    public RemovalEvent( int position) {
+    public RemovalEvent(int position) {
         this.position = position;
     }
 

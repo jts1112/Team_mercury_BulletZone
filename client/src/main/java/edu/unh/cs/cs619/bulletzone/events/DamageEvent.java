@@ -1,4 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.events;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DamageEvent extends GameEvent {
@@ -6,6 +7,8 @@ public class DamageEvent extends GameEvent {
     private int position;
     @JsonProperty
     private int rawServerValue;
+
+    public DamageEvent() {}
 
     /**
      * Constructor for testing only.
@@ -23,9 +26,17 @@ public class DamageEvent extends GameEvent {
     */
     @Override
     public void applyTo(int[][] board) {
+        GameData gameData = GameData.getInstance();
         int row = position / 16;
         int col = position % 16;
         board[row][col] = rawServerValue;
+        if (rawServerValue >= 10000000 && rawServerValue <= 20000000) {
+            gameData.setTankLife(rawServerValue);
+        } else if (rawServerValue >= 20000000 && rawServerValue <= 30000000) {
+            gameData.setMinerLife(rawServerValue);
+        } else if (rawServerValue >= 30000000 && rawServerValue <= 40000000) {
+            gameData.setDropshipLife(rawServerValue);
+        }
     }
 
     @Override

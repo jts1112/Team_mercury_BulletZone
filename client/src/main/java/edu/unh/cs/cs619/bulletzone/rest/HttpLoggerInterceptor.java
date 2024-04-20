@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.rest;
-
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,9 +12,6 @@ import java.io.IOException;
 
 import edu.unh.cs.cs619.bulletzone.util.GridWrapper;
 
-/**
- * Created by simon on 10/3/14.
- */
 public class HttpLoggerInterceptor implements ClientHttpRequestInterceptor {
 
     private static final String TAG = "HttpLoggerInterceptor";

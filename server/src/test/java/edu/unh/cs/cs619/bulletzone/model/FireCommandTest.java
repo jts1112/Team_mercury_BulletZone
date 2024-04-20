@@ -2,14 +2,15 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import edu.unh.cs.cs619.bulletzone.model.commands.FireCommand;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 
 public class FireCommandTest {
     static Game game = new Game();
@@ -19,7 +20,7 @@ public class FireCommandTest {
     public void setup() {
         // Build empty board for testing
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder().createFieldHolderGrid(16,new Object()).build());
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
 
@@ -28,7 +29,7 @@ public class FireCommandTest {
         fieldElement.setFieldEntity(tank);
         tank.setParent(fieldElement);
 
-        game.addTank("127.0.0.1", tank);
+        game.addTank(tank);
 
         tank.setDirection(Direction.Down);
     }
@@ -48,21 +49,22 @@ public class FireCommandTest {
         fieldElement.setFieldEntity(tank);
         tank.setParent(fieldElement);
 
-        game.addTank("127.0.0.1", tank);
-
+        game.addTank(tank);
         tank.setDirection(Direction.Down);
 
+        Object monitor = new Object();
+
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
+        } catch (TankDoesNotExistException e) {
             fail();
         }
 
-        tank.setLastFireTime(System.currentTimeMillis());
+        tank.setLastFireTime(System.currentTimeMillis() - 600);
 
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
+        } catch (TankDoesNotExistException e) {
             fail();
         }
     }
@@ -70,14 +72,15 @@ public class FireCommandTest {
     // doesn't fire when too soon
     @Test
     public void execute_IncorrectTiming_FailsToFire() {
+        Object monitor = new Object();
         try {
-            assertTrue(new FireCommand(1L, 1).execute(game));
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(game));
+            assertFalse(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }
@@ -86,10 +89,10 @@ public class FireCommandTest {
     // doesn't fire more than the max bullets
     @Test
     public void execute_MoreThanMaxBullets_FailsToFire() {
-
+        Object monitor = new Object();
         for (int i = 0; i < tank.getAllowedNumberOfBullets(); i++) {
             try {
-                assertTrue(new FireCommand(1L, 1).execute(game));
+                assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
             } catch(TankDoesNotExistException e) {
                 fail();
             }
@@ -98,7 +101,7 @@ public class FireCommandTest {
         }
 
         try {
-            assertFalse(new FireCommand(1L, 1).execute(game));
+            assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
         } catch(TankDoesNotExistException e) {
             fail();
         }

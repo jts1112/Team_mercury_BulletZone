@@ -1,56 +1,47 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.SystemService;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
+import edu.unh.cs.cs619.bulletzone.ClientActivity;
 import edu.unh.cs.cs619.bulletzone.R;
-import edu.unh.cs.cs619.bulletzone.events.UpdateBoardEvent;
+import edu.unh.cs.cs619.bulletzone.replay.GameReplayManager;
 
 @EBean
 public class GridAdapter extends BaseAdapter {
 
-    private final Object monitor = new Object();
-    @SystemService
-    protected LayoutInflater inflater;
-    private int[][] mEntities = new int[16][16];
+    private LayoutInflater inflater;
+    private GridCell[][] gridData;
+    private Context context;
 
-    public void updateList(int[][] entities) {
-        synchronized (monitor) {
-            this.mEntities = entities;
-            this.notifyDataSetChanged();
-        }
+    public GridAdapter(Context context) {
+        inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
-    @AfterInject
-    protected void afterInject() {
-        EventBus.getDefault().register(this);
+    public void setGridData(GridCell[][] gridData) {
+        this.gridData = gridData;
+        notifyDataSetChanged();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleUpdate(UpdateBoardEvent event) {
-        this.notifyDataSetChanged();
-    }
-
-    public int[][] getBoard() { return mEntities; }
 
     @Override
     public int getCount() {
-        return 16 * 16;
+        return gridData != null ? gridData.length * gridData[0].length : 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return mEntities[(int) position / 16][position % 16];
+        int row = position / gridData[0].length;
+        int col = position % gridData[0].length;
+        return gridData[row][col];
     }
 
     @Override
@@ -60,34 +51,51 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        final View row;
+        ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.field_item, null);
+            convertView = inflater.inflate(R.layout.field_item, parent, false);
+            row = inflater.inflate(R.layout.field_item, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = (ImageView) row.findViewById(R.id.gridImageView);
+            row.setTag(holder);
+        } else {
+            row = convertView;
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        int row = position / 16;
-        int col = position % 16;
+        int colX = position % gridData[0].length;
+        int rowY = position / gridData[0].length;
+        GridCell cell = gridData[rowY][colX];
 
-        int val = mEntities[row][col];
+        // Set terrain image
+        holder.imageView.setImageResource(cell.getTerrainResourceID());
 
-        if (convertView instanceof TextView) {
-            synchronized (monitor) {
-                if (val > 0) {
-                    if (val == 1000 || (val>1000&&val<=2000)) {
-                        ((TextView) convertView).setText("W");
-                    } else if (val >= 2000000 && val <= 3000000) {
-                        ((TextView) convertView).setText("B");
-                    } else if (val >= 10000000 && val <= 20000000) {
-                        ((TextView) convertView).setText("T");
-                    }
-                } else {
-                    ((TextView) convertView).setText("");
+        // Set entity image on top of terrain
+        if (cell.getEntityResourceID() != 0) {
+            holder.imageView.setImageResource(cell.getEntityResourceID());
+        }
+
+        holder.imageView.setRotation(cell.getEntityRotation());
+
+        row.setId(position);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context instanceof ClientActivity) {
+                    Toast.makeText(context, "Clicked" + row.getId() + "!!",
+                            Toast.LENGTH_SHORT).show();
+                    ((ClientActivity) context).onGridItemTapped(colX, rowY);
                 }
             }
-        }
+        });
 
-        return convertView;
+        return row;
     }
+
+    static class ViewHolder {
+        ImageView imageView;
+    }
+
 }
-
-

@@ -92,6 +92,54 @@ public class GameUserRepository implements EntityRepository {
     }
 
     /**
+     * Returns a new user, or null if an active user with the passed username already exists.
+     * @param name  New user's screen name
+     * @param username  User's username for the purpose of logging-in/authorizing
+     * @param password  User's password for the purpose of logging-in/authorizing
+     * @return  New GameUser object corresponding to the newly created user, or null if already
+     *          exists. Any database errors result in exceptions.
+     */
+    public GameUser createUser(String name, String username, String password, String ipAddress) {
+        if (getUser(username) != null)
+            return null;
+
+        GameUserRecord newRecord = new GameUserRecord(name, username, ipAddress);
+        GameUser newUser = null;
+
+        //The following is adapted from https://www.baeldung.com/java-password-hashing
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[saltSize];
+        random.nextBytes(salt);
+
+        try {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, keySize);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = factory.generateSecret(spec).getEncoded();
+            newRecord.passwordHash = hash;
+            newRecord.passwordSalt = salt;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new IllegalStateException("Unable to attempt password creation!", e);
+        }
+
+        try {
+            Connection dataConnection = data.getConnection();
+            if (dataConnection == null)
+                return null;
+
+            // Create base item
+            newRecord.insertInto(dataConnection);
+            dataConnection.close();
+            newUser = new GameUser(newRecord);
+            userMap.put(newUser.getId(), newUser);
+            usernameToUserMap.put(newRecord.username, newUser);
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error while creating user!", e);
+        }
+        System.out.println("New user " + username + " added with ID " + newUser.getId());
+        return newUser;
+    }
+
+    /**
      * Deletes the referenced account from the in-memory representation and
      * marks it as deleted in the database.
      * NOTE: this method does not remove the item from its container in the in-memory representation.
