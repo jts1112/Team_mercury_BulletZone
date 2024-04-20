@@ -85,6 +85,16 @@ public class ActionControllerTest {
     }
 
     @Test
+    public void OnButtonEject_NormalTankEject_CallsEjectOnTankId() {
+        // Call the method to be tested
+
+        actionController.onButtonEjectPowerUp();
+
+        // Verify that the restClient's fire method is called with the correct parameter
+        verify(restClient).ejectPowerUp(123);
+    }
+
+    @Test
     public void OnFire_ShakeDetector_ShakeEventCallsFire() {
         // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
