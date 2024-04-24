@@ -121,7 +121,8 @@ public class ActionController {
     }
 
     public void onButtonEjectPowerUp() {
-        restClient.ejectPowerUp(currentUnitId);
+
+        restClient.ejectPowerUp(this.currentUnitId);
     }
 
     public void leave() {

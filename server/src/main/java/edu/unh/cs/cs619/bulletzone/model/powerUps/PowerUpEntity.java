@@ -28,6 +28,14 @@ public abstract class PowerUpEntity extends FieldEntity {
 
     /**
      *
+     * set entity pos
+     */
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
+    /**
+     *
      * @return powerUpType
      */
     public PowerUpType getType() {
