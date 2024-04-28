@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import org.greenrobot.eventbus.EventBus;
 
-public abstract class PlayableEntity extends FieldEntity implements Vehicle{
+public abstract class  PlayableEntity extends FieldEntity implements Vehicle{
     protected long id;
     protected long lastMoveTime;
     protected long lastFireTime;
@@ -25,6 +26,7 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     protected int numberOfBullets;
     protected int allowedNumberOfBullets;
     protected int life;
+    protected int maxLife;
     protected int bulletDamage;
     protected String ip;
     protected Direction direction;
@@ -40,6 +42,14 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
 
     public void setBulletDamage(int bulletDamage) {
         this.bulletDamage = bulletDamage;
+    }
+
+    public int getMaxLife() {
+        return maxLife;
+    }
+
+    public void setMaxLife(int maxLife) {
+        this.maxLife = maxLife;
     }
 
     public void setIp(String ip) {
@@ -156,27 +166,13 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
         return ip;
     }
 
+    public PowerUpComponent getPowerUps() {
+        return powerUp;
+    }
+
     public boolean isDestroyed() {
         return life <= 0;
     }
-
-//    public void pickupPowerUp(PowerUpType type) { // TODO OLD OLD
-//        switch (type) {
-//            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
-//            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
-//            case Thingamajig :
-//                EventBus.getDefault().post(new CreditEvent(1000));
-//        }
-//    }
-
-//    public void pickupPowerUp(PowerUpType type) { // TODO OLD
-//        switch (type) {
-//            case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
-//            case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
-//            case Thingamajig -> EventBus.getDefault().post(new CreditEvent(1000));
-//        }
-//    }
-
 
     public void pickupPowerUp(PowerUpType type) {
         Random random = new Random();
@@ -186,7 +182,9 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
                 case AntiGrav -> powerUp = new AntiGravPowerUp(powerUp);
                 case FusionReactor -> powerUp = new FusionReactorPowerUp(powerUp);
                 case Thingamajig -> EventBus.getDefault().post(new CreditEvent(random.nextInt(100) + 50)); // give a random number amount of credits that averages 100
-                default -> System.out.println("Default pickup case hit");
+                case PoweredDrill -> powerUp = new PoweredDrillPowerUp(powerUp);
+                case DeflectorShield -> powerUp = new DeflectorShieldPowerUp(powerUp, this);
+                case AutomatedRepairKit -> powerUp = new AutomatedRepairKitPowerUp(powerUp, this);
             }
         } else {
             System.out.println("PowerUpType is null, unable to pickup");
@@ -208,7 +206,11 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
                         return Optional.of(new AntiGravPowerUpEntity());
                     case FusionReactor:
                         return Optional.of(new FusionReactorPowerUpEntity());
-                    case Thingamajig:
+                    case PoweredDrill:
+                        return Optional.of(new PoweredDrillPowerUpEntity());
+                    case DeflectorShield:
+                        return Optional.of(new DeflectorShieldPowerUpEntity());
+                    case Thingamajig, AutomatedRepairKit:
                         return Optional.empty();
                 }
             }
@@ -217,7 +219,8 @@ public abstract class PlayableEntity extends FieldEntity implements Vehicle{
     }
 
     public void hit(int damage) {
-        life -= damage;
+        int final_damage = powerUp.getModifiedDamageToHolder(new DamageTuple<>(damage, false)).damage;
+        life -= final_damage;
         System.out.println("Tank life: " + id + " : " + life);
         if (life <= 0) {
             EventBus.getDefault().post(this);
