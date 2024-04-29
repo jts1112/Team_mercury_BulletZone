@@ -113,6 +113,29 @@ public class GameBoardBuilder {
     }
 
     /**
+     * Sets the row of a terrain to a certain terrain type with the specified layer
+     * @param layer
+     * @param rowNumber
+     * @param terrainType
+     */
+    public GameBoardBuilder setLayerRowTerrain(int layer,int rowNumber,int terrainType){
+
+        for (int i = 0 ; i<fieldDimension;i++){
+            int index = (layer * fieldDimension* fieldDimension) + rowNumber * fieldDimension + i;
+            if (terrainType == 1) { // rocky terrain
+                setRockyTerrain(index);
+            } else if (terrainType == 2) { // hilly terrain
+                setHillsTerrain(index);
+            } else if (terrainType == 3){ // forest terrain
+                setForestTerrain(index);
+            } else { // meadow
+                setMeadowTerrain(index);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Game board CreateFieldHolderGrid that was originally in InMemoryGameRepository
      * Creates the fieldholderGrid with the specified dimensions
      *
@@ -220,8 +243,23 @@ public class GameBoardBuilder {
                 setRowTerrain(14,3).
                 setRowTerrain(15,3).// end of setting Rocky Terrain
                 setForestTerrain(66).
-                setForestTerrain(67).setForestTerrain(68);
-
+                setForestTerrain(67).setForestTerrain(68).
+                setLayerRowTerrain(1, 0,4).
+                setLayerRowTerrain(1, 1,4).
+                setLayerRowTerrain(1, 2,4).
+                setLayerRowTerrain(1, 3,4).
+                setLayerRowTerrain(1, 4,4).
+                setLayerRowTerrain(1, 5,4).
+                setLayerRowTerrain(1, 6,4).
+                setLayerRowTerrain(1, 7,4).
+                setLayerRowTerrain(1, 8,4).
+                setLayerRowTerrain(1, 9,4).
+                setLayerRowTerrain(1, 10,4).
+                setLayerRowTerrain(1, 11,4).
+                setLayerRowTerrain(1, 12,4).
+                setLayerRowTerrain(1, 13,4).
+                setLayerRowTerrain(1, 14,4).
+                setLayerRowTerrain(1, 15,4).
         fieldHolderGrid = newBoard.build();
         return this;
     }

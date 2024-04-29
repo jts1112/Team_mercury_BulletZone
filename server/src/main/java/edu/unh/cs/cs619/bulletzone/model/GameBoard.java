@@ -152,6 +152,49 @@ public class GameBoard {
         return grid;
     }
 
+    public int[][][] getTerrain3DGrid(){
+        int[][][] grid = new int[3][fieldDimension][fieldDimension];
+
+        synchronized (board) {
+            FieldHolder holder;
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        holder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        grid[k][i][j] = holder.getTerrain().getIntValue();
+
+                    }
+                }
+            }
+
+        }
+
+        return grid;
+    }
+
+    public int[][][] getGrid3D() {
+        int[][][] grid = new int[3][fieldDimension][fieldDimension];
+
+        synchronized (board) {
+            FieldHolder holder;
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        holder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        if (holder.isPresent()) {
+                            grid[k][i][j] = holder.getEntity().getIntValue();
+                        } else {
+                            grid[k][i][j] = 0;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return grid;
+    }
+
     public GameBoard initialize(){
        return null;
     }

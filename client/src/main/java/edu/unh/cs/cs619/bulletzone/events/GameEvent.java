@@ -48,7 +48,7 @@ public abstract class GameEvent {
         return e1Time.compareTo(e2Time);
     };
 
-    abstract void applyTo(int [][]board);
+    public abstract void applyTo(int[][] board);
 
     @Override
     public String toString() {
