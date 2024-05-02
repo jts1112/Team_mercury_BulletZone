@@ -11,6 +11,7 @@ public class UnitIds {
     private long tankId = -1;
     private long minerId = -1;
     private long dropshipId = -1;
+    public long controlledUnitId = -1;
 
     private UnitIds() {
 
@@ -31,6 +32,14 @@ public class UnitIds {
 
     public long getTankId() {
         return tankId;
+    }
+
+    public void setControlledUnitId(long controlledUnitId) {
+        this.controlledUnitId = controlledUnitId;
+    }
+
+    public long getControlledUnitId() {
+        return controlledUnitId;
     }
 
     public long getMinerId() {

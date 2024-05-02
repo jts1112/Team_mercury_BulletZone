@@ -27,13 +27,13 @@ public class GridEventHandler {
     public void onNewEvent(GameEvent event) {
         //Log.d("GameEventProcessor", "Applying " + event);
         event.applyTo(gridModel.getGrid3d());
-        gridAdapter.setGridData3d(gridModel.getGrid3d());
+        gridAdapter.setGridData(gridModel.getLayerGrid());
     }
 
     public GridEventHandler(GridModel gridModel, GridAdapter gridAdapter) {
         this.gridModel = gridModel;
         this.gridAdapter = gridAdapter;
-        replayManager = GameReplayManager.getInstance();
+//        replayManager = GameReplayManager.getInstance();
         EventBus.getDefault().register(this); // Register with EventBus
     }
 
@@ -44,11 +44,11 @@ public class GridEventHandler {
 
         if (gridModel != null) {
             gridModel.initializeGrid3d(gridData, terrainData);
-            replayManager.takeSnapshot(gridModel.getGrid());
+//            replayManager.takeSnapshot(gridModel.getGrid());
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
-            gridAdapter.setGridData3d(gridModel.getGrid3d());
+            gridAdapter.setGridData(gridModel.getLayerGrid());
             // Log.d("grideventhandler", "new grid update ");
         }
     }

@@ -1,14 +1,18 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+
 public class GridModel {
     private GridCell[][] grid;
     private int[][] rawData;
     private GridCell[][][] grid3d;
     private int[][][] rawData3d;
     private GridCellImageMapper mapper;
+    private UnitIds ids;
 
     public GridModel() {
         mapper = GridCellImageMapper.getInstance();
+        ids = UnitIds.getInstance();
     }
 
     public void updateGrid(int[][] newData, int[][] newTerrainData) {
@@ -29,8 +33,8 @@ public class GridModel {
         rawData3d = newData;
         grid3d = new GridCell[3][16][16];
         for (int k = 0; k < 3; k++) {
-            for (int i = 0; i < newData.length; i++) {
-                for (int j = 0; j < newData[0].length; j++) {
+            for (int i = 0; i < newData[0].length; i++) {
+                for (int j = 0; j < newData[0][0].length; j++) {
                     int terrainResource = mapper.getTerrainImageResource(newTerrainData[k][i][j]);
                     int entityResource = mapper.getEntityImageResource(newData[k][i][j]);
                     GridCell cell = new GridCell(terrainResource, entityResource, i, j);
@@ -55,5 +59,28 @@ public class GridModel {
 
     public GridCell[][][] getGrid3d() {
         return grid3d;
+    }
+
+    public GridCell[][] getLayerGrid() {
+        int controlledUnitId = (int) ids.getControlledUnitId();
+        int val = 0;
+        if (controlledUnitId == ids.getTankId()) {
+            val = 10000000;
+        } else if (controlledUnitId == ids.getMinerId()) {
+            val = 20000000;
+        } else if (controlledUnitId == ids.getDropshipId()) {
+            val = 30000000;
+        }
+
+        for (int k = 0; k < rawData3d.length; k++) {
+            for (int i = 0; i < rawData3d[k].length; i++) {
+                for (int j = 0; j < rawData3d[k][i].length; j++) {
+                    if (((rawData3d[k][i][j] - val) / 10000) == controlledUnitId) {
+                        return grid3d[k];
+                    }
+                }
+            }
+        }
+        return grid3d[0]; // Controlled unit not found resorts to top layer
     }
 }

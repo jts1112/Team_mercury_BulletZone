@@ -70,9 +70,10 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        int colX = position % gridData3d[0][0].length;
-        int rowY = position / gridData3d[0][0].length;
-        GridCell cell = gridData3d[0][rowY][colX];
+
+        int rowY = position / gridData[0].length;
+        int colX = position % gridData[0].length;
+        GridCell cell = gridData[rowY][colX];
 
         // Set terrain image
         holder.imageView.setImageResource(cell.getTerrainResourceID());

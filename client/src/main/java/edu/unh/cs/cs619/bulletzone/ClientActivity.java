@@ -73,8 +73,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
         mGridAdapter = new GridAdapter(this);
 
         gameData = GameData.getInstance();
-        replay = GameReplayManager.getInstance(this);
-        replay.startRecording();
+//        replay = GameReplayManager.getInstance(this);
+//        replay.startRecording();
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -97,7 +97,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         super.onDestroy();
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
-        replay.endRecording();
+//        replay.endRecording();
     }
 
     /**

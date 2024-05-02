@@ -69,6 +69,7 @@ public class ActionController {
         switch (unit) {
             case "dropship":
                 currentUnitId = Ids.getDropshipId();
+                Ids.setControlledUnitId(currentUnitId);
                 break;
             case "miner":
                 currentUnitId = Ids.getMinerId();
