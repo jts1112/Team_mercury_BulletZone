@@ -59,9 +59,6 @@ public class GridPollerTask {
                 previousTimeStamp = event.getTimeStamp();
                 haveEvents = true;
             }
-            if (haveEvents) {
-                onGridUpdate(restClient.grid()); // Update grid after processing events
-            }
         }
     }
     @UiThread

@@ -140,11 +140,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
-            eventProcessor.start();
+            gridEventHandler.setBoard3d(gridModel.getGrid3d()); //necessary because "board" keeps changing when it's int[][]
         } else {
             Log.d("EventSwitch", "OFF");
-            eventProcessor.stop();
+            gridEventHandler.stop();
         }
     }
 

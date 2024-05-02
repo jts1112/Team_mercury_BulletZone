@@ -8,7 +8,7 @@ public class GridModel {
     private GridCellImageMapper mapper;
 
     public GridModel() {
-        mapper = new GridCellImageMapper();
+        mapper = GridCellImageMapper.getInstance();
     }
 
     public void updateGrid(int[][] newData, int[][] newTerrainData) {
@@ -25,7 +25,7 @@ public class GridModel {
         }
     }
 
-    public void updateGrid3d(int[][][] newData, int[][][] newTerrainData) {
+    public void initializeGrid3d(int[][][] newData, int[][][] newTerrainData) {
         rawData3d = newData;
         grid3d = new GridCell[3][16][16];
         for (int k = 0; k < 3; k++) {

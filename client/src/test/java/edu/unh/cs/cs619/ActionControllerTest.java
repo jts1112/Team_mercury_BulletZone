@@ -95,7 +95,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void OnFire_ShakeDetector_ShakeEventCallsFire() {
+    public void ShakeDetector_OnShakeFire_ShakeEventReturnsFire() {
         // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
         ActionController mockActionController = mock(ActionController.class);
@@ -104,13 +104,9 @@ public class ActionControllerTest {
 
         // Create a mock SensorManager
         SensorManager mockSensorManager = mock(SensorManager.class);
-
         // Mock the getSystemService method of the Context to return the mock SensorManager
         when(mockContext.getSystemService(Context.SENSOR_SERVICE)).thenReturn(mockSensorManager);
-
-        // Create a ShakeDetector instance with the mock Context
         ShakeDetector shakeDetector = new ShakeDetector(mockContext);
-
         // Log shakeDetector to ensure it's not null
         System.out.println("ShakeDetector: " + shakeDetector);
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Comparator;
 
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+
 //This class is adapted from group Alpha's project from 2020, courtesy Gersi Doko
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -48,7 +50,7 @@ public abstract class GameEvent {
         return e1Time.compareTo(e2Time);
     };
 
-    public abstract void applyTo(int[][] board);
+    public abstract void applyTo(GridCell[][][] board);
 
     @Override
     public String toString() {

@@ -7,10 +7,22 @@ import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
 public class GridCellImageMapper {
 
+    private static GridCellImageMapper instance;
     private UnitIds Ids;
 
-    public GridCellImageMapper() {
-        this.Ids = UnitIds.getInstance();
+    private GridCellImageMapper() {
+        Ids = UnitIds.getInstance();
+    }
+
+    public static GridCellImageMapper getInstance() {
+        if (instance == null) {
+            synchronized (GridCellImageMapper.class) {
+                if (instance == null) {
+                    instance = new GridCellImageMapper();
+                }
+            }
+        }
+        return instance;
     }
 
     public int getTerrainImageResource(int cellValue) {

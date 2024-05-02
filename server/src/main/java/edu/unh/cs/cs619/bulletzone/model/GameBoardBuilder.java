@@ -120,8 +120,8 @@ public class GameBoardBuilder {
      */
     public GameBoardBuilder setLayerRowTerrain(int layer,int rowNumber,int terrainType){
 
-        for (int i = 0 ; i<fieldDimension;i++){
-            int index = (layer * fieldDimension* fieldDimension) + rowNumber * fieldDimension + i;
+        for (int i = 0; i < fieldDimension; i++){
+            int index = (layer * fieldDimension * fieldDimension) + rowNumber * fieldDimension + i;
             if (terrainType == 1) { // rocky terrain
                 setRockyTerrain(index);
             } else if (terrainType == 2) { // hilly terrain
@@ -152,9 +152,11 @@ public class GameBoardBuilder {
                 this.fieldHolderGrid = new ArrayList<FieldHolder>();
             }
 
-            for (int i = 0; i < fieldDimension * fieldDimension; i++) {
+            for (int i = 0; i < (fieldDimension * fieldDimension) * 3; i++) {
                 fieldHolderGrid.add(new FieldHolder(i));
-                fieldHolderGrid.get(i).setTerrain(new RockyTerrain()); // TODO trying to make all terrain. remove set terrain once done
+                fieldHolderGrid.get(i).setTerrain(new RockyTerrain());
+
+                // TODO trying to make all terrain. remove set terrain once done
             }
 
             FieldHolder targetHolder;
@@ -259,7 +261,7 @@ public class GameBoardBuilder {
                 setLayerRowTerrain(1, 12,4).
                 setLayerRowTerrain(1, 13,4).
                 setLayerRowTerrain(1, 14,4).
-                setLayerRowTerrain(1, 15,4).
+                setLayerRowTerrain(1, 15,4);
         fieldHolderGrid = newBoard.build();
         return this;
     }

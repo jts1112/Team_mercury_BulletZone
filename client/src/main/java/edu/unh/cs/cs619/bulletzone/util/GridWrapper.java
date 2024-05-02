@@ -12,6 +12,8 @@ public class GridWrapper {
     private int[][][] terrainGrid3d;
     private long timeStamp;
 
+    public GridWrapper() {}
+
     public GridWrapper(int[][] grid) {
         this.grid = grid;
         this.timeStamp = System.currentTimeMillis();

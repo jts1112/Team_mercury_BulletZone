@@ -20,6 +20,7 @@ public class GridAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private GridCell[][] gridData;
+    private GridCell[][][] gridData3d;
     private Context context;
 
     public GridAdapter(Context context) {
@@ -29,6 +30,11 @@ public class GridAdapter extends BaseAdapter {
 
     public void setGridData(GridCell[][] gridData) {
         this.gridData = gridData;
+        notifyDataSetChanged();
+    }
+
+    public void setGridData3d(GridCell[][][] gridData) {
+        this.gridData3d = gridData;
         notifyDataSetChanged();
     }
 
@@ -64,9 +70,9 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        int colX = position % gridData[0].length;
-        int rowY = position / gridData[0].length;
-        GridCell cell = gridData[rowY][colX];
+        int colX = position % gridData3d[0][0].length;
+        int rowY = position / gridData3d[0][0].length;
+        GridCell cell = gridData3d[0][rowY][colX];
 
         // Set terrain image
         holder.imageView.setImageResource(cell.getTerrainResourceID());

@@ -1,8 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
-import android.util.Log;
-
-import org.androidannotations.annotations.EBean;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -17,11 +14,10 @@ public class GridEventHandler {
     private GridAdapter gridAdapter;
     private GameReplayManager replayManager;
     private int[][] board;
+    private GridCell[][][] board3d;
     public void setBoard(int[][] newBoard) { board = newBoard; }
 
-    public void start() {
-        EventBus.getDefault().register(this);
-    }
+    public void setBoard3d(GridCell[][][] newBoard) { board3d = newBoard; }
 
     public void stop() {
         EventBus.getDefault().unregister(this);
@@ -30,7 +26,8 @@ public class GridEventHandler {
     @Subscribe
     public void onNewEvent(GameEvent event) {
         //Log.d("GameEventProcessor", "Applying " + event);
-        event.applyTo(board);
+        event.applyTo(gridModel.getGrid3d());
+        gridAdapter.setGridData3d(gridModel.getGrid3d());
     }
 
     public GridEventHandler(GridModel gridModel, GridAdapter gridAdapter) {
@@ -46,12 +43,12 @@ public class GridEventHandler {
         int[][][] terrainData = event.gw.getTerrainGrid3d();
 
         if (gridModel != null) {
-            gridModel.updateGrid3d(gridData, terrainData);
+            gridModel.initializeGrid3d(gridData, terrainData);
             replayManager.takeSnapshot(gridModel.getGrid());
             // Log.d("grideventhandler", "new model update ");
         }
         if (gridAdapter != null) {
-            gridAdapter.setGridData(gridModel.getGrid());
+            gridAdapter.setGridData3d(gridModel.getGrid3d());
             // Log.d("grideventhandler", "new grid update ");
         }
     }

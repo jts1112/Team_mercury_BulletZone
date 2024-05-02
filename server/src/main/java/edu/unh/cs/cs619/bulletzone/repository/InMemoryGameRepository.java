@@ -420,8 +420,8 @@ public class InMemoryGameRepository implements GameRepository {
 
                     int probability = (int) ((.25 * ((float) game.getDropships().size()/(float)(game.getnumPowerups() + 1))) * 100);
                     int lottery = random.nextInt(100);
-                    System.out.println("Current Powerup Spawn Probability" + probability);
-                    System.out.println(game.getDropships().size());
+                    //System.out.println("Current Powerup Spawn Probability" + probability);
+                    //System.out.println(game.getDropships().size());
                     if (lottery < probability) {
                     spawnPowerUp(); // Spawn A powerup
                     }

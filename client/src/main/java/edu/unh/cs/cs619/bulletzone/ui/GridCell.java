@@ -37,6 +37,13 @@ public class GridCell {
     public int getEntityResourceID() {
         return entityResourceID;
     }
+    public void setTerrainResourceID(int id) {
+        terrainResourceID = id;
+    }
+
+    public void setEntityResourceID(int id) {
+        entityResourceID = id;
+    }
 
     public int getEntityRotation() {
         return entityRotation;
