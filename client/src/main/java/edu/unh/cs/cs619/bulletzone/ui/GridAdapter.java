@@ -80,7 +80,8 @@ public class GridAdapter extends BaseAdapter {
 
         row.setId(position);
 
-        row.setOnClickListener(new View.OnClickListener() {
+        // TODO my implementation
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context instanceof ClientActivity) {
@@ -88,8 +89,22 @@ public class GridAdapter extends BaseAdapter {
                             Toast.LENGTH_SHORT).show();
                     ((ClientActivity) context).onGridItemTapped(colX, rowY);
                 }
+                Log.d("Cell Clicked", "onClick: ");
             }
         });
+
+//
+//        row.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (context instanceof ClientActivity) {
+//                    Toast.makeText(context, "Clicked" + row.getId() + "!!",
+//                            Toast.LENGTH_SHORT).show();
+//                    ((ClientActivity) context).onGridItemTapped(colX, rowY);
+//                }
+//                Log.d("Cell CLicked", "onClick: ");
+//            }
+//        });
 
         return row;
     }
