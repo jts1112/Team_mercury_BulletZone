@@ -33,7 +33,7 @@ public class DataRepository {
     private static final Logger log = LoggerFactory.getLogger(AccountController.class);
     private BulletZoneData bzdata;
 
-    DataRepository() {
+    public DataRepository() {
         //TODO: Replace database name, username, and password with what's appropriate for your group
 //        String url = "jdbc:mysql://stman1.cs.unh.edu:3306/cs6190";
 //        String username = "mdp";

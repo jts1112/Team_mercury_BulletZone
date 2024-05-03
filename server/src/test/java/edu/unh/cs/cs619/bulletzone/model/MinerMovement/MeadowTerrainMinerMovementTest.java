@@ -3,8 +3,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
+import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
@@ -14,6 +23,9 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
+import edu.unh.cs.cs619.bulletzone.repository.DataRepository;
+import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
+import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
 /**
  * Running Tests On Miner for the Meadow terrain. Miner should be able to move through Meadow terrain
@@ -24,6 +36,9 @@ public class MeadowTerrainMinerMovementTest {
     static Game game = new Game();
     static Miner miner = new Miner(1, Direction.Up,"127.0.0.1");
 
+
+
+
     @BeforeClass
     public static void init() {
         // Speeding up miner for movement validity tests
@@ -32,6 +47,7 @@ public class MeadowTerrainMinerMovementTest {
 
     @Before
     public void setup() {
+
         // Build empty board for testing
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,4).
@@ -71,7 +87,7 @@ public class MeadowTerrainMinerMovementTest {
 
     // Tests for moving up
     @Test
-    public void execute_FacingUpMoveRight_FacingRight() {
+    public void execute_FacingUpMoveRight_FacingRight() throws TankDoesNotExistException {
         miner.setDirection(Direction.Up);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
@@ -87,6 +103,7 @@ public class MeadowTerrainMinerMovementTest {
 
         // check that miner hasn't moved if it isn't supposed to
         assertEquals(game.getHolderGrid().get(2 * 16 + 2).getPosition(), miner.getParent().getPosition());
+
     }
 
     @Test

@@ -166,6 +166,11 @@ public class ClientActivity extends Activity implements GameDataObserver {
         actionController.onButtonFire();
     }
 
+    @Click(R.id.buttonFlag)
+    protected void onButtonFlag(){
+        Log.d("Flag","Placed flag");
+    }
+
     @Click(R.id.buttonMine)
     @Background
     protected void onButtonMine() {

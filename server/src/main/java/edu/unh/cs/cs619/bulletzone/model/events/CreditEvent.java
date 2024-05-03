@@ -20,7 +20,15 @@ public class CreditEvent extends GameEvent {
 
     @Override
     public String toString() {
-        return "Added " + creditDif + " credits to the bank " + super.toString();
+        return "Added " + creditDif + " credits to the bank " ;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CreditEvent credit) {
+            return credit.creditDif == creditDif;
+        }
+        return false;
     }
 }
 
