@@ -7,7 +7,7 @@ public class AntiGravPowerUp extends PowerUpDecorator {
      * @param powerUp parent powerup
      */
     public AntiGravPowerUp(PowerUpComponent powerUp) {
-        super(powerUp, PowerUpType.AntiGrav);
+        super(powerUp, PowerUpType.AntiGrav, 300);
     }
 
     /**

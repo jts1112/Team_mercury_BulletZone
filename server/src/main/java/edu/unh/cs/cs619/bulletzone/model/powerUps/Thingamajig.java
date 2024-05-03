@@ -5,7 +5,7 @@ public class Thingamajig extends PowerUpDecorator {
      * @param powerUp parent powerup
      */
     public Thingamajig(PowerUpComponent powerUp) {
-        super(powerUp, PowerUpType.Thingamajig);
+        super(powerUp, PowerUpType.Thingamajig, 1);
     }
 
     /**

@@ -6,6 +6,7 @@ package edu.unh.cs.cs619.bulletzone.repository;
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpComponent;
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,45 +234,70 @@ public class InMemoryGameRepository implements GameRepository {
         EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
         game.incrementnumPowerups();
-        return ejectPowerUpCommand.execute(playableEntity);
+        boolean ejectResult = ejectPowerUpCommand.execute(playableEntity);
+        if (ejectResult) {
+            game.incrementnumPowerups();
+        }
+
+        return ejectResult;
     }
 
     @Override
     public void leave(long dropshipId) throws TankDoesNotExistException {
         synchronized (this.monitor) {
+            int totalPowerupValue = 0;
+
             if (!this.game.getDropships().containsKey(dropshipId)) {
                 throw new TankDoesNotExistException(dropshipId);
             }
 
             System.out.println("leave() called, dropship ID: " + dropshipId);
 
-            // remove dropship
+            // remove dropship and sell its power-ups
             Dropship dropship = game.getDropship(dropshipId);
             FieldHolder parent = dropship.getParent();
             parent.clearField();
             game.removeDropship(dropshipId);
 
-            // remove all tanks for a dropship
+            totalPowerupValue = dropship.getPowerUps().getPowerUpValue(totalPowerupValue);
+
+            // remove all tanks for a dropship and sell their power-ups
             List<Long> tankIDs = dropship.getTankIds();
             for (long tankId : tankIDs) {
-                game.getTank(tankId).getParent().clearField();
+                Tank tank = game.getTank(tankId);
+                tank.getParent().clearField();
                 game.removeTank(tankId);
+
+                totalPowerupValue = tank.getPowerUps().getPowerUpValue(totalPowerupValue);
             }
 
-            // remove all miners for a dropship
+            // remove all miners for a dropship and sell their power-ups
             List<Long> minerIDs = dropship.getMinerIds();
             for (long minerId : minerIDs) {
-                game.getMiner(minerId).getParent().clearField();
+                Miner miner = game.getMiner(minerId);
+                miner.getParent().clearField();
                 game.removeMiner(minerId);
+
+                totalPowerupValue = miner.getPowerUps().getPowerUpValue(totalPowerupValue);
             }
             GameUser user = data.getUser(dropship.getIp());
             if (user != null) {
                 boolean balanceModified;
+
+                // subtract leave cost
                 balanceModified = data.modifyBalance(user.getAccountId(), -1000);
                 if (balanceModified) {
                     System.out.println("Balance modified successfully");
                 } else {
                     System.out.println("Balance modification failed");
+                }
+
+                // add sold power-up total
+                balanceModified = data.modifyBalance(user.getAccountId(), totalPowerupValue);
+                if (balanceModified) {
+                    System.out.println("Power-ups successfully");
+                } else {
+                    System.out.println("Failed to sell power-ups");
                 }
             }
         }
@@ -475,4 +501,7 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
+    public void decrementPowerUpCount() {
+        game.decrementnumPowerups();
+    }
 }

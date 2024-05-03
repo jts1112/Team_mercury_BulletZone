@@ -11,6 +11,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Optional;
@@ -129,6 +130,9 @@ public class MoveCommand implements Command {
                 System.out.println("In move command. Power-up type is: " + ((PowerUpEntity) nextEntity).getType());
                 entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
 
+                // reduce power-up count due to pickup
+                new InMemoryGameRepository().decrementPowerUpCount();
+
                 int oldPos = entity.getPosition();
 
                 nextEntity.getParent().getTerrain().setPresentItem(0); // remove the current powerUp
@@ -143,7 +147,6 @@ public class MoveCommand implements Command {
                 EventBus.getDefault().post(new MoveEvent(entity.getIntValue(), oldPos, newPos));
                 isCompleted = true;
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
-
             } else {
                 System.out.println("Move isCompleted false");
                 isCompleted = false;
