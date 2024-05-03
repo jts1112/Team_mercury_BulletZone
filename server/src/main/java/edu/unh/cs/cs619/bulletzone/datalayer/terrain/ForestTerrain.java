@@ -53,4 +53,9 @@ public class ForestTerrain implements Terrain{
         return 0;
     }
 
+    @Override
+    public boolean isEnterable() {
+        return false;
+    }
+
 }

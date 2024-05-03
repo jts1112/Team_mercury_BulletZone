@@ -12,4 +12,5 @@ public interface Terrain {
 
     public void setPresentItem(int presentItem);
 
+    public boolean isEnterable();
 }

@@ -55,4 +55,9 @@ public class RockyTerrain implements Terrain{
     public double getrescourceValue() {
         return 10;
     }
+
+    @Override
+    public boolean isEnterable() {
+        return false;
+    }
 }

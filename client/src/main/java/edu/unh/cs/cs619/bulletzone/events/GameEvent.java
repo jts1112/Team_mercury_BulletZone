@@ -15,7 +15,8 @@ import edu.unh.cs.cs619.bulletzone.ui.GridCell;
         @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
         @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
-        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class)
+        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class),
+        @JsonSubTypes.Type(name = "entrance", value = EntranceEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;

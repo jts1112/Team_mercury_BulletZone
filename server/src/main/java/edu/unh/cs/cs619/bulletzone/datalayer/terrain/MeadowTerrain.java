@@ -52,4 +52,9 @@ public class MeadowTerrain implements Terrain{
     public double getrescourceValue() {
         return 2;
     }
+
+    @Override
+    public boolean isEnterable() {
+        return false;
+    }
 }

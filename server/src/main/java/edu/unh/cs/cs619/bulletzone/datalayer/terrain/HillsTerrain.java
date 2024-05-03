@@ -53,4 +53,9 @@ public class HillsTerrain implements Terrain{
     public double getrescourceValue() {
         return 50;
     }
+
+    @Override
+    public boolean isEnterable() {
+        return false;
+    }
 }

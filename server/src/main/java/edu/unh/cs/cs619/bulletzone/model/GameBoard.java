@@ -45,6 +45,7 @@ public class GameBoard {
             FieldHolder targetHolder;
             FieldHolder rightHolder;
             FieldHolder downHolder;
+            FieldHolder belowHolder;
 
             // Build connections
             for (int k = 0; k < 3; k++) {
@@ -55,6 +56,12 @@ public class GameBoard {
                                 + ((j + 1) % fieldDimension));
                         downHolder = board.get((k * fieldDimension * fieldDimension) + ((i + 1) % fieldDimension)
                                 * fieldDimension + j);
+
+                        if (k < 2) {
+                            belowHolder = board.get(((k + 1) * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                            targetHolder.addNeighbor(Direction.Below, belowHolder);
+                            belowHolder.addNeighbor(Direction.Above, targetHolder);
+                        }
 
                         targetHolder.addNeighbor(Direction.Right, rightHolder);
                         rightHolder.addNeighbor(Direction.Left, targetHolder);

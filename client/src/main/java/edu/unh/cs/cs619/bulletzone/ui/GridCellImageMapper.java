@@ -41,6 +41,11 @@ public class GridCellImageMapper {
             } else if ((cellValue >= 4000 && cellValue < 5000)) {
                 imageResource = R.drawable.forest1;
                 powerUp = cellValue - 4000;
+            } else if ((cellValue >= 5000 && cellValue < 6000)) {
+                imageResource = R.drawable.tunnel1; // tunnel
+                powerUp = cellValue - 5000;
+            } else if ((cellValue == 6000)) {
+                imageResource = R.drawable.entrance1; // tunnel
             }
             if (powerUp == 1) {
                 imageResource = R.drawable.thingamajig1;
@@ -68,6 +73,10 @@ public class GridCellImageMapper {
             powerUp = cellValue - 3000;
         } else if ((cellValue >= 4000 && cellValue < 5000)) {
             powerUp = cellValue - 4000;
+        } else if (cellValue == 5000) {
+            imageResource = R.drawable.rock1;
+        } else if (cellValue > 5000 && cellValue < 6000) {
+            imageResource = R.drawable.dirt1;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {

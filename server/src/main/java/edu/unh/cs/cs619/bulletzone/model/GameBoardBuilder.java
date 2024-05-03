@@ -7,11 +7,14 @@ package edu.unh.cs.cs619.bulletzone.model;
 
 import java.util.ArrayList;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.EntranceTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.TunnelTerrain;
+import edu.unh.cs.cs619.bulletzone.model.entities.DirtRock;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
@@ -70,6 +73,27 @@ public class GameBoardBuilder {
         return this;
     }
 
+    /**
+     * Sets the destructive dirt with destruct value
+     * specified index in the field holder grid
+     *
+     * @param index the index of the field holder grid
+     * @return the GameBoardBuilder instance
+     */
+    public GameBoardBuilder setDirt(int destructValue,int index) {
+        DirtRock dirt = new DirtRock(destructValue, index);
+        fieldHolderGrid.get(index).setFieldEntity(dirt);
+        dirt.setParent(fieldHolderGrid.get(index));
+        return this;
+    }
+
+    public GameBoardBuilder setRock(int index) {
+        DirtRock rock = new DirtRock();
+        fieldHolderGrid.get(index).setFieldEntity(rock);
+        rock.setParent(fieldHolderGrid.get(index));
+        return this;
+    }
+
     public GameBoardBuilder setRockyTerrain(int index) {
         fieldHolderGrid.get(index).setTerrain(new RockyTerrain());
         return this;
@@ -85,8 +109,18 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setTunnelTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new TunnelTerrain());
+        return this;
+    }
+
     public GameBoardBuilder setHillsTerrain(int index) {
         fieldHolderGrid.get(index).setTerrain(new HillsTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setEntranceTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new EntranceTerrain());
         return this;
     }
 
@@ -126,9 +160,11 @@ public class GameBoardBuilder {
                 setRockyTerrain(index);
             } else if (terrainType == 2) { // hilly terrain
                 setHillsTerrain(index);
-            } else if (terrainType == 3){ // forest terrain
+            } else if (terrainType == 3) { // forest terrain
                 setForestTerrain(index);
-            } else { // meadow
+            } else if (terrainType == 4) { // tunnel
+                setTunnelTerrain(index);
+            } else {
                 setMeadowTerrain(index);
             }
         }
@@ -228,6 +264,7 @@ public class GameBoardBuilder {
                 setWall(41).
                 setWall(57).
                 setWall(73).
+                setEntranceTerrain(101).
                 setRowTerrain(0,2).
                 setRowTerrain(1,4).
                 setRowTerrain(2,4).
@@ -261,7 +298,23 @@ public class GameBoardBuilder {
                 setLayerRowTerrain(1, 12,4).
                 setLayerRowTerrain(1, 13,4).
                 setLayerRowTerrain(1, 14,4).
-                setLayerRowTerrain(1, 15,4);
+                setLayerRowTerrain(1, 15,4).
+                setLayerRowTerrain(2, 0,4).
+                setLayerRowTerrain(2, 1,4).
+                setLayerRowTerrain(2, 2,4).
+                setLayerRowTerrain(2, 3,4).
+                setLayerRowTerrain(2, 4,4).
+                setLayerRowTerrain(2, 5,4).
+                setLayerRowTerrain(2, 6,4).
+                setLayerRowTerrain(2, 7,4).
+                setLayerRowTerrain(2, 8,4).
+                setLayerRowTerrain(2, 9,4).
+                setLayerRowTerrain(2, 10,4).
+                setLayerRowTerrain(2, 11,4).
+                setLayerRowTerrain(2, 12,4).
+                setLayerRowTerrain(2, 13,4).
+                setLayerRowTerrain(2, 14,4).
+                setLayerRowTerrain(2, 15,4);
         fieldHolderGrid = newBoard.build();
         return this;
     }

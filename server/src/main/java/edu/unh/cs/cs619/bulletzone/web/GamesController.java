@@ -117,6 +117,17 @@ class GamesController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/dig",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<BooleanWrapper> dig(@PathVariable long entityId)
+            throws TankDoesNotExistException
+    {
+        gameRepository.dig(entityId);
+        BooleanWrapper response = new BooleanWrapper(true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{entityId}/ejectPowerUp",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

@@ -223,6 +223,12 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
+    public void dig(long playableEntityId) throws TankDoesNotExistException {
+        PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
+        playableEntity.getParent().getTerrain().isEnterable();
+    }
+
+    @Override
     public boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException {
         EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
