@@ -31,15 +31,18 @@ public class MoveEvent extends GameEvent {
     */
     public void applyTo(GridCell[][][] board) {
         this.mapper = GridCellImageMapper.getInstance();
+        int resourceId = mapper.getEntityImageResource(rawServerValue);
         int oldlayerPos = oldPosition % 256;
         int newlayerPos = newPosition % 256;
         GridCell cell = board[oldPosition / 256][oldlayerPos / 16][oldlayerPos % 16];
         GridCell newCell = board[newPosition / 256][newlayerPos / 16][newlayerPos % 16];
 
-        cell.setEntityResourceID(0);
-        cell.setRotationForValue(0);
+        if (cell.getEntityResourceID() == resourceId) {
+            cell.setEntityResourceID(0);
+            cell.setRotationForValue(0);
+        }
 
-        newCell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
+        newCell.setEntityResourceID(resourceId);
         newCell.setRotationForValue(rawServerValue);
     }
 

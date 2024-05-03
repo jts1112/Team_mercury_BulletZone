@@ -30,8 +30,10 @@ public class SpawnEvent extends GameEvent {
         this.mapper = GridCellImageMapper.getInstance();
         int layerPos = position % 256;
         GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
-        cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
-        cell.setRotationForValue(rawServerValue);
+        if (cell.getEntityResourceID() == 0) {
+            cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
+            cell.setRotationForValue(rawServerValue);
+        }
     }
 
     @Override
