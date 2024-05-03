@@ -5,8 +5,17 @@ public class GridModel {
     private int[][] rawData;
     private GridCellImageMapper mapper;
 
+    private boolean hasFlag[][];
+
     public GridModel() {
         mapper = new GridCellImageMapper();
+        this.hasFlag = new boolean[16][16];
+        // Initialize all cells to false (no flag)
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                hasFlag[i][j] = false;
+            }
+        }
     }
 
     public void updateGrid(int[][] newData, int[][] newTerrainData) {
@@ -21,6 +30,21 @@ public class GridModel {
                 grid[i][j] = cell;
             }
         }
+    }
+
+    public void setFlag(int row, int col) {
+        // Set the flag at the specified position
+        hasFlag[row][col] = true;
+    }
+
+    public void removeFlag(int row, int col) {
+        // Remove the flag at the specified position
+        hasFlag[row][col] = false;
+    }
+
+    public boolean hasFlag(int row, int col) {
+        // Check if the specified position has a flag
+        return hasFlag[row][col];
     }
 
     public int[][] getRawGrid() {

@@ -22,6 +22,8 @@ public class GridAdapter extends BaseAdapter {
     private GridCell[][] gridData;
     private Context context;
 
+    private int selectedPosition = -1;
+
     public GridAdapter(Context context) {
         inflater = LayoutInflater.from(context);
         this.context = context;
@@ -78,6 +80,10 @@ public class GridAdapter extends BaseAdapter {
 
         holder.imageView.setRotation(cell.getEntityRotation());
 
+        if (this.selectedPosition == position) { // TODO Added
+            holder.imageView.setImageResource(R.drawable.flag1);
+        }
+
         row.setId(position);
 
         // TODO my implementation
@@ -88,23 +94,11 @@ public class GridAdapter extends BaseAdapter {
                     Toast.makeText(context, "Clicked" + row.getId() + "!!",
                             Toast.LENGTH_SHORT).show();
                     ((ClientActivity) context).onGridItemTapped(colX, rowY);
+                    selectedPosition = row.getId();
                 }
                 Log.d("Cell Clicked", "onClick: ");
             }
         });
-
-//
-//        row.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (context instanceof ClientActivity) {
-//                    Toast.makeText(context, "Clicked" + row.getId() + "!!",
-//                            Toast.LENGTH_SHORT).show();
-//                    ((ClientActivity) context).onGridItemTapped(colX, rowY);
-//                }
-//                Log.d("Cell CLicked", "onClick: ");
-//            }
-//        });
 
         return row;
     }
@@ -112,5 +106,15 @@ public class GridAdapter extends BaseAdapter {
     static class ViewHolder {
         ImageView imageView;
     }
+
+    public int getSelectedPosition(){
+        return this.selectedPosition;
+    }
+
+    public void setSelectedPosition(int selectedPosition){
+        this.selectedPosition = selectedPosition;
+    }
+
+
 
 }
