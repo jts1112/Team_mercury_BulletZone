@@ -21,6 +21,8 @@ public interface GameRepository {
 
     void mine(long minerId) throws TankDoesNotExistException;
 
+    boolean dig(long playableEntityId) throws TankDoesNotExistException;
+
     boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException;
 
     public void leave(long tankId)

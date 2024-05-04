@@ -2,6 +2,10 @@ package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
+
 public class MoveEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
@@ -9,6 +13,8 @@ public class MoveEvent extends GameEvent {
     private int oldPosition;
     @JsonProperty
     private int newPosition;
+
+    GridCellImageMapper mapper;
 
     public MoveEvent() {}
 
@@ -24,9 +30,23 @@ public class MoveEvent extends GameEvent {
     /*
      Public only for testing.
     */
-    public void applyTo(int[][] board) {
-        board[oldPosition / 16][oldPosition % 16] = 0; //clear old position
-        board[newPosition / 16][newPosition % 16] = rawServerValue;
+    public void applyTo(GridCell[][][] board) {
+        this.mapper = GridCellImageMapper.getInstance();
+        int resourceId = mapper.getEntityImageResource(rawServerValue);
+        int oldlayerPos = oldPosition % 256;
+        int newlayerPos = newPosition % 256;
+        GridCell cell = board[oldPosition / 256][oldlayerPos / 16][oldlayerPos % 16];
+        GridCell newCell = board[newPosition / 256][newlayerPos / 16][newlayerPos % 16];
+
+        if (cell.getEntityResourceID() == resourceId) {
+            cell.setEntityResourceID(0);
+            cell.setRotationForValue(0);
+        }
+
+        if (newCell.getEntityResourceID() != R.drawable.dropship1) {
+            newCell.setEntityResourceID(resourceId);
+            newCell.setRotationForValue(rawServerValue);
+        }
     }
 
     @Override

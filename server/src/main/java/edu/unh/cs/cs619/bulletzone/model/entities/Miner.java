@@ -9,6 +9,7 @@ public class Miner extends PlayableEntity{
     private static final int MOVE_INTERVAL = 750;
     private static final int MINE_INTERVAL = 1000;
     private static final int ALLOWED_NUM_BULLETS = 1;
+    private static final int HIT_DAMAGE = 25;
 
     private int mineInterval;
     private int lastMineTime;
@@ -27,6 +28,7 @@ public class Miner extends PlayableEntity{
         this.allowedFireInterval = FIRE_INTERVAL;
         this.allowedNumberOfBullets = ALLOWED_NUM_BULLETS;
         this.bulletDamage = BULLET_DAMAGE;
+        this.hitDamage = HIT_DAMAGE;
     }
 
     @Override
