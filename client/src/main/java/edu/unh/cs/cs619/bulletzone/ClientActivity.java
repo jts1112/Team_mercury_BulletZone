@@ -166,6 +166,33 @@ public class ClientActivity extends Activity implements GameDataObserver {
         actionController.onButtonFire();
     }
 
+    @Click(R.id.buttonFlag)
+    protected void onButtonFlag(){
+        int selectedPosition = mGridAdapter.getSelectedPosition();
+        if (selectedPosition >= 0) {
+            int row = selectedPosition / 16;
+            int col = selectedPosition % 16;
+            // Update the grid model to place a flag at the selected position
+            gridModel.setFlag(row, col);
+            // Update the grid view
+            mGridAdapter.notifyDataSetChanged();
+
+            // Schedule the removal of the flag after 30 seconds
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    gridModel.removeFlag(row, col);
+                    mGridAdapter.setSelectedPosition(-1);
+                    mGridAdapter.notifyDataSetChanged();
+                }
+            }, 30000); // 30 seconds
+
+            Log.d("Flag", "Placed flag at " + row + ", " + col);
+        } else {
+            Log.d("Flag", "No grid cell selected.");
+        }
+    }
+
     @Click(R.id.buttonMine)
     @Background
     protected void onButtonMine() {
