@@ -4,6 +4,7 @@ import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.unh.cs.cs619.bulletzone.R;
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 
 public class CreditEvent extends GameEvent {
     @JsonProperty
@@ -24,7 +25,7 @@ public class CreditEvent extends GameEvent {
      * @param board The game board.
      */
     @Override
-    public void applyTo(int[][] board) {
+    public void applyTo(GridCell[][][] board) {
         GameData gameData = GameData.getInstance();
         gameData.addPlayerCredits(creditDif);
     }

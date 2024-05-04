@@ -73,8 +73,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
         mGridAdapter = new GridAdapter(this);
 
         gameData = GameData.getInstance();
-        replay = GameReplayManager.getInstance(this);
-        replay.startRecording();
+//        replay = GameReplayManager.getInstance(this);
+//        replay.startRecording();
 
         GridView gridView = findViewById(R.id.gridView);
         gridView.setAdapter(mGridAdapter);
@@ -97,7 +97,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         super.onDestroy();
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
-        replay.endRecording();
+//        replay.endRecording();
     }
 
     /**
@@ -140,11 +140,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
             Log.d("EventSwitch", "ON");
-            eventProcessor.setBoard(gridModel.getRawGrid()); //necessary because "board" keeps changing when it's int[][]
-            eventProcessor.start();
+            gridEventHandler.setBoard3d(gridModel.getGrid3d()); //necessary because "board" keeps changing when it's int[][]
         } else {
             Log.d("EventSwitch", "OFF");
-            eventProcessor.stop();
+            gridEventHandler.stop();
         }
     }
 
@@ -197,6 +196,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Background
     protected void onButtonMine() {
         actionController.onButtonMine();
+    }
+
+    @Click(R.id.buttonTunnel)
+    @Background
+    protected void onButtonTunnel() {
+        actionController.onButtonTunnel();
     }
 
     @Click(R.id.buttonEject)

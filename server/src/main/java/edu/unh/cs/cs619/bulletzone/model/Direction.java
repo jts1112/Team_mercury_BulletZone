@@ -1,7 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 public enum Direction {
-    Up, Down, Left, Right;
+    Up, Down, Left, Right, Below, Above;
 
     public static Direction fromByte(byte directionByte) {
         Direction direction = null;
@@ -53,6 +53,8 @@ public enum Direction {
             case Left -> Direction.Right;
             case Right -> Direction.Left;
             case Down -> Direction.Up;
+            case Below -> Direction.Above;
+            case Above -> Direction.Down;
         };
     }
 }

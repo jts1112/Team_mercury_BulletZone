@@ -8,7 +8,10 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.rest.spring.annotations.RestService;
+import org.greenrobot.eventbus.EventBus;
 
+import edu.unh.cs.cs619.bulletzone.events.CreditEvent;
+import edu.unh.cs.cs619.bulletzone.events.GameEvent;
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
@@ -77,6 +80,8 @@ public class ActionController {
                 currentUnitId = Ids.getTankId();
                 break;
         }
+        Ids.setControlledUnitId(currentUnitId);
+        EventBus.getDefault().post(new CreditEvent(0));
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -118,6 +123,10 @@ public class ActionController {
 
     public void onButtonMine() {
         restClient.mine(Ids.getMinerId());
+    }
+
+    public void onButtonTunnel() {
+        restClient.dig(currentUnitId);
     }
 
     public void onButtonEjectPowerUp() {

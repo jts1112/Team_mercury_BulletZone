@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
 
-public class SpawnEvent extends GameEvent {
+public class EntranceEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
     @JsonProperty
-    private int position;
+    private int topPosition;
 
     GridCellImageMapper mapper;
 
-    public SpawnEvent() {}
+    public EntranceEvent() {}
 
     /*
      * Constructor for testing only.
      */
-    public SpawnEvent(int rawServerValue, int position) {
+    public EntranceEvent(int rawServerValue, int topPosition) {
         this.rawServerValue = rawServerValue;
-        this.position = position;
+        this.topPosition = topPosition;
     }
 
     /*
@@ -28,18 +28,15 @@ public class SpawnEvent extends GameEvent {
     */
     public void applyTo(GridCell[][][] board) {
         this.mapper = GridCellImageMapper.getInstance();
-        int layerPos = position % 256;
-        GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
-        if (cell.getEntityResourceID() == 0) {
-            cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
-            cell.setRotationForValue(rawServerValue);
-        }
+        int topLayerPos = topPosition % 256;
+        GridCell topCell = board[topPosition / 256][topLayerPos / 16][topLayerPos % 16];
+        topCell.setTerrainResourceID(mapper.getTerrainImageResource(rawServerValue));
     }
 
     @Override
     public String toString() {
-        return "Spawn " + rawServerValue +
-                " at " + position +
+        return "Entrance " + rawServerValue +
+                " at " + topPosition +
                 super.toString();
     }
 

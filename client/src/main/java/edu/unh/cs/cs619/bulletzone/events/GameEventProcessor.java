@@ -21,9 +21,4 @@ public class GameEventProcessor {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
-    public void onNewEvent(GameEvent event) {
-        //Log.d("GameEventProcessor", "Applying " + event);
-        event.applyTo(board);
-    }
 }
