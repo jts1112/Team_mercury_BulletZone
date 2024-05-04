@@ -24,6 +24,7 @@ public class GridAdapter extends BaseAdapter {
     private Context context;
 
     private int selectedPosition = -1;
+    private int flagplaced = -1; // 0 if flag button hasnt beent pressed or if timer completed. if pressed its 1.
 
     public GridAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -87,7 +88,8 @@ public class GridAdapter extends BaseAdapter {
 
         holder.imageView.setRotation(cell.getEntityRotation());
 
-        if (this.selectedPosition == position) { // TODO Added
+        // add flag into the gridveiw . but also need to check if should add flag.
+        if (flagplaced == position) {
             holder.imageView.setImageResource(R.drawable.flag1);
         }
 
@@ -120,6 +122,14 @@ public class GridAdapter extends BaseAdapter {
 
     public void setSelectedPosition(int selectedPosition){
         this.selectedPosition = selectedPosition;
+    }
+
+    /**
+     * Set the flag placed value. 1 if it has been placed and zero if unplaced.
+     * @param placed
+     */
+    public void  setFlagplaced(int placed) {
+        this.flagplaced = placed;
     }
 
 
