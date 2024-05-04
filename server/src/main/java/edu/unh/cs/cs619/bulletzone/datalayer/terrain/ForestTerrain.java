@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
 
+import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
 
@@ -56,6 +57,11 @@ public class ForestTerrain implements Terrain{
     @Override
     public boolean isEnterable() {
         return false;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return null;
     }
 
 }

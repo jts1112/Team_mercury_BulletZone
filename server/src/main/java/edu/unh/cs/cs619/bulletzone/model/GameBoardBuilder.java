@@ -120,7 +120,8 @@ public class GameBoardBuilder {
     }
 
     public GameBoardBuilder setEntranceTerrain(int index) {
-        fieldHolderGrid.get(index).setTerrain(new EntranceTerrain());
+        fieldHolderGrid.get(index).setTerrain(new EntranceTerrain(Direction.Below));
+        fieldHolderGrid.get(index + (fieldDimension * fieldDimension)).setTerrain(new EntranceTerrain(Direction.Above));
         return this;
     }
 
@@ -198,21 +199,30 @@ public class GameBoardBuilder {
             FieldHolder targetHolder;
             FieldHolder rightHolder;
             FieldHolder downHolder;
+            FieldHolder belowHolder;
 
             // Build connections
-            for (int i = 0; i < fieldDimension; i++) {
-                for (int j = 0; j < fieldDimension; j++) {
-                    targetHolder = fieldHolderGrid.get(i * fieldDimension + j);
-                    rightHolder = fieldHolderGrid.get(i * fieldDimension
-                            + ((j + 1) % fieldDimension));
-                    downHolder = fieldHolderGrid.get(((i + 1) % fieldDimension)
-                            * fieldDimension + j);
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        targetHolder = fieldHolderGrid.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        rightHolder = fieldHolderGrid.get((k * fieldDimension * fieldDimension) + i * fieldDimension
+                                + ((j + 1) % fieldDimension));
+                        downHolder = fieldHolderGrid.get((k * fieldDimension * fieldDimension) + ((i + 1) % fieldDimension)
+                                * fieldDimension + j);
 
-                    targetHolder.addNeighbor(Direction.Right, rightHolder);
-                    rightHolder.addNeighbor(Direction.Left, targetHolder);
+                        if (k < 2) {
+                            belowHolder = fieldHolderGrid.get(((k + 1) * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                            targetHolder.addNeighbor(Direction.Below, belowHolder);
+                            belowHolder.addNeighbor(Direction.Above, targetHolder);
+                        }
 
-                    targetHolder.addNeighbor(Direction.Down, downHolder);
-                    downHolder.addNeighbor(Direction.Up, targetHolder);
+                        targetHolder.addNeighbor(Direction.Right, rightHolder);
+                        rightHolder.addNeighbor(Direction.Left, targetHolder);
+
+                        targetHolder.addNeighbor(Direction.Down, downHolder);
+                        downHolder.addNeighbor(Direction.Up, targetHolder);
+                    }
                 }
             }
         }
@@ -264,7 +274,6 @@ public class GameBoardBuilder {
                 setWall(41).
                 setWall(57).
                 setWall(73).
-                setEntranceTerrain(101).
                 setRowTerrain(0,2).
                 setRowTerrain(1,4).
                 setRowTerrain(2,4).
@@ -314,7 +323,8 @@ public class GameBoardBuilder {
                 setLayerRowTerrain(2, 12,4).
                 setLayerRowTerrain(2, 13,4).
                 setLayerRowTerrain(2, 14,4).
-                setLayerRowTerrain(2, 15,4);
+                setLayerRowTerrain(2, 15,4).
+                setEntranceTerrain(101);
         fieldHolderGrid = newBoard.build();
         return this;
     }

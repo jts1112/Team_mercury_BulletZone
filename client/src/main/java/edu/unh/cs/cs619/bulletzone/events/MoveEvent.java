@@ -2,6 +2,7 @@ package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
 
@@ -42,8 +43,10 @@ public class MoveEvent extends GameEvent {
             cell.setRotationForValue(0);
         }
 
-        newCell.setEntityResourceID(resourceId);
-        newCell.setRotationForValue(rawServerValue);
+        if (newCell.getEntityResourceID() != R.drawable.dropship1) {
+            newCell.setEntityResourceID(resourceId);
+            newCell.setRotationForValue(rawServerValue);
+        }
     }
 
     @Override

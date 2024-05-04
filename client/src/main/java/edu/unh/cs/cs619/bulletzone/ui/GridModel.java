@@ -1,5 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.ui;
 
+import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
 public class GridModel {
@@ -65,17 +66,17 @@ public class GridModel {
         int controlledUnitId = (int) ids.getControlledUnitId();
         int val = 0;
         if (controlledUnitId == ids.getTankId()) {
-            val = 10000000;
+            val = R.drawable.tank_icon2;
         } else if (controlledUnitId == ids.getMinerId()) {
-            val = 20000000;
+            val = R.drawable.miner1;
         } else if (controlledUnitId == ids.getDropshipId()) {
-            val = 30000000;
+            val = R.drawable.dropship1;
         }
 
-        for (int k = 0; k < rawData3d.length; k++) {
-            for (int i = 0; i < rawData3d[k].length; i++) {
-                for (int j = 0; j < rawData3d[k][i].length; j++) {
-                    if (((rawData3d[k][i][j] - val) / 10000) == controlledUnitId) {
+        for (int k = 0; k < grid3d.length; k++) {
+            for (int i = 0; i < grid3d[k].length; i++) {
+                for (int j = 0; j < grid3d[k][i].length; j++) {
+                    if (grid3d[k][i][j].getEntityResourceID() == val) {
                         return grid3d[k];
                     }
                 }

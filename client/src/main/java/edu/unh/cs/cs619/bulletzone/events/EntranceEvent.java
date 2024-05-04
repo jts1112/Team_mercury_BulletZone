@@ -30,9 +30,7 @@ public class EntranceEvent extends GameEvent {
         this.mapper = GridCellImageMapper.getInstance();
         int topLayerPos = topPosition % 256;
         GridCell topCell = board[topPosition / 256][topLayerPos / 16][topLayerPos % 16];
-        GridCell botCell = board[(topPosition / 256) + 1][topLayerPos / 16][topLayerPos % 16];
-        topCell.setTerrainResourceID(rawServerValue);
-        botCell.setTerrainResourceID(rawServerValue);
+        topCell.setTerrainResourceID(mapper.getTerrainImageResource(rawServerValue));
     }
 
     @Override

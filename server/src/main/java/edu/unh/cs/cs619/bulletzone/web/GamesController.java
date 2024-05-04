@@ -123,8 +123,8 @@ class GamesController {
     ResponseEntity<BooleanWrapper> dig(@PathVariable long entityId)
             throws TankDoesNotExistException
     {
-        gameRepository.dig(entityId);
-        BooleanWrapper response = new BooleanWrapper(true);
+        boolean tunneled = gameRepository.dig(entityId);
+        BooleanWrapper response = new BooleanWrapper(tunneled);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

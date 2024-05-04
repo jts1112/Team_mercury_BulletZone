@@ -1,14 +1,17 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
 
+import edu.unh.cs.cs619.bulletzone.model.Direction;
+
 public class EntranceTerrain implements Terrain {
     int presentItem; // present item in the terrain.
+    Direction direction; // direction of tunnel
 
     public EntranceTerrain(){
         presentItem = 0;
     }
 
-    public EntranceTerrain(int presentItem){
-        this.presentItem = presentItem;
+    public EntranceTerrain(Direction dir){
+        this.direction = dir;
     }
 
     @Override
@@ -29,6 +32,11 @@ public class EntranceTerrain implements Terrain {
     @Override
     public boolean isEnterable() {
         return true;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return direction;
     }
 
     @Override

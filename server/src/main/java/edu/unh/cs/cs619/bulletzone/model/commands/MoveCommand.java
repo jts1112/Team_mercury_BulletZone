@@ -45,10 +45,11 @@ public class MoveCommand implements Command {
             throw new TankDoesNotExistException(entityId);
         }
 
-        // Check if the time from the last firing is too short
+        // Check if the time from the last move is too short
         long millis = System.currentTimeMillis();
         if(millis < entity.getLastMoveTime())
             return false;
+
 
         // Rotate tank if not moving forwards or backwards
         Direction currentDir = entity.getDirection();
@@ -58,19 +59,21 @@ public class MoveCommand implements Command {
             current = 8;
         }
 
-        int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
-        if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)
-        || entity instanceof Dropship) {
-            // Set new direction
-            entity.setDirection(desiredDirection);
+        if (direction != Direction.Above && direction != Direction.Below) {
+            int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
+            if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)
+                    || entity instanceof Dropship) {
+                // Set new direction
+                entity.setDirection(desiredDirection);
 
-            // Post new TurnEvent
-            EventBus.getDefault().post(new TurnEvent(entity.getIntValue(), currentDir,
-                    entity.getDirection(), entity.getPosition()));
+                // Post new TurnEvent
+                EventBus.getDefault().post(new TurnEvent(entity.getIntValue(), currentDir,
+                        entity.getDirection(), entity.getPosition()));
 
-            // Set the next valid move time
-            entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
-            return true;
+                // Set the next valid move time
+                entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
+                return true;
+            }
         }
 
         FieldHolder parent = entity.getParent();

@@ -10,6 +10,7 @@ public class Tank extends PlayableEntity {
     private static final int BULLET_DAMAGE = 50;
     private static final int FIRE_INTERVAL = 500;
     private static final int MOVE_INTERVAL = 500;
+    private static final int HIT_DAMAGE = 20;
 
     public Tank(long id, Direction direction, String ip) {
         this.id = id;
@@ -23,6 +24,7 @@ public class Tank extends PlayableEntity {
         this.allowedFireInterval = FIRE_INTERVAL;
         this.allowedNumberOfBullets = ALLOWED_NUM_BULLETS;
         this.bulletDamage = BULLET_DAMAGE;
+        this.hitDamage = HIT_DAMAGE;
     }
 
     @Override

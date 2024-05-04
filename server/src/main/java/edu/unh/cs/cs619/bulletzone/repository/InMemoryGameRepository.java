@@ -6,14 +6,12 @@ package edu.unh.cs.cs619.bulletzone.repository;
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpComponent;
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -224,9 +222,10 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public void dig(long playableEntityId) throws TankDoesNotExistException {
+    public boolean dig(long playableEntityId) throws TankDoesNotExistException {
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
-        playableEntity.getParent().getTerrain().isEnterable();
+        DigCommand dig = new DigCommand(playableEntityId, monitor);
+        return dig.execute(playableEntity);
     }
 
     @Override

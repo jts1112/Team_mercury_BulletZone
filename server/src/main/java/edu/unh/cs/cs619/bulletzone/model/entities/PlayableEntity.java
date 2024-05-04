@@ -31,6 +31,8 @@ public abstract class  PlayableEntity extends FieldEntity implements Vehicle{
     protected String ip;
     protected Direction direction;
     protected boolean hasActionQueued = false;
+    protected int hitDamage;
+    protected boolean isDigging = false;
 
     public void setId(long id) {
         this.id = id;
@@ -221,10 +223,26 @@ public abstract class  PlayableEntity extends FieldEntity implements Vehicle{
     public void hit(int damage) {
         int final_damage = powerUp.getModifiedDamageToHolder(new DamageTuple<>(damage, false)).damage;
         life -= final_damage;
-        System.out.println("Tank life: " + id + " : " + life);
+        System.out.println("Entity life: " + id + " : " + life);
         if (life <= 0) {
             EventBus.getDefault().post(this);
         }
+    }
+
+    public int getHitDamage() {
+        return powerUp.getModifiedContactDamageFromHolder(hitDamage);
+    }
+
+    public int getSelfHitDamage() {
+        return hitDamage;
+    }
+
+    public boolean isDigging() {
+        return isDigging;
+    }
+
+    public void setDigging(boolean digging) {
+        isDigging = digging;
     }
 
     public boolean isHasActionQueued() {

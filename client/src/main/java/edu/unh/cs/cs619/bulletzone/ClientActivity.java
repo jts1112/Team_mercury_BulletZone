@@ -171,6 +171,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
         actionController.onButtonMine();
     }
 
+    @Click(R.id.buttonTunnel)
+    @Background
+    protected void onButtonTunnel() {
+        actionController.onButtonTunnel();
+    }
+
     @Click(R.id.buttonEject)
     @Background
     protected void onButtonEjectPowerUp() {
