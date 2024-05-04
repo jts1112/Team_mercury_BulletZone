@@ -7,10 +7,22 @@ import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
 public class GridCellImageMapper {
 
+    private static GridCellImageMapper instance;
     private UnitIds Ids;
 
-    public GridCellImageMapper() {
-        this.Ids = UnitIds.getInstance();
+    private GridCellImageMapper() {
+        Ids = UnitIds.getInstance();
+    }
+
+    public static GridCellImageMapper getInstance() {
+        if (instance == null) {
+            synchronized (GridCellImageMapper.class) {
+                if (instance == null) {
+                    instance = new GridCellImageMapper();
+                }
+            }
+        }
+        return instance;
     }
 
     public int getTerrainImageResource(int cellValue) {
@@ -29,6 +41,11 @@ public class GridCellImageMapper {
             } else if ((cellValue >= 4000 && cellValue < 5000)) {
                 imageResource = R.drawable.forest1;
                 powerUp = cellValue - 4000;
+            } else if ((cellValue >= 5000 && cellValue < 6000)) {
+                imageResource = R.drawable.tunnel1; // tunnel
+                powerUp = cellValue - 5000;
+            } else if ((cellValue == 6000)) {
+                imageResource = R.drawable.entrance1; // tunnel
             }
             if (powerUp == 1) {
                 imageResource = R.drawable.thingamajig1;
@@ -44,11 +61,22 @@ public class GridCellImageMapper {
 
     public int getEntityImageResource(int cellValue) {
         int imageResource = 0;
+        int powerUp = 0;
 
         if (cellValue == 1000) {
             imageResource = R.drawable.wall5;
         } else if ((cellValue > 1000 && cellValue < 2000)) {
             imageResource = R.drawable.wall2;
+        } else if ((cellValue >= 2000 && cellValue < 3000)) {
+            powerUp = cellValue - 2000;
+        } else if ((cellValue >= 3000 && cellValue < 4000)) {
+            powerUp = cellValue - 3000;
+        } else if ((cellValue >= 4000 && cellValue < 5000)) {
+            powerUp = cellValue - 4000;
+        } else if (cellValue == 5000) {
+            imageResource = R.drawable.rock1;
+        } else if (cellValue > 5000 && cellValue < 6000) {
+            imageResource = R.drawable.dirt1;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {
@@ -71,6 +99,13 @@ public class GridCellImageMapper {
             }
         }
 
+        if (powerUp == 1) {
+            imageResource = R.drawable.thingamajig1;
+        } else if (powerUp == 2)  {
+            imageResource = R.drawable.antigrav1;
+        } else if (cellValue == 3)  {
+            imageResource = R.drawable.fusionreactor1;
+        }
         return imageResource;
     }
 }

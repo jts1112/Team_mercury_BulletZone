@@ -2,6 +2,9 @@ package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
+
 public class TurnEvent extends GameEvent{
     @JsonProperty
     private int rawServerValue;
@@ -21,8 +24,10 @@ public class TurnEvent extends GameEvent{
         this.position = pos;
     }
 
-    public void applyTo(int[][] board) {
-        board[position / 16][position % 16] = rawServerValue;
+    public void applyTo(GridCell[][][] board) {
+        int layerPos = position % 256;
+        GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
+        cell.setRotationForValue(rawServerValue);
     }
 
     @Override
