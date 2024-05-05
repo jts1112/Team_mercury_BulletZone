@@ -1,4 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.repository;
+
+
+//import android.health.connect.datatypes.units.Power;
+
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
@@ -19,6 +23,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FusionReactorPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
@@ -60,12 +65,14 @@ public class InMemoryGameRepository implements GameRepository {
                 this.create();
             }
 
+            // Check if a dropship with the same IP already exists in the game.
             Dropship existingDropship = game.getDropship(ip);
             if (existingDropship != null) {
                 return existingDropship;
             }
 
             long dropshipId = this.idGenerator.getAndIncrement();
+
             dropship = new Dropship(dropshipId, Direction.Up, ip);
 
             Random random = new Random();
@@ -322,24 +329,29 @@ public class InMemoryGameRepository implements GameRepository {
         }, 0, 1000);
     }
 
-    // ------------------------- Spawn Methods -------------------------
-
+    // ------------ Spawn Methods ------------
     @Override
-    public long spawnMiner(long dropshipId) throws EntityDoesNotExistException {
+    public long spawnMiner(long dropshipId) throws EntityDoesNotExistException, LimitExceededException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
                 throw new EntityDoesNotExistException(dropshipId);
             }
+            if (dropship.getNumMiners() <= 0) {
+                List<Long> miners = dropship.getMinerIds();
+                return miners.get(0);
+            }
 
             long minerId = this.idGenerator.getAndIncrement();
             Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
 
+            // Find a free space near the dropship to spawn the miner
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
             if (spawningPoint != null) {
                 spawningPoint.setFieldEntity(miner);
                 miner.setParent(spawningPoint);
                 game.getMiners().put(minerId, miner);
+                dropship.setNumMiners(dropship.getNumMiners() - 1);
                 dropship.addMiner(minerId);
                 return minerId;
             } else {
@@ -349,11 +361,16 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public long spawnTank(long dropshipId) throws EntityDoesNotExistException {
+    public long spawnTank(long dropshipId) throws EntityDoesNotExistException, LimitExceededException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
                 throw new EntityDoesNotExistException(dropshipId);
+            }
+
+            if (dropship.getNumTanks() <= 0) {
+                List<Long> tanks = dropship.getTankIds();
+                return tanks.get(0);
             }
 
             long tankId = this.idGenerator.getAndIncrement();
@@ -364,6 +381,7 @@ public class InMemoryGameRepository implements GameRepository {
                 spawningPoint.setFieldEntity(tank);
                 tank.setParent(spawningPoint);
                 game.getTanks().put(tankId, tank);
+                dropship.setNumTanks(dropship.getNumTanks() - 1);
                 dropship.addTank_(tankId);
                 return tankId;
             } else {
@@ -411,7 +429,10 @@ public class InMemoryGameRepository implements GameRepository {
         return null;
     }
 
-    // -------------------------- Power Up Spawning ------------------------------//
+
+
+
+    //------------- Power Up Spawning -----------------//
 
     private void startPowerUpSpawnTimer() {
         Timer powerUpSpawnTimer = new Timer();

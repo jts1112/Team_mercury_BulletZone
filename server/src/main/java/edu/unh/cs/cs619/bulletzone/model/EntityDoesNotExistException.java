@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public final class EntityDoesNotExistException extends Exception {
-    public EntityDoesNotExistException(Long entityId) {
-        super(String.format("Entitiy with id '%d' does not exist", entityId));
+    public EntityDoesNotExistException(Long tankId) {
+        super(String.format("Entity '%d' does not exist", tankId));
     }
 }

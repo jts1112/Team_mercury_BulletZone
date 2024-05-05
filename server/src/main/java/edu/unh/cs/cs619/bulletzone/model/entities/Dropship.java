@@ -16,6 +16,8 @@ public class Dropship extends PlayableEntity {
     private static final int ALLOWED_NUM_BULLETS = 1;
     private static final int MOVE_INTERVAL = 500;
 
+    private int numMiners;
+    private int numTanks;
     private long lastRepairTime;
 
     private List<Long> tankIds;
@@ -28,6 +30,8 @@ public class Dropship extends PlayableEntity {
         this.direction = direction;
         this.ip = ip;
         this.life = INITIAL_LIFE;
+        this.numMiners = 2;
+        this.numTanks = 2;
         this.numberOfBullets = 0;
         this.lastFireTime = 0;
         this.lastMoveTime = 0;
@@ -40,6 +44,41 @@ public class Dropship extends PlayableEntity {
         this.lastRepairTime = 0;
         this.dockedTanks = new ArrayList<>();
         this.dockedMiners = new ArrayList<>();
+    }
+
+    @Override
+    public FieldEntity copy() {
+        return new Dropship(id, direction, ip);
+    }
+
+    public boolean fire() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastFireTime >= FIRE_INTERVAL) {
+            lastFireTime = currentTime;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "D";
+    }
+
+    public void addMiner(long minerId) {
+        minerIds.add(minerId);
+    }
+
+    public void removeMiner(long minerId) {
+        minerIds.remove(minerId);
+    }
+
+    public void addTank_(long tankId) {
+        tankIds.add(tankId);
+    }
+
+    public void removeTank(long tankId) {
+        tankIds.remove(tankId);
     }
 
     public void repairUnits() {
@@ -75,27 +114,36 @@ public class Dropship extends PlayableEntity {
         lastRepairTime = currentTime;
     }
 
-    public boolean fire() {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastFireTime >= FIRE_INTERVAL) {
-            lastFireTime = currentTime;
-            return true;
-        }
-        return false;
+    public int getNumMiners() {
+        return numMiners;
+    }
+
+    public void setNumMiners(int numMiners) {
+        this.numMiners = numMiners;
+    }
+
+    public int getNumTanks() {
+        return numTanks;
+    }
+
+    public void setNumTanks(int numTanks) {
+        this.numTanks = numTanks;
+    }
+
+    public List<Long> getMinerIds() {
+        return minerIds;
+    }
+
+    public List<Long> getTankIds() {
+        return tankIds;
     }
 
     @Override
-    public FieldEntity copy() {
-        return new Dropship(id, direction, ip);
+    public int getIntValue() {
+        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
     }
 
-    @Override
-    public String toString() {
-        return "D";
-    }
-
-    // --------------------------- Docking ----------------------------
-
+    // ----------------------- Docking ------------------------
     public void dockTank(Tank tank) {
         dockedTanks.add(tank);
     }
@@ -120,38 +168,5 @@ public class Dropship extends PlayableEntity {
     @Override
     public Boolean isTracked() {
         return false;
-    }
-
-    // --------------------------- Getters ----------------------------
-
-    @Override
-    public int getIntValue() {
-        return (int) (30_000_000 + (10_000 * id) + (10 * life) + Direction.toByte(direction));
-    }
-
-    public void removeTank(long tankId) {
-        tankIds.remove(tankId);
-    }
-
-    public void removeMiner(long minerId) {
-        minerIds.remove(minerId);
-    }
-
-    public List<Long> getMinerIds() {
-        return minerIds;
-    }
-
-    public List<Long> getTankIds() {
-        return tankIds;
-    }
-
-    // --------------------------- Setters ----------------------------
-
-    public void addTank_(long tankId) {
-        tankIds.add(tankId);
-    }
-
-    public void addMiner(long minerId) {
-        minerIds.add(minerId);
     }
 }

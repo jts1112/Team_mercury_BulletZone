@@ -46,16 +46,19 @@ class GamesController {
             String ip = request.getRemoteAddr();
             Dropship dropship = gameRepository.join(ip);
             long dropshipId = dropship.getId();
-
-            log.info("Player joined: dropshipId={} IP={}",
-                    dropshipId, request.getRemoteAddr());
+            long minerId = gameRepository.spawnMiner(dropshipId);
+            long tankId = gameRepository.spawnTank(dropshipId);
+            log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
+                    dropshipId, minerId, tankId, request.getRemoteAddr());
 
             return new ResponseEntity<LongWrapper>(
-                    new LongWrapper(dropshipId),
+                    new LongWrapper(dropshipId, minerId, tankId),
                     HttpStatus.CREATED
             );
         } catch (RestClientException e) {
             e.printStackTrace();
+        } catch (LimitExceededException | EntityDoesNotExistException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
@@ -152,11 +155,12 @@ class GamesController {
     }
 
 
-    // ------------------------ Spawn Endpoints ------------------------
+    // ------------ Spawn Endpoints ------------
     @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId) throws EntityDoesNotExistException {
+    ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId)
+            throws LimitExceededException, EntityDoesNotExistException {
         long minerId = gameRepository.spawnMiner(dropshipId);
         LongWrapper response = new LongWrapper(minerId);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -165,7 +169,8 @@ class GamesController {
     @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/tank",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<LongWrapper> spawnTank(@PathVariable long dropshipId) throws EntityDoesNotExistException {
+    ResponseEntity<LongWrapper> spawnTank(@PathVariable long dropshipId)
+            throws LimitExceededException, EntityDoesNotExistException {
         long tankId = gameRepository.spawnTank(dropshipId);
         LongWrapper response = new LongWrapper(tankId);
         return new ResponseEntity<>(response, HttpStatus.OK);
