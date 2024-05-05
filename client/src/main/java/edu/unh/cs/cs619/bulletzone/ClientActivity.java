@@ -167,12 +167,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Click(R.id.buttonFlag)
     protected void onButtonFlag(){
-        int selectedPosition = mGridAdapter.getSelectedPosition();
-        if (selectedPosition >= 0) {
-            int row = selectedPosition / 16;
-            int col = selectedPosition % 16;
-            // Update the grid model to place a flag at the selected position
-            gridModel.setFlag(row, col);
+            mGridAdapter.setFlagplaced(mGridAdapter.getSelectedPosition());
             // Update the grid view
             mGridAdapter.notifyDataSetChanged();
 
@@ -180,16 +175,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    gridModel.removeFlag(row, col);
-                    mGridAdapter.setSelectedPosition(-1);
+                    mGridAdapter.setFlagplaced(-1); // set flag bool to be removed.
                     mGridAdapter.notifyDataSetChanged();
                 }
             }, 30000); // 30 seconds
-
-            Log.d("Flag", "Placed flag at " + row + ", " + col);
-        } else {
-            Log.d("Flag", "No grid cell selected.");
-        }
     }
 
     @Click(R.id.buttonMine)
@@ -375,22 +364,17 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonMoveTo)
     protected void onMoveToButtonClick() {
-        EditText editTextRow = findViewById(R.id.editTextRow);
-        EditText editTextColumn = findViewById(R.id.editTextColumn);
 
-        String rowString = editTextRow.getText().toString().trim();
-        String columnString = editTextColumn.getText().toString().trim();
+        int selectedPosition = mGridAdapter.getSelectedPosition();
+        if (selectedPosition >= 0) {
+            int row = selectedPosition / 16;
+            int col = selectedPosition % 16;
+            // Update the grid model to place a flag at the selected position
+            actionController.moveToPosition(col, row);
 
-        if (!rowString.isEmpty() && !columnString.isEmpty()) {
-            int row = Integer.parseInt(rowString);
-            int column = Integer.parseInt(columnString);
-
-            // Perform the move action to the target position
-            actionController.moveToPosition(column, row);
-
-            // Clear the text boxes
-            editTextRow.setText("");
-            editTextColumn.setText("");
+            Log.d("Flag", "Placed flag at " + row + ", " + col);
+        } else {
+            Log.d("Flag", "No grid cell selected.");
         }
     }
 
