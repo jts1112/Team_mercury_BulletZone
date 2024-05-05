@@ -26,8 +26,9 @@ import edu.unh.cs.cs619.bulletzone.util.ResultWrapper;
  */
 
 //@Rest(rootUrl = "http://172.29.160.1:8080/games",
-@Rest(rootUrl = "http://10.21.95.181:8080/games",
-//@Rest(rootUrl = "http://172.16.32.116:8080/games", // Shane's ip
+//@Rest(rootUrl = "http://172.19.19.243:8080/games",
+@Rest(rootUrl = "http://172.16.32.121:8080/games", // Shane's ip
+//@Rest(rootUrl = "http://10.21.95.181:8080/games",
 //@Rest(rootUrl = "http://10.21.173.197:8080/games",
 //@Rest(rootUrl = "http://10.21.164.194:8080/games",
 //@Rest(rootUrl = "http://stman1.cs.unh.edu:61905/games",

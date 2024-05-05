@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.ui;
-
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
@@ -25,24 +24,25 @@ public class GridModel {
         }
     }
 
-    public void updateGrid(int[][] newData, int[][] newTerrainData) {
-        rawData = newData;
-        grid = new GridCell[16][16];
-        for (int i = 0; i < newData.length; i++) {
-            for (int j = 0; j < newData[0].length; j++) {
-                int terrainResource = mapper.getTerrainImageResource(newTerrainData[i][j]);
-                int entityResource = mapper.getEntityImageResource(newData[i][j]);
-                GridCell cell = new GridCell(terrainResource, entityResource, i, j);
-                cell.setRotationForValue(newData[i][j]);
-                grid[i][j] = cell;
-            }
-        }
-    }
+//    public void updateGrid(int[][] newData, int[][] newTerrainData) {
+//        rawData = newData;
+//        grid = new GridCell[16][16];
+//        for (int i = 0; i < newData.length; i++) {
+//            for (int j = 0; j < newData[0].length; j++) {
+//                int terrainResource = mapper.getTerrainImageResource(newTerrainData[i][j]);
+//                int entityResource = mapper.getEntityImageResource(newData[i][j]);
+//                GridCell cell = new GridCell(terrainResource, entityResource, i, j);
+//                cell.setRotationForValue(newData[i][j]);
+//                grid[i][j] = cell;
+//            }
+//        }
+//    }
 
     public void initializeGrid3d(int[][][] newData, int[][][] newTerrainData) {
+        int layers = 3;
         rawData3d = newData;
-        grid3d = new GridCell[3][16][16];
-        for (int k = 0; k < 3; k++) {
+        grid3d = new GridCell[layers][newData[0].length][newData[0][0].length]; // 3 x 16 x 16 grid
+        for (int k = 0; k < layers; k++) {
             for (int i = 0; i < newData[0].length; i++) {
                 for (int j = 0; j < newData[0][0].length; j++) {
                     int terrainResource = mapper.getTerrainImageResource(newTerrainData[k][i][j]);

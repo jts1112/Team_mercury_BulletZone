@@ -1,7 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.ui;
-
 import org.androidannotations.annotations.EBean;
-
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
@@ -109,4 +107,3 @@ public class GridCellImageMapper {
         return imageResource;
     }
 }
-
