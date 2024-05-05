@@ -246,18 +246,16 @@ public class GameBoardBuilder {
     public GameBoardBuilder inMemoryGameReposiryInitialize(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
         GameBoardBuilder newBoard = new GameBoardBuilder(fieldDimension,monitor);
+
         newBoard.setWall(1).
                 setWall(2).
                 setWall(3).
                 setWall(17).
                 setWall(1100,33).
-                setWall(1100,49).
-                setWall(1100,65).
                 setWall(34).
-                setWall(1100,66).
+                setWall(1100,86).
                 setWall(35).
                 setWall(51).
-                setWall(1100,67).
                 setWall(5).
                 setWall(21).
                 setWall(37).
@@ -272,7 +270,6 @@ public class GameBoardBuilder {
                 setWall(1100,72).
                 setWall(9).
                 setWall(41).
-                setWall(57).
                 setWall(73).
                 setRowTerrain(0,2).
                 setRowTerrain(1,4).

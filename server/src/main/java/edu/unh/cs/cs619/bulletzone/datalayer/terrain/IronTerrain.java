@@ -32,6 +32,16 @@ public class IronTerrain implements Terrain{
         this.presentItem = presentItem;
     }
 
+    @Override
+    public boolean isEnterable() {
+        return false;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return null;
+    }
+
     public int getPresentItem() {
         return presentItem;
     }

@@ -235,7 +235,7 @@ public final class Game {
     }
 
     //--- Power up Methods ---- // just keep track of power ups on the field
-    public int getnumPowerups(){
+    public int getNumPowerups(){
         return this.numberOfPowerUps;
     }
 
@@ -254,6 +254,3 @@ public final class Game {
 
 
 }
-
-
-

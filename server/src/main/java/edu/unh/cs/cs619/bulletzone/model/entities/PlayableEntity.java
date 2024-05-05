@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.item.GameItemRepository;

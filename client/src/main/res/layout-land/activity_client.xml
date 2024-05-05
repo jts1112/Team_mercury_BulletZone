@@ -46,13 +46,6 @@
             android:layout_weight="1"
             android:text="Dropship" />
 
-        <Button
-            android:id="@+id/buttonFlag"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Flag" />
-
     </LinearLayout>
 
     <TextView
@@ -125,19 +118,19 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/buttonTunnel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tunnel"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/buttonTunnel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tunnel"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible" />
 
         <Button
             android:id="@+id/buttonFire"
@@ -154,13 +147,33 @@
             android:text="MINE"
             android:visibility="gone" />
 
-        <Button
-            android:id="@+id/buttonMoveTo"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Move To" />
+            android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/editTextRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Row"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/editTextColumn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Column"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/buttonMoveTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Move To" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

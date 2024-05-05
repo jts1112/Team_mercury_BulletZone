@@ -1,10 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
-
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class AntiGravPowerUpEntity extends PowerUpEntity {
-    int pos;
     PowerUpType type = PowerUpType.AntiGrav;
 
     @Override
