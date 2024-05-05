@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
@@ -26,7 +25,6 @@ import edu.unh.cs.cs619.bulletzone.util.UnitIds;
  */
 @EBean
 public class ActionController {
-
     @RestService
     public
     BulletZoneRestClient restClient;
@@ -34,20 +32,16 @@ public class ActionController {
     @Bean
     BZRestErrorhandler bzRestErrorhandler;
 
-    // public only for testing
-    public UnitIds Ids;
+    public UnitIds Ids; // public only for testing
     private long currentUnitId = -1;
-    private ShakeDetector shakeDetector;
-
 
     public ActionController() {
     }
 
-    // Method to initialize the ActionController with context
     public void initialize(Context context) {
         this.Ids = UnitIds.getInstance();
         restClient.setRestErrorHandler(bzRestErrorhandler);
-        shakeDetector = new ShakeDetector(context);
+        ShakeDetector shakeDetector = new ShakeDetector(context);
         shakeDetector.setOnShakeListener(() -> {
             // Call onButtonFire when shake is detected
             // Log.d("Action Controller", "Shake detected");
@@ -111,7 +105,6 @@ public class ActionController {
         restClient.move(currentUnitId, direction);
     }
 
-
     @Background
     public void onButtonFire() {
         if (currentUnitId == Ids.getDropshipId()) {
@@ -138,11 +131,6 @@ public class ActionController {
         restClient.leave(Ids.getDropshipId());
     }
 
-    // Only used for testing
-    public void setCurrentUnitId(long id) {
-        this.currentUnitId = id;
-    }
-
     public void leave(long id) {
         restClient.leave(id);
     }
@@ -152,4 +140,8 @@ public class ActionController {
          restClient.moveToPosition(currentUnitId, targetX, targetY);
     }
 
+    // Only used for testing
+    public void setCurrentUnitId(long id) {
+        this.currentUnitId = id;
+    }
 }

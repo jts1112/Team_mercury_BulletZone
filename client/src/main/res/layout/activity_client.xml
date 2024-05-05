@@ -55,6 +55,27 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonSpawnTank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Spawn Tank" />
+
+        <Button
+            android:id="@+id/buttonSpawnMiner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Spawn Miner" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/textCreditsView"
         android:layout_width="wrap_content"
@@ -92,11 +113,26 @@
         android:layout_gravity="center"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/buttonLeft"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/left" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/left" />
+
+            <Button
+                android:id="@+id/buttonEvadeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/evade_left" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -107,21 +143,38 @@
                 android:id="@+id/buttonUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/up" />
 
             <Button
                 android:id="@+id/buttonDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/down" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/buttonRight"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/right" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/right" />
+
+            <Button
+                android:id="@+id/buttonEvadeRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/evade_right" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
