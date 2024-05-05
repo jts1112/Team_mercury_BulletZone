@@ -7,14 +7,14 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
 /**
  * Meadow class that will
  */
-public class IronTerrain implements Terrain{
+public class GemTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
-    public IronTerrain(){
+    public GemTerrain(){
 
     }
 
-    public IronTerrain(int presentItem){
+    public GemTerrain(int presentItem){
         this.presentItem = presentItem;
     }
 
@@ -30,16 +30,6 @@ public class IronTerrain implements Terrain{
 
     public void setPresentItem(int presentItem) {
         this.presentItem = presentItem;
-    }
-
-    @Override
-    public boolean isEnterable() {
-        return false;
-    }
-
-    @Override
-    public Direction getDirection() {
-        return null;
     }
 
     public int getPresentItem() {
