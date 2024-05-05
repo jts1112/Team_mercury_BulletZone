@@ -200,7 +200,13 @@ public class GameBoardBuilder {
                 setTunnelTerrain(index);
             } else if (terrainType == 5) { // walls
                 setGraniteTerrain(index);
-            } else {
+            } else if (terrainType == 6){ // iron terrain.
+                setIronTerrain(index);
+            }else if (terrainType ==7){ // gem terrain
+                setGemTerrain(index);
+            } else if(terrainType == 8){ // ubontium terrain
+                setUbontiumTerrain(index);
+            }else {
                 setMeadowTerrain(index);
             }
         }
@@ -221,7 +227,13 @@ public class GameBoardBuilder {
                 setTunnelTerrain(index);
             } else if (terrainType == 5) { // walls
                 setGraniteTerrain(index);
-            } else {
+            } else if (terrainType == 6){ // iron terrain.
+                setIronTerrain(index);
+            }else if (terrainType ==7){ // gem terrain
+                setGemTerrain(index);
+            } else if(terrainType == 8){ // ubontium terrain
+                setUbontiumTerrain(index);
+            }else {
                 setMeadowTerrain(index);
             }
         }
