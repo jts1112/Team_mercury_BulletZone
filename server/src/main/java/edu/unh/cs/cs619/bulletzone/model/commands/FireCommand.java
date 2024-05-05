@@ -66,9 +66,8 @@ public class FireCommand implements Command {
         // Set the same parent for the bullet.
         // This should be only a one way reference.
         bullet.setParent(parent);
-        bullet.setBulletId(1);
-        EventBus.getDefault().post(new SpawnEvent(bullet.getIntValue(), bullet.getPosition()));
-
+        SpawnEvent bulletSpawnEvent = new SpawnEvent(bullet.getIntValue(), bullet.getPosition());
+        EventBus.getDefault().post(bulletSpawnEvent);
         playableEntity.addBullet(bullet);
 
         timer.schedule(new TimerTask() {
@@ -108,33 +107,24 @@ public class FireCommand implements Command {
                             if (playableEntity.getLife() <= 0) {
                                 playableEntity.getParent().clearField();
                                 playableEntity.setParent(null);
-
-                                // Create new removalEvent
                                 RemovalEvent removalEvent = new RemovalEvent(playableEntity.getPosition());
                                 EventBus.getDefault().post(removalEvent);
                             }
                         } else if (nextField.getEntity() instanceof Wall wall) {
-                            // Check if the wall is destructible
                             if ((wall.getIntValue() > 1000 && wall.getIntValue() <= 2000) || wall.getIntValue() == 6000) {
-                                if (wall.getLife() <= 0) {  // If 0 health
+                                if (wall.getLife() <= 0) {
                                     wall.getParent().clearField();
-
-                                    // Create new RemovalEvent
                                     RemovalEvent removalEvent = new RemovalEvent(wall.getPos());
                                     EventBus.getDefault().post(removalEvent);
                                 }
                             }
                         } else if (nextField.getEntity() instanceof PowerUpEntity powerUpEntity) {
                             powerUpEntity.getParent().clearField();
-
-                            // Create new RemovalEvent
                             RemovalEvent removalEvent = new RemovalEvent(powerUpEntity.getPos());
-                            nextField.getTerrain().setPresentItem(0); // set no present item in fieldholder. // TODO added
-
                             EventBus.getDefault().post(removalEvent);
+                            nextField.getTerrain().setPresentItem(0);
                         }
                         if (isVisible) {
-                            // Remove bullet from field
                             currentField.clearField();
                             RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
                             EventBus.getDefault().post(removalEvent);
@@ -142,18 +132,15 @@ public class FireCommand implements Command {
                         playableEntity.removeBullet(bullet);
                         cancel();
 
-                    } else {  // Nothing is there, move bullet along
+                    } else {  // move bullet
                         if (isVisible) {
-                            // Remove bullet from field
                             currentField.clearField();
                         }
-                        // bullets cant enter forest so destroy bullet.
-                        boolean enteringToughTerrain = nextField.getTerrain().getDifficulty(bullet) < 0;
                         int distanceTraveled = Math.abs(nextField.getPosition() - currentField.getPosition());
                         boolean enteringEdge = distanceTraveled > dimension || (distanceTraveled > 1 && distanceTraveled < dimension);
+                        boolean enteringToughTerrain = nextField.getTerrain().getDifficulty(bullet) < 0;
                         if (enteringToughTerrain || enteringEdge) {
                             if (isVisible) {
-                                // Remove bullet from field
                                 currentField.clearField();
                                 RemovalEvent removalEvent = new RemovalEvent(bullet.getPosition());
                                 EventBus.getDefault().post(removalEvent);

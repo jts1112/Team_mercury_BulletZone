@@ -1,11 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class DeflectorShieldPowerUpEntity extends PowerUpEntity {
-    int pos;
-    PowerUpType type = PowerUpType.DeflectorShield;
 
     @Override
     public int getIntValue() {
@@ -26,12 +23,4 @@ public class DeflectorShieldPowerUpEntity extends PowerUpEntity {
         return "S";
     }
 
-    /**
-     *
-     * @return powerUpType
-     */
-    @Override
-    public PowerUpType getType() {
-        return type;
-    }
 }

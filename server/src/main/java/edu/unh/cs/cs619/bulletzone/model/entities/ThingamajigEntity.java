@@ -1,10 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class ThingamajigEntity extends PowerUpEntity {
-    PowerUpType type = PowerUpType.Thingamajig;
 
     @Override
     public int getIntValue() {
@@ -25,12 +23,4 @@ public class ThingamajigEntity extends PowerUpEntity {
         return "T";
     }
 
-    /**
-     *
-     * @return powerUpType
-     */
-    @Override
-    public PowerUpType getType() {
-        return type;
-    }
 }

@@ -1,11 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class FusionReactorPowerUpEntity extends PowerUpEntity {
-    PowerUpType type = PowerUpType.FusionReactor;
-
     @Override
     public int getIntValue() {
         return 2003;
@@ -27,12 +24,4 @@ public class FusionReactorPowerUpEntity extends PowerUpEntity {
         return "F";
     }
 
-    /**
-     *
-     * @return powerUpType
-     */
-    @Override
-    public PowerUpType getType() {
-        return type;
-    }
 }

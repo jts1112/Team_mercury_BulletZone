@@ -4,7 +4,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 
 public abstract class PowerUpEntity extends FieldEntity {
     protected int pos;
-    PowerUpType type;
+    protected PowerUpType type;
 
     @Override
     public abstract int getIntValue();

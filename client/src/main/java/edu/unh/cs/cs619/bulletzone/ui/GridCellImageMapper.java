@@ -85,8 +85,6 @@ public class GridCellImageMapper {
             imageResource = R.drawable.dirt1;
         } else if (cellValue == 6000) {
             imageResource = R.drawable.streaked_dirt;
-//        } else if (cellValue > 6000 && cellValue < 7000) {
-//            imageResource = R.drawable.streaked_dirt;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10000000 && cellValue <= 20000000) {

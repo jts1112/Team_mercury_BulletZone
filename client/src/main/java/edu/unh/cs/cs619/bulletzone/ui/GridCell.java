@@ -1,7 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.ui;
-
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,11 +55,28 @@ public class GridCell {
     }
 
     public void setRotationForValue(int rawValue) {
-        if (rawValue > 10000000 & rawValue < 40000000) {
+        if (rawValue > 10_000_000 & rawValue < 40_000_000) {
             // Extract the last digit
             int lastDigit = rawValue % 10;
             // Map the last digit to rotation angle
             switch (lastDigit) {
+                case 0:
+                    this.entityRotation = 0; // No rotation for up
+                    break;
+                case 2:
+                    this.entityRotation = 90; // 90 degrees for right
+                    break;
+                case 4:
+                    this.entityRotation = 180; // 180 degrees for down
+                    break;
+                case 6:
+                    this.entityRotation = 270; // 270 degrees for left
+                    break;
+            }
+        } else if (rawValue >= 2_000_000 && rawValue < 3_000_000) {
+            // Bullet rotation
+            int directionValue = rawValue % 10;
+            switch (directionValue) {
                 case 0:
                     this.entityRotation = 0; // No rotation for up
                     break;
