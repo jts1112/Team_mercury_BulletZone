@@ -7,14 +7,14 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
 /**
  * Meadow class that will
  */
-public class GemTerrain implements Terrain{
+public class IronTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
-    public GemTerrain(){
+    public IronTerrain(){
 
     }
 
-    public GemTerrain(int presentItem){
+    public IronTerrain(int presentItem){
         this.presentItem = presentItem;
     }
 
