@@ -9,9 +9,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -23,8 +21,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.api.BackgroundExecutor;
-
 import java.text.MessageFormat;
 
 import edu.unh.cs.cs619.bulletzone.events.GameData;
@@ -54,9 +50,9 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
-
     // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
 
+    // ---------------------------------- Initialization ----------------------------------
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +149,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     }
 
     // ---------------------------------- Move Buttons ----------------------------------
+
     /**
      * Client side only sends a move request whenever direction is pressed
      * Server determines whether to turn or move based on the tank direction
@@ -160,11 +157,46 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
     protected void onButtonMove(View view) {
         final int viewId = view.getId();
+        byte direction;
 
-        actionController.onButtonMove(viewId);
+        switch (viewId) {
+            case R.id.buttonUp:
+                direction = 0;
+                break;
+            case R.id.buttonDown:
+                direction = 4;
+                break;
+            case R.id.buttonLeft:
+                direction = 6;
+                break;
+            case R.id.buttonRight:
+                direction = 2;
+                break;
+            default:
+                direction = 0;
+        }
+        actionController.onButtonMove(direction);
     }
 
+    @Click({R.id.buttonEvadeLeft, R.id.buttonEvadeRight})
+    protected void onButtonEvade(View view) {
+        final int viewId = view.getId();
+
+        switch (viewId) {
+            case R.id.buttonEvadeLeft:
+                actionController.onButtonMove((byte) 6);
+                break;
+            case R.id.buttonEvadeRight:
+                actionController.onButtonMove((byte) 2);
+                break;
+            default:
+                break;
+        }
+    }
+
+
     // ---------------------------------- 2nd to Last Row Buttons ----------------------------------
+
     @Click(R.id.buttonTunnel)
     @Background
     protected void onButtonTunnel() {
@@ -179,7 +211,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Click(R.id.buttonMoveTo)
     protected void onMoveToButtonClick() {
-
         int selectedPosition = mGridAdapter.getSelectedPosition();
         if (selectedPosition >= 0) {
             int row = selectedPosition / 16;
@@ -199,7 +230,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------
-    @SuppressLint("NonConstantResourceId")
+
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
@@ -230,7 +261,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
                                     // minus 1000 credits from the player
                                     gameData.addPlayerCredits(-1000);
-                                    leaveAsync();
+                                    actionController.leaveAsync();
                                     Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
                                     startActivity(intent);
                                 }
@@ -256,7 +287,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     }
 
     // ---------------------------------- Helper Methods ----------------------------------
-    // Do these belong somewhere else?
+
     @Override
     public void onTankLifeUpdate(long life) {
         runOnUiThread(() -> {
@@ -289,18 +320,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
         });
     }
 
-    @Background
-    void leaveAsync() {
-        System.out.println("Leave called, leaving game");
-        BackgroundExecutor.cancelAll("grid_poller_task", true);
-        actionController.leave();
-    }
-
     @Override
-    public void onBackPressed() {
-        // super.onBackPressed();
-        // Not calling **super**, disables back button in current screen.
-    }
+    public void onBackPressed() {}
 
     @AfterViews
     protected void afterViewInjection() {
@@ -309,13 +330,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridView.setAdapter(mGridAdapter);
     }
 
-    public void onGridItemTapped(int tappedX, int tappedY) {
-        System.out.println("GridItemTapped at: " + tappedX + ", " + tappedY);
-        showMoveToButton();
-    }
-
-    private void showMoveToButton() {
-        // Shows the "Move To" button
+    public void showMoveToButton() {
         Button moveToButton = findViewById(R.id.buttonMoveTo);
         moveToButton.setVisibility(View.VISIBLE);
     }
