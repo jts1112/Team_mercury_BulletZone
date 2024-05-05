@@ -30,28 +30,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tank" />
+            android:text="@string/tank" />
 
         <Button
             android:id="@+id/buttonMiner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Miner" />
+            android:text="@string/miner" />
 
         <Button
             android:id="@+id/buttonDropship"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Dropship" />
+            android:text="@string/dropship" />
 
         <Button
             android:id="@+id/buttonFlag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Flag" />
+            android:text="@string/flag" />
 
     </LinearLayout>
 
@@ -65,14 +65,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Spawn Tank" />
+            android:text="@string/spawn_tank" />
 
         <Button
             android:id="@+id/buttonSpawnMiner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Spawn Miner" />
+            android:text="@string/spawn_miner" />
 
     </LinearLayout>
 
@@ -187,7 +187,7 @@
             android:id="@+id/buttonTunnel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tunnel"
+            android:text="@string/tunnel"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:visibility="visible" />
@@ -204,7 +204,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="MINE"
+            android:text="@string/mine"
             android:visibility="gone" />
 
         <Button
@@ -212,7 +212,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Move To" />
+            android:text="@string/move_to" />
 
     </LinearLayout>
 
@@ -226,7 +226,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Update using events"
+            android:text="@string/update_using_events"
             android:checked="true"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
@@ -235,7 +235,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Leave" />
+            android:text="@string/leave" />
 
         <View
             android:layout_width="0dp"
@@ -248,7 +248,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Eject" />
+            android:text="@string/eject" />
     </LinearLayout>
 
 

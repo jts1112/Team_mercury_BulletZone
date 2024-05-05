@@ -13,4 +13,8 @@
     <string name="miner_armor_120">Miner Armor: 120</string>
     <string name="dropship_armor_300">Dropship Armor: 300</string>
     <string name="tank_armor_100">Tank Armor: 100</string>
+    <string name="spawn_tank">Spawn Tank</string>
+    <string name="spawn_miner">Spawn Miner</string>
+    <string name="update_using_events">Update using events</string>
+    <string name="tank">Tank</string>
 </resources>
