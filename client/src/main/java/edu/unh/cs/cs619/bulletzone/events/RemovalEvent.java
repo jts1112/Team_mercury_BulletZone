@@ -2,10 +2,13 @@ package edu.unh.cs.cs619.bulletzone.events;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
 
 public class RemovalEvent extends GameEvent {
     @JsonProperty
     private int position;
+
+    GridCellImageMapper mapper;
 
     public RemovalEvent() {}
 
@@ -26,6 +29,7 @@ public class RemovalEvent extends GameEvent {
     public void applyTo(GridCell[][][] board) {
         int layerPos = position % 256;
         GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
+
         cell.setEntityResourceID(0);
         cell.setRotationForValue(0);
     }

@@ -4,16 +4,14 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
 
 /**
- * Meadow class that will
+ * Exactly like forest, will block bullets. But different image.
  */
-public class UbontiumTerrain implements Terrain{
+public class GraniteTerrain implements Terrain{
     int presentItem; // present item in the terrain.
 
-    public UbontiumTerrain(){
+    public GraniteTerrain(){ }
 
-    }
-
-    public UbontiumTerrain(int presentItem){
+    public GraniteTerrain(int presentItem){
         this.presentItem = presentItem;
     }
 
@@ -24,7 +22,7 @@ public class UbontiumTerrain implements Terrain{
      */
     @Override
     public int getIntValue() {
-        return 9000 + presentItem;
+        return 10000 + presentItem;
     }
 
     public void setPresentItem(int presentItem) {
@@ -35,15 +33,14 @@ public class UbontiumTerrain implements Terrain{
         return presentItem;
     }
 
-
     @Override
     public double getDifficulty(Object entity) {
         if (entity instanceof Vehicle){
             Vehicle vehicle = (Vehicle) entity;
             if (vehicle.isTracked()) {
-                return 1.5;
+                return 2;
             } else if (vehicle.isWheeled()) {
-                return 1;
+                return -1;
             }
         }
         return -1;
@@ -51,7 +48,7 @@ public class UbontiumTerrain implements Terrain{
 
     @Override
     public double getrescourceValue() {
-        return 1000;
+        return 0;
     }
 
     @Override
@@ -63,4 +60,5 @@ public class UbontiumTerrain implements Terrain{
     public Direction getDirection() {
         return null;
     }
+
 }

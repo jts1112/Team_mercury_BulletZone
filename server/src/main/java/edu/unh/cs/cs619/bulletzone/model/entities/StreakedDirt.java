@@ -1,24 +1,16 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
-public class Wall extends FieldEntity {
-    protected int destructValue, position, life;
+public class StreakedDirt extends Wall {
 
-    public Wall() {
-        // For indestructible wall
-        this.destructValue = 1000;
-        this.life = 10000;
-    }
-
-    public Wall(int destructValue, int position) {
-        // For destructible wall
-        this.destructValue = destructValue;
-        this.life = destructValue - 1000;
+    public StreakedDirt(int position) {
+        this.destructValue = 6000;
+        this.life = 1;
         this.position = position;
     }
 
     @Override
     public FieldEntity copy() {
-        return new Wall();
+        return new StreakedDirt(position);
     }
 
     @Override
@@ -28,15 +20,16 @@ public class Wall extends FieldEntity {
 
     @Override
     public String toString() {
-        return "W";
+        return "S";
     }
 
-    public int getPos() {
+    public int getPosition() {
         return position;
     }
 
     @Override
     public void hit(int damage) {
+//        life = Math.max(life - damage, 0);
         life = life - damage;
         System.out.println("Wall life: " + life);
     }
