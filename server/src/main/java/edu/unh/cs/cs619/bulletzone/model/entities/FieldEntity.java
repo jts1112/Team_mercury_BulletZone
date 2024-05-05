@@ -15,6 +15,10 @@ public abstract class FieldEntity {
      */
     public abstract int getIntValue();
 
+    public int getLife() {
+        return 0;
+    }
+
     public FieldHolder getParent() {
         return parent;
     }

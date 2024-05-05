@@ -9,7 +9,9 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
+import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.MoveEvent;
+import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import org.greenrobot.eventbus.EventBus;
@@ -152,6 +154,20 @@ public class MoveCommand implements Command {
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
             } else {
                 System.out.println("Move isCompleted false");
+                // hit the entity and the next entity for appropriate damage
+                nextEntity.hit(entity.getHitDamage());
+                entity.hit(entity.getSelfHitDamage());
+                EventBus.getDefault().post(new DamageEvent(nextEntity.getPosition(), nextEntity.getIntValue()));
+                EventBus.getDefault().post(new DamageEvent(entity.getPosition(), entity.getIntValue()));
+
+                if (nextEntity.getLife() <= 0) {
+                    nextEntity.getParent().clearField();
+                    EventBus.getDefault().post(new RemovalEvent(nextEntity.getPosition()));
+                }
+                if (entity.getLife() <= 0) {
+                    entity.getParent().clearField();
+                    EventBus.getDefault().post(new RemovalEvent(entity.getPosition()));
+                }
                 isCompleted = false;
             }
         }

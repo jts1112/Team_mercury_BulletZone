@@ -6,6 +6,7 @@ public class Wall extends FieldEntity {
     public Wall() {
         // For indestructible wall
         this.destructValue = 1000;
+        this.life = 10000;
     }
 
     public Wall(int destructValue, int pos) {

@@ -16,7 +16,6 @@ import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.EntranceEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
-import jdk.jfr.Event;
 
 public class DigCommand implements Command {
 
