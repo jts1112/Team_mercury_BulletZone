@@ -22,7 +22,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import java.text.MessageFormat;
-import java.util.Locale;
 
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
@@ -51,11 +50,9 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
-    int unitSpawnCost = 100;
-    String msg = String.format(Locale.US, "You need at least %d credits to spawn a unit.", unitSpawnCost);
+    // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
 
     // ---------------------------------- Initialization ----------------------------------
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +82,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
         }, 2000);
     }
 
-    @AfterViews
-    protected void afterViewInjection() {
-        joinAsync();
-        SystemClock.sleep(500);
-        gridView.setAdapter(mGridAdapter);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -102,9 +92,11 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Background
     void joinAsync() {
-        actionController.join();
-        gridPollTask.startPolling();
-        onPlayerCreditUpdate(gameData.getPlayerCredits());
+        try {
+            actionController.join();
+            gridPollTask.startPolling();
+            onPlayerCreditUpdate(gameData.getPlayerCredits());
+        } catch (Exception ignored) { }
     }
 
     // ---------------------------------- Top Row Buttons ----------------------------------
@@ -147,26 +139,19 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Click(R.id.buttonSpawnTank)
     protected void onSpawnTankButtonClick() {
         long playerCredits = gameData.getPlayerCredits();
-        if (playerCredits >= unitSpawnCost) {
+        if (playerCredits >= 1000) {
             actionController.spawnUnit("tank");
             updateControlsForUnit("tank");
-            gameData.addPlayerCredits(-unitSpawnCost);
+            gameData.addPlayerCredits(-1000);
         } else {
-            showInsufficientCreditsDialog(msg);
+            showInsufficientCreditsDialog();
         }
     }
 
     @Click(R.id.buttonSpawnMiner)
     protected void onSpawnMinerButtonClick() {
-        long playerCredits = gameData.getPlayerCredits();
-        if (playerCredits >= unitSpawnCost) {
-            actionController.spawnUnit("miner");
-            actionController.updateCurrentUnit("miner");
-            updateControlsForUnit("miner");
-            gameData.addPlayerCredits(-unitSpawnCost);
-        } else {
-            showInsufficientCreditsDialog(msg);
-        }
+        actionController.updateCurrentUnit("miner");
+        updateControlsForUnit("miner");
     }
 
     // ---------------------------------- Move Buttons ----------------------------------
@@ -344,6 +329,13 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Override
     public void onBackPressed() {}
 
+    @AfterViews
+    protected void afterViewInjection() {
+        joinAsync();
+        SystemClock.sleep(500);
+        gridView.setAdapter(mGridAdapter);
+    }
+
     public void showMoveToButton() {
         Button moveToButton = findViewById(R.id.buttonMoveTo);
         moveToButton.setVisibility(View.VISIBLE);
@@ -382,10 +374,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
         }
     }
 
-    private void showInsufficientCreditsDialog(String message) {
+    private void showInsufficientCreditsDialog() {
         new AlertDialog.Builder(ClientActivity.this)
                 .setTitle("Insufficient Credits")
-                .setMessage(message)
+                .setMessage("You need at least 1000 credits to spawn a unit.")
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }

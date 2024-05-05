@@ -17,7 +17,29 @@ public class UnitIds {
     private long dropshipId = -1;
     public long controlledUnitId = -1;
 
-    private UnitIds() {}
+    private UnitIds() {
+
+    }
+
+    // -------- Setters --------
+
+    public void setIds(long dropshipId, long minerId, long tankId) {
+        this.dropshipId = dropshipId;
+        addMinerId(minerId);
+        addTankId(tankId);
+    }
+
+    public void setControlledUnitId(long controlledUnitId) {
+        this.controlledUnitId = controlledUnitId;
+    }
+
+    public void addTankId(long tankId) {
+        tankIds.add(tankId);
+    }
+
+    public void addMinerId(long minerId) {
+        minerIds.add(minerId);
+    }
 
     // -------- Getters --------
 
@@ -52,29 +74,5 @@ public class UnitIds {
 
     public long getControlledUnitId() {
         return controlledUnitId;
-    }
-
-    // -------- Setters --------
-
-    public void setIds(long dropshipId, long minerId, long tankId) {
-        this.dropshipId = dropshipId;
-        addMinerId(minerId);
-        addTankId(tankId);
-    }
-
-    public void setControlledUnitId(long controlledUnitId) {
-        this.controlledUnitId = controlledUnitId;
-    }
-
-    public void setDropshipId(long dropshipId) {
-        this.dropshipId = dropshipId;
-    }
-
-    public void addTankId(long tankId) {
-        tankIds.add(tankId);
-    }
-
-    public void addMinerId(long minerId) {
-        minerIds.add(minerId);
     }
 }

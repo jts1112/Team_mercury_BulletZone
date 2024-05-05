@@ -58,8 +58,7 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
-        byte b = 4;
-        actionController.onButtonMove(b);
+        actionController.onButtonMove(R.id.buttonDown);
 
         // Verify that the restClient's move method is called with the correct parameters
         verify(restClient).move(123, (byte) 4);

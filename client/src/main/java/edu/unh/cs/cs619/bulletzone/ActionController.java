@@ -53,7 +53,9 @@ public class ActionController {
         try {
             LongWrapper units = restClient.join();
             long dropshipId = units.getResult();
-            Ids.setDropshipId(dropshipId);
+            long minerId = units.getResult2();
+            long tankId = units.getResult3();
+            Ids.setIds(dropshipId, minerId, tankId);
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
