@@ -42,5 +42,4 @@ public class SpawnEvent extends GameEvent {
                 " at " + position +
                 super.toString();
     }
-
 }

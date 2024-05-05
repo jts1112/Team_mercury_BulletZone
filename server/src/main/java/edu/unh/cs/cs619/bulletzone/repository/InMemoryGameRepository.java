@@ -461,7 +461,7 @@ public class InMemoryGameRepository implements GameRepository {
                     }
                 }
             }
-        }, 0, 100); // Attempt to spawn every second.
+        }, 0, 100000000); // Attempt to spawn every second.
     }
 
 

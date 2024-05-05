@@ -5,7 +5,7 @@ public class Bullet extends FieldEntity implements Vehicle{
 
     private long playableEntityId;
     private Direction direction;
-    private int damage, bulletId;
+    private int damage;
 
     public Bullet(long playableEntityId, Direction direction, int damage) {
         this.damage = damage;
@@ -15,7 +15,7 @@ public class Bullet extends FieldEntity implements Vehicle{
 
     @Override
     public int getIntValue() {
-        return (int) (2000000 + 1000 * playableEntityId + damage * 10 + bulletId);
+        return (int) (2_000_000 + 1000 * playableEntityId + damage * 10 + Direction.toByte(direction));
     }
 
     @Override
@@ -50,14 +50,6 @@ public class Bullet extends FieldEntity implements Vehicle{
 
     public void setDamage(int damage) {
         this.damage = damage;
-    }
-
-    public void setBulletId(int bulletId){
-        this.bulletId = bulletId;
-    }
-
-    public int getBulletId(){
-        return bulletId;
     }
 
     @Override

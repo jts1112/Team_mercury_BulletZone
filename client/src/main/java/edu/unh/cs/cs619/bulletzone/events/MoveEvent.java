@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.events;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.unh.cs.cs619.bulletzone.R;
