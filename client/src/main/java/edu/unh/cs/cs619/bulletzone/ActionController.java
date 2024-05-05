@@ -52,7 +52,8 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids.setIds(units.getResult(), units.getResult2(), units.getResult3());
+            long dropshipId = units.getResult();
+            Ids.setDropshipId(dropshipId);
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -80,7 +81,24 @@ public class ActionController {
 
     // ---------------------------------- 2nd Row Buttons ----------------------------------
 
-
+    public void spawnUnit(String unit) {
+        switch (unit) {
+            case "miner":
+                LongWrapper minerIdWrapper = restClient.spawnMiner(Ids.getDropshipId());
+                long minerId = minerIdWrapper.getResult();
+                Ids.addMinerId(minerId);
+                currentUnitId = minerId;
+                break;
+            case "tank":
+                LongWrapper tankIdWrapper = restClient.spawnTank(Ids.getDropshipId());
+                long tankId = tankIdWrapper.getResult();
+                Ids.addTankId(tankId);
+                currentUnitId = tankId;
+                break;
+        }
+        Ids.setControlledUnitId(currentUnitId);
+        EventBus.getDefault().post(new CreditEvent(0));
+    }
 
     // ---------------------------------- Move Buttons ----------------------------------
 
@@ -114,10 +132,6 @@ public class ActionController {
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------
-
-    public void leave(long id) {
-        restClient.leave(id);
-    }
 
     @Background
     void leaveAsync() {

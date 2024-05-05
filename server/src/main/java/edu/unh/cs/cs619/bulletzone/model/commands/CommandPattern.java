@@ -6,9 +6,8 @@ import java.util.Iterator;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 
 public class CommandPattern {
 
@@ -57,7 +56,7 @@ public class CommandPattern {
     /**
      * Execute Method for CommandPattern to execute Queued Commands
      * @return returns True if all sucess and False if even one failure
-     * @throws TankDoesNotExistException
+     * @throws EntityDoesNotExistException
      * TODO add game as parameter to execute command method to make simpler.
      * makes it so no need to pass game in every time.
      */
@@ -74,7 +73,7 @@ public class CommandPattern {
 //        return Boolean.TRUE;
 //    }
 
-    public Boolean executeCommands(long sleepTime,PlayableEntity playableEntity) throws TankDoesNotExistException, InterruptedException {
+    public Boolean executeCommands(long sleepTime,PlayableEntity playableEntity) throws EntityDoesNotExistException, InterruptedException {
         Iterator<Command> iterator = commandstoExecute.iterator();
         while (iterator.hasNext()) {
             Command currentCommand = iterator.next();

@@ -58,7 +58,8 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
-        actionController.onButtonMove(R.id.buttonDown);
+        byte b = 4;
+        actionController.onButtonMove(b);
 
         // Verify that the restClient's move method is called with the correct parameters
         verify(restClient).move(123, (byte) 4);
@@ -123,7 +124,6 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_Leave() {
         // Call the method to be tested
-        actionController.leave(123);
 
         // Verify that the restClient's leave method is called with the correct parameter
         verify(restClient).leave(123);

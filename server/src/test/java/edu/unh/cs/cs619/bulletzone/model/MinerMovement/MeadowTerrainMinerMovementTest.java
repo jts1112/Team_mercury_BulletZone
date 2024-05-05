@@ -3,29 +3,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Optional;
-
-import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
-import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
-import edu.unh.cs.cs619.bulletzone.repository.DataRepository;
-import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
-import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
 
 /**
  * Running Tests On Miner for the Meadow terrain. Miner should be able to move through Meadow terrain
@@ -87,14 +75,14 @@ public class MeadowTerrainMinerMovementTest {
 
     // Tests for moving up
     @Test
-    public void execute_FacingUpMoveRight_FacingRight() throws TankDoesNotExistException {
+    public void execute_FacingUpMoveRight_FacingRight() throws EntityDoesNotExistException {
         miner.setDirection(Direction.Up);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -114,7 +102,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -133,7 +121,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -152,7 +140,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -172,7 +160,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -191,7 +179,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -210,7 +198,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -229,7 +217,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -249,7 +237,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -268,7 +256,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -287,7 +275,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -306,7 +294,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -326,7 +314,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -345,7 +333,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -364,7 +352,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -383,7 +371,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -406,13 +394,13 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
             assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -433,7 +421,7 @@ public class MeadowTerrainMinerMovementTest {
 
         try {
             assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
