@@ -1,7 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Bullet;
@@ -24,6 +22,7 @@ public class FireCommand implements Command {
     private final int[] bulletDamage = {15, 30, 50};
     private final int[] bulletDelay = {500, 1000, 1500};
     private final Object monitor;
+    private final int dimension = 16;
 
     /**
      * Fire Command Method that initializes values needed for execution.
@@ -116,7 +115,7 @@ public class FireCommand implements Command {
                             }
                         } else if (nextField.getEntity() instanceof Wall wall) {
                             // Check if the wall is destructible
-                            if (wall.getIntValue() > 1000 && wall.getIntValue() <= 2000) {
+                            if ((wall.getIntValue() > 1000 && wall.getIntValue() <= 2000) || wall.getIntValue() == 6000) {
                                 if (wall.getLife() <= 0) {  // If 0 health
                                     wall.getParent().clearField();
 
@@ -149,7 +148,10 @@ public class FireCommand implements Command {
                             currentField.clearField();
                         }
                         // bullets cant enter forest so destroy bullet.
-                        if (nextField.getTerrain().getDifficulty(bullet) < 0) {
+                        boolean enteringToughTerrain = nextField.getTerrain().getDifficulty(bullet) < 0;
+                        int distanceTraveled = Math.abs(nextField.getPosition() - currentField.getPosition());
+                        boolean enteringEdge = distanceTraveled > dimension || (distanceTraveled > 1 && distanceTraveled < dimension);
+                        if (enteringToughTerrain || enteringEdge) {
                             if (isVisible) {
                                 // Remove bullet from field
                                 currentField.clearField();

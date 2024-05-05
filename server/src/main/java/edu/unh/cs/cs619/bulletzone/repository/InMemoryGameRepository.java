@@ -308,7 +308,7 @@ public class InMemoryGameRepository implements GameRepository {
         }
         synchronized (this.monitor) {
             this.game = new Game();
-            game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameReposiryInitialize().build());
+            game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameRepositoryInitialize().build());
             startRepairTimer();
             startPowerUpSpawnTimer();
         }
@@ -452,7 +452,7 @@ public class InMemoryGameRepository implements GameRepository {
                 synchronized (monitor) {
                     float numPowerUps = (float) game.getNumPowerups() + 1;
                     float numDropShips = (float) game.getDropships().size();
-                    int probability = (int) (50 * numDropShips/numPowerUps);
+                    int probability = (int) (5 * numDropShips/numPowerUps);
                     int lottery = random.nextInt(100);
                     //System.out.println("Current Powerup Spawn Probability" + probability);
                     //System.out.println(game.getDropships().size());
@@ -478,24 +478,20 @@ public class InMemoryGameRepository implements GameRepository {
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
             if (lottery >= 0 && lottery <= 25) {
-                System.out.println("Setting thingamajig power-up in spawn");
+//                System.out.println("Setting thingamajig power-up in spawn");
                 powerUp = new ThingamajigEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
             } else if (lottery >= 26 && lottery <= 50) {
-                System.out.println("Setting AntiGrav power-up in spawn");
+//                System.out.println("Setting AntiGrav power-up in spawn");
                 powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
-            } else if (lottery >= 51 && lottery <= 75) { // it has to be a FusionReactor
-                System.out.println("Setting Fusion Reactor power-up in spawn");
-                powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
-                spawnLocation.getTerrain().setPresentItem(3);
             } else { // it has to be a FusionReactor
-                System.out.println("Setting Fusion Reactor power-up in spawn");
+//                System.out.println("Setting Fusion Reactor power-up in spawn");
                 powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(3);
             }
 
-            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
+//            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
 
             // increment current powerup counter.
             game.incrementnumPowerups();

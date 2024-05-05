@@ -6,16 +6,12 @@
 package edu.unh.cs.cs619.bulletzone.model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.EntranceTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
-import edu.unh.cs.cs619.bulletzone.datalayer.terrain.TunnelTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.*;
 import edu.unh.cs.cs619.bulletzone.model.entities.DirtRock;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.StreakedDirt;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
 public class GameBoardBuilder {
@@ -73,6 +69,13 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setStreakedDirt(int index) {
+        StreakedDirt streakedDirt = new StreakedDirt(index);
+        fieldHolderGrid.get(index).setFieldEntity(streakedDirt);
+        streakedDirt.setParent(fieldHolderGrid.get(index));
+        return this;
+    }
+
     /**
      * Sets the destructive dirt with destruct value
      * specified index in the field holder grid
@@ -125,6 +128,26 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setIronTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new IronTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setGemTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new GemTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setUbontiumTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new UbontiumTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setGraniteTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new GraniteTerrain());
+        return this;
+    }
+
     /**
      * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
      * @param rowNumber
@@ -153,7 +176,7 @@ public class GameBoardBuilder {
      * @param rowNumber
      * @param terrainType
      */
-    public GameBoardBuilder setLayerRowTerrain(int layer,int rowNumber,int terrainType){
+    public GameBoardBuilder setLayerRowTerrain(int layer, int rowNumber, int terrainType){
 
         for (int i = 0; i < fieldDimension; i++){
             int index = (layer * fieldDimension * fieldDimension) + rowNumber * fieldDimension + i;
@@ -165,10 +188,34 @@ public class GameBoardBuilder {
                 setForestTerrain(index);
             } else if (terrainType == 4) { // tunnel
                 setTunnelTerrain(index);
+            } else if (terrainType == 5) { // walls
+                setGraniteTerrain(index);
             } else {
                 setMeadowTerrain(index);
             }
         }
+        return this;
+    }
+
+    public GameBoardBuilder setLayerColumnTerrain(int layer, int columnNumber, int terrainType) {
+        for (int i = 0; i < fieldDimension; i++) {
+            int index = (layer * fieldDimension * fieldDimension) + i * fieldDimension + columnNumber;
+
+            if (terrainType == 1) { // rocky terrain
+                setRockyTerrain(index);
+            } else if (terrainType == 2) { // hilly terrain
+                setHillsTerrain(index);
+            } else if (terrainType == 3) { // forest terrain
+                setForestTerrain(index);
+            } else if (terrainType == 4) { // tunnel
+                setTunnelTerrain(index);
+            } else if (terrainType == 5) { // walls
+                setGraniteTerrain(index);
+            } else {
+                setMeadowTerrain(index);
+            }
+        }
+
         return this;
     }
 
@@ -234,7 +281,7 @@ public class GameBoardBuilder {
      * The build builds the game board to the specified set
      * @return the constructed fieldholder grid
      */
-    public ArrayList<FieldHolder> build(){
+    public ArrayList<FieldHolder> build() {
         return this.fieldHolderGrid;
     }
 
@@ -243,85 +290,89 @@ public class GameBoardBuilder {
      * Initialization that occurred within the InMemoryGameRepository
      * @return the updated game
      */
-    public GameBoardBuilder inMemoryGameReposiryInitialize(){
+    public GameBoardBuilder inMemoryGameRepositoryInitialize(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
         GameBoardBuilder newBoard = new GameBoardBuilder(fieldDimension,monitor);
+        int layerTwo = 2;
+        int entranceIndex = 101;
+        ArrayList<Integer> takenIndices = new ArrayList<>();
+        takenIndices.add(entranceIndex);
+        for (int i = 0; i < fieldDimension; i++) {
+            int squared = fieldDimension * fieldDimension - fieldDimension;
+            takenIndices.add(i);
+            takenIndices.add(i * 16);
+            takenIndices.add(i * 16 + 15);
+            takenIndices.add(squared + i);
+        }
+        int[] wallIndices = {1, 17, 34, 35, 51, 5, 21, 37, 53, 7, 23, 39, 8, 40, 9, 41, 73};
+        int[] destructibleWallIndices = {33, 106, 69, 71, 72};
 
-        newBoard.setWall(1).
-                setWall(2).
-                setWall(3).
-                setWall(17).
-                setWall(1100,33).
-                setWall(34).
-                setWall(1100,86).
-                setWall(35).
-                setWall(51).
-                setWall(5).
-                setWall(21).
-                setWall(37).
-                setWall(53).
-                setWall(1100,69).
-                setWall(7).
-                setWall(23).
-                setWall(39).
-                setWall(1100,71).
-                setWall(8).
-                setWall(40).
-                setWall(1100,72).
-                setWall(9).
-                setWall(41).
-                setWall(73).
-                setRowTerrain(0,2).
-                setRowTerrain(1,4).
-                setRowTerrain(2,4).
-                setRowTerrain(3,4).
-                setRowTerrain(4,4).
-                setRowTerrain(5,4).
-                setRowTerrain(6,4).
-                setRowTerrain(7,4). // end of setting meadow terrain
-                setRowTerrain(8,1).
-                setRowTerrain(9,1).
-                setRowTerrain(10,1).
-                setRowTerrain(11,1).
-                setRowTerrain(12,1).
-                setRowTerrain(13,1).
-                setRowTerrain(14,3).
-                setRowTerrain(15,3).// end of setting Rocky Terrain
-                setForestTerrain(66).
-                setForestTerrain(67).setForestTerrain(68).
-                setLayerRowTerrain(1, 0,4).
-                setLayerRowTerrain(1, 1,4).
-                setLayerRowTerrain(1, 2,4).
-                setLayerRowTerrain(1, 3,4).
-                setLayerRowTerrain(1, 4,4).
-                setLayerRowTerrain(1, 5,4).
-                setLayerRowTerrain(1, 6,4).
-                setLayerRowTerrain(1, 7,4).
-                setLayerRowTerrain(1, 8,4).
-                setLayerRowTerrain(1, 9,4).
-                setLayerRowTerrain(1, 10,4).
-                setLayerRowTerrain(1, 11,4).
-                setLayerRowTerrain(1, 12,4).
-                setLayerRowTerrain(1, 13,4).
-                setLayerRowTerrain(1, 14,4).
-                setLayerRowTerrain(1, 15,4).
-                setLayerRowTerrain(2, 0,4).
-                setLayerRowTerrain(2, 1,4).
-                setLayerRowTerrain(2, 2,4).
-                setLayerRowTerrain(2, 3,4).
-                setLayerRowTerrain(2, 4,4).
-                setLayerRowTerrain(2, 5,4).
-                setLayerRowTerrain(2, 6,4).
-                setLayerRowTerrain(2, 7,4).
-                setLayerRowTerrain(2, 8,4).
-                setLayerRowTerrain(2, 9,4).
-                setLayerRowTerrain(2, 10,4).
-                setLayerRowTerrain(2, 11,4).
-                setLayerRowTerrain(2, 12,4).
-                setLayerRowTerrain(2, 13,4).
-                setLayerRowTerrain(2, 14,4).
-                setLayerRowTerrain(2, 15,4).
-                setEntranceTerrain(101);
+        for (int index : wallIndices) {
+            newBoard.setWall(index);
+        }
+
+        for (int index : destructibleWallIndices) {
+            newBoard.setWall(1100, index);
+        }
+
+        for (int row = 0; row <= 7; row++) {
+            newBoard.setRowTerrain(row, 4);
+        }
+
+        for (int row = 8; row <= 13; row++) {
+            newBoard.setRowTerrain(row, 1);
+        }
+
+        newBoard.setRowTerrain(15, 3);
+
+        int[] forestIndices = {66, 67, 68};
+        for (int index : forestIndices) {
+            newBoard.setForestTerrain(index);
+        }
+
+        for (int row = 0; row <= 15; row++) {
+            newBoard.setLayerRowTerrain(1, row, 4);
+        }
+
+        for (int row = 0; row <= 15; row++) {
+            newBoard.setLayerRowTerrain(layerTwo, row, 4);
+        }
+
+        newBoard.setEntranceTerrain(entranceIndex);
+        Random random = new Random();
+        int numIronTerrains = 18 + random.nextInt(29);
+        int numGemTerrains = 6 + random.nextInt(10);
+        int numUbontiumTerrains = 1 + random.nextInt(5);
+        for (int i = 0; i < numIronTerrains; i++) {
+            int index = entranceIndex;
+            while (takenIndices.contains(index)) {
+                index = random.nextInt(fieldDimension * fieldDimension);
+            }
+            takenIndices.add(index);
+            int layeredIndex = (fieldDimension * fieldDimension) + index;
+            newBoard.setIronTerrain(layeredIndex);
+            newBoard.setStreakedDirt(layeredIndex);
+        }
+        for (int i = 0; i < numGemTerrains; i++) {
+            int index = entranceIndex;
+            while (takenIndices.contains(index)) {
+                index = random.nextInt(fieldDimension * fieldDimension);
+            }
+            takenIndices.add(index);
+            int layeredIndex = (fieldDimension * fieldDimension) + index;
+            newBoard.setGemTerrain(layeredIndex);
+            newBoard.setStreakedDirt(layeredIndex);
+        }
+        for (int i = 0; i < numUbontiumTerrains; i++) {
+            int index = entranceIndex;
+            while (takenIndices.contains(index)) {
+                index = random.nextInt(fieldDimension * fieldDimension);
+            }
+            takenIndices.add(index);
+            int layeredIndex = (fieldDimension * fieldDimension) + index;
+            newBoard.setUbontiumTerrain(layeredIndex);
+            newBoard.setStreakedDirt(layeredIndex);
+        }
         fieldHolderGrid = newBoard.build();
         return this;
     }

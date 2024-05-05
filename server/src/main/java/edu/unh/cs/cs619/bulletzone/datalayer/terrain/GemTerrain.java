@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.datalayer.terrain;
-
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Vehicle;
