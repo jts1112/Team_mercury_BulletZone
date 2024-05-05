@@ -4,7 +4,6 @@ import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class ThingamajigEntity extends PowerUpEntity {
-    int pos;
     PowerUpType type = PowerUpType.Thingamajig;
 
     @Override

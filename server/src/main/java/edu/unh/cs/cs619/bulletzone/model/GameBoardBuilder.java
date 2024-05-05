@@ -253,7 +253,7 @@ public class GameBoardBuilder {
                 setWall(17).
                 setWall(1100,33).
                 setWall(34).
-                setWall(1100,66).
+                setWall(1100,86).
                 setWall(35).
                 setWall(51).
                 setWall(5).
