@@ -56,6 +56,16 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/textCreditsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Credits: 1000"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/textViewTankLife"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,6 +125,15 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/buttonTunnel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tunnel"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -167,8 +186,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="ExtraText">
+        android:orientation="horizontal">
 
         <Switch
             android:id="@+id/eventSwitch"
@@ -176,6 +194,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Update using events"
+            android:checked="true"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <Button
@@ -196,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Eject" />>
+            android:text="Eject" />
     </LinearLayout>
 
 

@@ -452,7 +452,7 @@ public class InMemoryGameRepository implements GameRepository {
                 synchronized (monitor) {
                     float numPowerUps = (float) game.getNumPowerups() + 1;
                     float numDropShips = (float) game.getDropships().size();
-                    int probability = (int) (15 * numDropShips/numPowerUps);
+                    int probability = (int) (50 * numDropShips/numPowerUps);
                     int lottery = random.nextInt(100);
                     //System.out.println("Current Powerup Spawn Probability" + probability);
                     //System.out.println(game.getDropships().size());
@@ -461,7 +461,7 @@ public class InMemoryGameRepository implements GameRepository {
                     }
                 }
             }
-        }, 0, 1000); // Attempt to spawn every second.
+        }, 0, 100); // Attempt to spawn every second.
     }
 
 
@@ -473,7 +473,8 @@ public class InMemoryGameRepository implements GameRepository {
             int y = Math.abs(random.nextInt(FIELD_DIM));
             int lottery = Math.abs(random.nextInt(100));
             // get a random space.
-            FieldHolder spawnLocation = findFreeSpace(game.getHolderGrid().get(x * y));
+            FieldHolder startingPoint = game.getHolderGrid().get(x * y);
+            FieldHolder spawnLocation = findFreeSpace(startingPoint);
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
             if (lottery >= 0 && lottery <= 25) {

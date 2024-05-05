@@ -3,7 +3,7 @@ package edu.unh.cs.cs619.bulletzone.model.powerUps;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 
 public abstract class PowerUpEntity extends FieldEntity {
-    int pos;
+    protected int pos;
     PowerUpType type;
 
     @Override
