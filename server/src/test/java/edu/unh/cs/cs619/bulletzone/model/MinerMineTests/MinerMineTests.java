@@ -49,22 +49,22 @@ public class MinerMineTests {
     public void MeadowTerrainMineTest() throws TankDoesNotExistException {
 
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder(16, new Object()).setRowTerrain(0, 4).
-                setRowTerrain(1, 4).
-                setRowTerrain(2, 4).
-                setRowTerrain(3, 4).
-                setRowTerrain(4, 4).
-                setRowTerrain(5, 4).
-                setRowTerrain(6, 4).
-                setRowTerrain(7, 4).
-                setRowTerrain(8, 4).
-                setRowTerrain(9, 4).
-                setRowTerrain(10, 4).
-                setRowTerrain(11, 4).
-                setRowTerrain(12, 4).
-                setRowTerrain(13, 4).
-                setRowTerrain(14, 4).
-                setRowTerrain(15, 4).
+        game.getHolderGrid().addAll(new GameBoardBuilder(16, new Object()).setLayerRowTerrain(0,0, 8).
+                setLayerRowTerrain(0,1, 8).
+                setLayerRowTerrain(0,2, 8).
+                setLayerRowTerrain(0,3, 8).
+                setLayerRowTerrain(0,4, 8).
+                setLayerRowTerrain(0,5, 8).
+                setLayerRowTerrain(0,6, 8).
+                setLayerRowTerrain(0,7, 8).
+                setLayerRowTerrain(0,8, 8).
+                setLayerRowTerrain(0,9, 8).
+                setLayerRowTerrain(0,10, 8).
+                setLayerRowTerrain(0,11, 8).
+                setLayerRowTerrain(0,12, 8).
+                setLayerRowTerrain(0,13, 8).
+                setLayerRowTerrain(0,14, 8).
+                setLayerRowTerrain(0,15, 8).
                 build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
@@ -210,22 +210,22 @@ public class MinerMineTests {
     public void IronTerrainMineTest() throws TankDoesNotExistException {
 
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,1).
-                setRowTerrain(1,1).
-                setRowTerrain(2,1).
-                setRowTerrain(3,1).
-                setRowTerrain(4,1).
-                setRowTerrain(5,1).
-                setRowTerrain(6,1).
-                setRowTerrain(7,1).
-                setRowTerrain(8,1).
-                setRowTerrain(9,1).
-                setRowTerrain(10,1).
-                setRowTerrain(11,1).
-                setRowTerrain(12,1).
-                setRowTerrain(13,1).
-                setRowTerrain(14,1).
-                setRowTerrain(15,1).
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,5).
+                setLayerRowTerrain(0,1,5).
+                setLayerRowTerrain(0,2,5).
+                setLayerRowTerrain(0,3,5).
+                setLayerRowTerrain(0,4,5).
+                setLayerRowTerrain(0,5,5).
+                setLayerRowTerrain(0,6,5).
+                setLayerRowTerrain(0,7,5).
+                setLayerRowTerrain(0,8,5).
+                setLayerRowTerrain(0,9,5).
+                setLayerRowTerrain(0,10,5).
+                setLayerRowTerrain(0,11,5).
+                setLayerRowTerrain(0,12,5).
+                setLayerRowTerrain(0,13,5).
+                setLayerRowTerrain(0,14,5).
+                setLayerRowTerrain(0,15,5).
                 build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
@@ -242,7 +242,7 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(10));
+        verify(eventBus).post(new CreditEvent(100));
     }
 
 
@@ -251,22 +251,22 @@ public class MinerMineTests {
     public void GemTerrainMineTest() throws TankDoesNotExistException {
 
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,1).
-                setRowTerrain(1,1).
-                setRowTerrain(2,1).
-                setRowTerrain(3,1).
-                setRowTerrain(4,1).
-                setRowTerrain(5,1).
-                setRowTerrain(6,1).
-                setRowTerrain(7,1).
-                setRowTerrain(8,1).
-                setRowTerrain(9,1).
-                setRowTerrain(10,1).
-                setRowTerrain(11,1).
-                setRowTerrain(12,1).
-                setRowTerrain(13,1).
-                setRowTerrain(14,1).
-                setRowTerrain(15,1).
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,6).
+                setLayerRowTerrain(0,1,6).
+                setLayerRowTerrain(0,2,6).
+                setLayerRowTerrain(0,3,6).
+                setLayerRowTerrain(0,4,6).
+                setLayerRowTerrain(0,5,6).
+                setLayerRowTerrain(0,6,6).
+                setLayerRowTerrain(0,7,6).
+                setLayerRowTerrain(0,8,6).
+                setLayerRowTerrain(0,9,6).
+                setLayerRowTerrain(0,10,6).
+                setLayerRowTerrain(0,11,6).
+                setLayerRowTerrain(0,12,6).
+                setLayerRowTerrain(0,13,6).
+                setLayerRowTerrain(0,14,6).
+                setLayerRowTerrain(0,15,6).
                 build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
@@ -283,7 +283,7 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(10));
+        verify(eventBus).post(new CreditEvent(300));
     }
 
 
@@ -292,22 +292,22 @@ public class MinerMineTests {
     public void UbontiumTerrainMineTest() throws TankDoesNotExistException {
 
         game.getHolderGrid().clear();
-        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,1).
-                setRowTerrain(1,1).
-                setRowTerrain(2,1).
-                setRowTerrain(3,1).
-                setRowTerrain(4,1).
-                setRowTerrain(5,1).
-                setRowTerrain(6,1).
-                setRowTerrain(7,1).
-                setRowTerrain(8,1).
-                setRowTerrain(9,1).
-                setRowTerrain(10,1).
-                setRowTerrain(11,1).
-                setRowTerrain(12,1).
-                setRowTerrain(13,1).
-                setRowTerrain(14,1).
-                setRowTerrain(15,1).
+        game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,7).
+                setLayerRowTerrain(0,1,7).
+                setLayerRowTerrain(0,2,7).
+                setLayerRowTerrain(0,3,7).
+                setLayerRowTerrain(0,4,7).
+                setLayerRowTerrain(0,5,7).
+                setLayerRowTerrain(0,6,7).
+                setLayerRowTerrain(0,7,7).
+                setLayerRowTerrain(0,8,7).
+                setLayerRowTerrain(0,9,7).
+                setLayerRowTerrain(0,10,7).
+                setLayerRowTerrain(0,11,7).
+                setLayerRowTerrain(0,12,7).
+                setLayerRowTerrain(0,13,7).
+                setLayerRowTerrain(0,14,7).
+                setLayerRowTerrain(0,15,7).
                 build());
 
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
@@ -324,7 +324,7 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(10));
+        verify(eventBus).post(new CreditEvent(1000));
     }
 
 

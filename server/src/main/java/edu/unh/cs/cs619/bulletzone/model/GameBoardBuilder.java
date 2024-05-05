@@ -9,11 +9,14 @@ import java.util.ArrayList;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.EntranceTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.GemTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.IronTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.TunnelTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.UbontiumTerrain;
 import edu.unh.cs.cs619.bulletzone.model.entities.DirtRock;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
@@ -125,6 +128,21 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setIronTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new IronTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setGemTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new GemTerrain());
+        return this;
+    }
+
+    public GameBoardBuilder setUbontiumTerrain(int index) {
+        fieldHolderGrid.get(index).setTerrain(new UbontiumTerrain());
+        return this;
+    }
+
     /**
      * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
      * @param rowNumber
@@ -165,6 +183,12 @@ public class GameBoardBuilder {
                 setForestTerrain(index);
             } else if (terrainType == 4) { // tunnel
                 setTunnelTerrain(index);
+            } else if (terrainType == 5) { // IRon Terrain
+                setIronTerrain(index);
+            } else if (terrainType == 6) { // Gem Terrain
+                setGemTerrain(index);
+            }else if (terrainType == 7) { // Ubontium Terrain
+                setUbontiumTerrain(index);
             } else {
                 setMeadowTerrain(index);
             }
@@ -272,13 +296,13 @@ public class GameBoardBuilder {
                 setWall(41).
                 setWall(73).
                 setRowTerrain(0,2).
-                setRowTerrain(1,4).
-                setRowTerrain(2,4).
-                setRowTerrain(3,4).
-                setRowTerrain(4,4).
-                setRowTerrain(5,4).
-                setRowTerrain(6,4).
-                setRowTerrain(7,4). // end of setting meadow terrain
+                setRowTerrain(1,8).
+                setRowTerrain(2,8).
+                setRowTerrain(3,8).
+                setRowTerrain(4,8).
+                setRowTerrain(5,8).
+                setRowTerrain(6,8).
+                setRowTerrain(7,8). // end of setting meadow terrain
                 setRowTerrain(8,1).
                 setRowTerrain(9,1).
                 setRowTerrain(10,1).
@@ -289,22 +313,22 @@ public class GameBoardBuilder {
                 setRowTerrain(15,3).// end of setting Rocky Terrain
                 setForestTerrain(66).
                 setForestTerrain(67).setForestTerrain(68).
-                setLayerRowTerrain(1, 0,4).
-                setLayerRowTerrain(1, 1,4).
-                setLayerRowTerrain(1, 2,4).
-                setLayerRowTerrain(1, 3,4).
-                setLayerRowTerrain(1, 4,4).
-                setLayerRowTerrain(1, 5,4).
-                setLayerRowTerrain(1, 6,4).
-                setLayerRowTerrain(1, 7,4).
-                setLayerRowTerrain(1, 8,4).
-                setLayerRowTerrain(1, 9,4).
-                setLayerRowTerrain(1, 10,4).
-                setLayerRowTerrain(1, 11,4).
-                setLayerRowTerrain(1, 12,4).
-                setLayerRowTerrain(1, 13,4).
-                setLayerRowTerrain(1, 14,4).
-                setLayerRowTerrain(1, 15,4).
+                setLayerRowTerrain(1, 0,8).
+                setLayerRowTerrain(1, 1,8).
+                setLayerRowTerrain(1, 2,8).
+                setLayerRowTerrain(1, 3,8).
+                setLayerRowTerrain(1, 4,8).
+                setLayerRowTerrain(1, 5,8).
+                setLayerRowTerrain(1, 6,8).
+                setLayerRowTerrain(1, 7,8).
+                setLayerRowTerrain(1, 8,8).
+                setLayerRowTerrain(1, 9,8).
+                setLayerRowTerrain(1, 10,8).
+                setLayerRowTerrain(1, 11,8).
+                setLayerRowTerrain(1, 12,8).
+                setLayerRowTerrain(1, 13,8).
+                setLayerRowTerrain(1, 14,8).
+                setLayerRowTerrain(1, 15,8).
                 setLayerRowTerrain(2, 0,4).
                 setLayerRowTerrain(2, 1,4).
                 setLayerRowTerrain(2, 2,4).
