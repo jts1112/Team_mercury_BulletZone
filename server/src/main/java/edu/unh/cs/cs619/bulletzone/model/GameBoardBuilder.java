@@ -8,6 +8,16 @@ package edu.unh.cs.cs619.bulletzone.model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.EntranceTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.ForestTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.GemTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.HillsTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.IronTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.RockyTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.TunnelTerrain;
+import edu.unh.cs.cs619.bulletzone.datalayer.terrain.UbontiumTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.*;
 import edu.unh.cs.cs619.bulletzone.model.entities.DirtRock;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -215,7 +225,6 @@ public class GameBoardBuilder {
                 setMeadowTerrain(index);
             }
         }
-
         return this;
     }
 
