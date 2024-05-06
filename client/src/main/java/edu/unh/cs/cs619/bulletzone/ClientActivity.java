@@ -22,6 +22,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import java.text.MessageFormat;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
@@ -50,6 +54,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
+
+    private Timer collisionTimer;
     // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
 
     // ---------------------------------- Initialization ----------------------------------
@@ -185,6 +191,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 direction = 0;
         }
         actionController.onButtonMove(direction);
+
+        if (gridModel.checkCollision()) {
+            bulletIncoming();
+        }
     }
 
     @Click({R.id.buttonEvadeLeft, R.id.buttonEvadeRight})
@@ -383,7 +393,100 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
+    /**
+     * Flashes the back ground when a bullet is incoming
+     */
+    private void bulletIncoming(){
+        // Flash the background red
+        View rootView = getWindow().getDecorView().getRootView();
+        rootView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
 
+        // Reset the background color after a delay
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+        }, 100); // Change 100 to adjust the duration of the red flash
+    }
+
+
+    /**
+     * Used to start the collision checking from client side. run when joining.
+     */
+    private void startCollisionChecking() {
+        collisionTimer = new Timer();
+        collisionTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (gridModel.checkCollision()) {
+                    bulletIncoming();
+                }
+            }
+        }, 0, 1000); // Check every second (1000 milliseconds)
+    }
+
+    /**
+     * Used to stop the collision checking from client side. run when leaving.
+     */
+    private void stopCollisionChecking() {
+        if (collisionTimer != null) {
+            collisionTimer.cancel();
+            collisionTimer = null;
+        }
+    }
+
+
+    private void showInsufficientCreditsDialog() {
+        new AlertDialog.Builder(ClientActivity.this)
+                .setTitle("Insufficient Credits")
+                .setMessage("You need at least 1000 credits to spawn a unit.")
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    /**
+     * Flashes the back ground when a bullet is incoming
+     */
+    private void bulletIncoming(){
+        // Flash the background red
+        View rootView = getWindow().getDecorView().getRootView();
+        rootView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+
+        // Reset the background color after a delay
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+        }, 100); // Change 100 to adjust the duration of the red flash
+    }
+
+
+    /**
+     * Used to start the collision checking from client side. run when joining.
+     */
+    private void startCollisionChecking() {
+        collisionTimer = new Timer();
+        collisionTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (gridModel.checkCollision()) {
+                    bulletIncoming();
+                }
+            }
+        }, 0, 1000); // Check every second (1000 milliseconds)
+    }
+
+    /**
+     * Used to stop the collision checking from client side. run when leaving.
+     */
+    private void stopCollisionChecking() {
+        if (collisionTimer != null) {
+            collisionTimer.cancel();
+            collisionTimer = null;
+        }
+    }
     /**
      * Otto has a limitation (as per design) that it will only find methods on the immediate
      * class type. As a result, if at runtime this instance actually points to a subclass
