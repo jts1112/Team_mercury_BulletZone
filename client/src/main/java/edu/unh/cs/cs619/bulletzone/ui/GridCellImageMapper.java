@@ -108,7 +108,6 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.tank_icon2verylow;
                 }
-//                imageResource = R.drawable.tank_icon2;
             } else {
                 if (health <= 100 && health >= 51) { // full health
                     imageResource = R.drawable.tankicon4full;
@@ -117,19 +116,50 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.tankicon4verylow;
                 }
-//                imageResource = R.drawable.tankicon4;
             }
         } else if (cellValue >= 20000000 && cellValue <= 30000000) { // MINERS
+            int health = (cellValue % 10000) / 10;
+//            Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
+
             if (Ids.getMinerId() == (cellValue - 20000000) / 10000) {
-                imageResource = R.drawable.miner1;
+                if (health <= 120 && health >= 61) { // full health
+                    imageResource = R.drawable.miner1full;
+                } else if (health <= 60 && health >= 30) { // half health
+                    imageResource = R.drawable.miner1low;
+                } else { // low health
+                    imageResource = R.drawable.miner1verylow;
+                }
+//                imageResource = R.drawable.miner1;
             } else {
-                imageResource = R.drawable.miner2;
+                if (health <= 120 && health >= 61) { // full health
+                    imageResource = R.drawable.miner2full;
+                } else if (health <= 60 && health >= 30) { // half health
+                    imageResource = R.drawable.miner2low;
+                } else { // low health
+                    imageResource = R.drawable.miner2verylow;
+                }
+//                imageResource = R.drawable.miner2;
             }
         } else if (cellValue >= 30000000 && cellValue <= 40000000) {
+//            Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
+            int health = (cellValue % 10000) / 10;
             if (Ids.getDropshipId() == (cellValue - 30000000) / 10000) {
-                imageResource = R.drawable.dropship1;
+                if (health <= 300 && health >= 151) { // full health
+                    imageResource = R.drawable.dropship1full;
+                } else if (health <= 150 && health >= 76) { // half health
+                    imageResource = R.drawable.dropship1low;
+                } else { // low health
+                    imageResource = R.drawable.dropship1verylow;
+                }
+
             } else {
-                imageResource = R.drawable.dropship2;
+                    if (health <= 300 && health >= 151) { // full health
+                        imageResource = R.drawable.dropship2full;
+                    } else if (health <= 150 && health >= 76) { // half health
+                        imageResource = R.drawable.dropship2low;
+                    } else { // low health
+                        imageResource = R.drawable.dropship2verylow;
+                    }
             }
         }
 
