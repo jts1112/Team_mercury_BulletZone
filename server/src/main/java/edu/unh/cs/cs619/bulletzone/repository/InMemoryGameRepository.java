@@ -331,37 +331,7 @@ public class InMemoryGameRepository implements GameRepository {
 
     // ------------ Spawn Methods ------------
     @Override
-    public long spawnMiner(long dropshipId) throws EntityDoesNotExistException, LimitExceededException {
-        synchronized (this.monitor) {
-            Dropship dropship = game.getDropship(dropshipId);
-            if (dropship == null) {
-                throw new EntityDoesNotExistException(dropshipId);
-            }
-            if (dropship.getNumMiners() <= 0) {
-                List<Long> miners = dropship.getMinerIds();
-                return miners.get(0);
-            }
-
-            long minerId = this.idGenerator.getAndIncrement();
-            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
-
-            // Find a free space near the dropship to spawn the miner
-            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
-            if (spawningPoint != null) {
-                spawningPoint.setFieldEntity(miner);
-                miner.setParent(spawningPoint);
-                game.getMiners().put(minerId, miner);
-                dropship.setNumMiners(dropship.getNumMiners() - 1);
-                dropship.addMiner(minerId);
-                return minerId;
-            } else {
-                return dropshipId;
-            }
-        }
-    }
-
-    @Override
-    public long spawnTank(long dropshipId) throws EntityDoesNotExistException, LimitExceededException {
+    public long spawnTank(long dropshipId) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
@@ -383,7 +353,35 @@ public class InMemoryGameRepository implements GameRepository {
                 game.getTanks().put(tankId, tank);
                 dropship.setNumTanks(dropship.getNumTanks() - 1);
                 dropship.addTank_(tankId);
+                SpawnEvent spawnEvent = new SpawnEvent(tank.getIntValue(), tank.getPosition());
+                EventBus.getDefault().post(spawnEvent);
                 return tankId;
+            } else {
+                return dropshipId;
+            }
+        }
+    }
+
+    @Override
+    public long spawnMiner(long dropshipId) throws EntityDoesNotExistException {
+        synchronized (this.monitor) {
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new EntityDoesNotExistException(dropshipId);
+            }
+
+            long minerId = this.idGenerator.getAndIncrement();
+            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
+
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(miner);
+                miner.setParent(spawningPoint);
+                game.getMiners().put(minerId, miner);
+                dropship.addMiner(minerId);
+                SpawnEvent spawnEvent = new SpawnEvent(miner.getIntValue(), miner.getPosition());
+                EventBus.getDefault().post(spawnEvent);
+                return minerId;
             } else {
                 return dropshipId;
             }
@@ -499,7 +497,8 @@ public class InMemoryGameRepository implements GameRepository {
             spawnLocation.clearField();
             spawnLocation.setFieldEntity(powerUp);
             powerUp.setParent(spawnLocation);
-            EventBus.getDefault().post(new SpawnEvent(powerUp.getIntValue(), powerUp.getPos()));
+            SpawnEvent spawnEvent = new SpawnEvent(powerUp.getIntValue(), powerUp.getPos());
+            EventBus.getDefault().post(spawnEvent);
 
         }
     }

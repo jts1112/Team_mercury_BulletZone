@@ -96,7 +96,9 @@ public class ClientActivity extends Activity implements GameDataObserver {
             actionController.join();
             gridPollTask.startPolling();
             onPlayerCreditUpdate(gameData.getPlayerCredits());
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ---------------------------------- Top Row Buttons ----------------------------------

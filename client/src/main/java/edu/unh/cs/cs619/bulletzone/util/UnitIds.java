@@ -75,4 +75,13 @@ public class UnitIds {
     public long getControlledUnitId() {
         return controlledUnitId;
     }
+
+    public Queue<Long> getTankIdQueue() {
+        return tankIds;
+    }
+
+    public Queue<Long> getMinerIdQueue() {
+        return minerIds;
+    }
+
 }

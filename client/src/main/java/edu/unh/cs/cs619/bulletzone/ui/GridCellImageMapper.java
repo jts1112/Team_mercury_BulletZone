@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.ui;
-import org.androidannotations.annotations.EBean;
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
@@ -85,22 +84,22 @@ public class GridCellImageMapper {
             imageResource = R.drawable.dirt1;
         } else if (cellValue == 6000) {
             imageResource = R.drawable.streaked_dirt;
-        } else if (cellValue >= 2000000 && cellValue <= 3000000) {
+        } else if (cellValue >= 2_000_000 && cellValue <= 3_000_000) {
             imageResource = R.drawable.bullet1;
-        } else if (cellValue >= 10000000 && cellValue <= 20000000) {
-            if (Ids.getTankId() == (cellValue - 10000000) / 10000) {
+        } else if (cellValue >= 10_000_000 && cellValue <= 20_000_000) {
+            if (Ids.getTankIdQueue().contains( (long) (cellValue - 10_000_000) / 10_000)) {
                 imageResource = R.drawable.tank_icon2;
             } else {
                 imageResource = R.drawable.tankicon4;
             }
-        } else if (cellValue >= 20000000 && cellValue <= 30000000) {
-            if (Ids.getMinerId() == (cellValue - 20000000) / 10000) {
+        } else if (cellValue >= 20_000_000 && cellValue <= 30_000_000) {
+            if (Ids.getMinerIdQueue().contains( (long) (cellValue - 20_000_000) / 10_000)) {
                 imageResource = R.drawable.miner1;
             } else {
                 imageResource = R.drawable.miner2;
             }
-        } else if (cellValue >= 30000000 && cellValue <= 40000000) {
-            if (Ids.getDropshipId() == (cellValue - 30000000) / 10000) {
+        } else if (cellValue >= 30_000_000 && cellValue <= 40_000_000) {
+            if (Ids.getDropshipId() == (cellValue - 30_000_000) / 10_000) {
                 imageResource = R.drawable.dropship1;
             } else {
                 imageResource = R.drawable.dropship2;
