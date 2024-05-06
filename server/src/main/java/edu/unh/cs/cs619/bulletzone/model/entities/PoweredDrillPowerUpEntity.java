@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class PoweredDrillPowerUpEntity extends PowerUpEntity {
 
@@ -12,7 +13,7 @@ public class PoweredDrillPowerUpEntity extends PowerUpEntity {
     @Override
     public FieldEntity copy() {return new PoweredDrillPowerUpEntity();}
 
-    public PoweredDrillPowerUpEntity() {}
+    public PoweredDrillPowerUpEntity() {this.type = PowerUpType.PoweredDrill;}
 
     public PoweredDrillPowerUpEntity(int pos) {
         this.pos = pos;

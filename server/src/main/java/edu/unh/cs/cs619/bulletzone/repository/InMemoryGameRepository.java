@@ -279,6 +279,7 @@ public class InMemoryGameRepository implements GameRepository {
 
                 totalPowerupValue = miner.getPowerUps().getPowerUpValue(totalPowerupValue);
             }
+
             GameUser user = data.getUser(dropship.getIp());
             if (user != null) {
                 boolean balanceModified;
@@ -292,9 +293,9 @@ public class InMemoryGameRepository implements GameRepository {
                 }
 
                 // add sold power-up total
-                balanceModified = data.modifyBalance(user.getAccountId(), totalPowerupValue);
+                balanceModified = data.modifyBalance(user.getAccountId(), (double) totalPowerupValue);
                 if (balanceModified) {
-                    System.out.println("Power-ups successfully");
+                    System.out.println("Power-ups sold successfully");
                 } else {
                     System.out.println("Failed to sell power-ups");
                 }

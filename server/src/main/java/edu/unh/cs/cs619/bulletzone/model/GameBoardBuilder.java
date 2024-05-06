@@ -410,7 +410,10 @@ public class GameBoardBuilder {
     public GameBoardBuilder initializeFieldOfWalls(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
         for (int i = 1; i <= 256; i++) {
-            fieldHolderGrid.get(1).setFieldEntity(new Wall());
+            FieldHolder fieldHolder = fieldHolderGrid.get(1);
+            Wall wall = new Wall();
+            fieldHolder.setFieldEntity(wall);
+            wall.setParent(fieldHolder);
         }
 
         return this;

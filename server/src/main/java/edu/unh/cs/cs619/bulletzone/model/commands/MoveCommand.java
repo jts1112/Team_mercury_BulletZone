@@ -84,7 +84,7 @@ public class MoveCommand implements Command {
         double difficulty = nextField.getTerrain().getDifficulty(entity); // TODO testing the difficulty
 
         checkNotNull(parent.getNeighbor(direction), "Neighbor is not available");
-        boolean isCompleted;
+        boolean isCompleted = false;
 
         if (!nextField.isPresent() && (difficulty > 0)) {  // If nextField is empty
             System.out.println("Move Case 1 !nextField.isPresent()=" + !nextField.isPresent() + "   difficulty=" + difficulty);
@@ -108,7 +108,7 @@ public class MoveCommand implements Command {
             isCompleted = true;
             // TODO remove difficulty
             entity.setLastMoveTime(millis + (long) (entity.getAllowedMoveInterval() * difficulty));
-        } else {
+        } else if (nextField.getEntity() != null) {
             System.out.println("Move Case 2");
             FieldEntity nextEntity = nextField.getEntity(); // TODO OLD
 

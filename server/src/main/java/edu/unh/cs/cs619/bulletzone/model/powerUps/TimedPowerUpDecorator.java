@@ -14,7 +14,7 @@ public abstract class TimedPowerUpDecorator extends PowerUpDecorator {
      * interval to decrement the timer by in seconds
      */
     int interval;
-    PlayableEntity affectedEntity;
+    final PlayableEntity affectedEntity;
 
     /**
      * @param powerUp parent power-up

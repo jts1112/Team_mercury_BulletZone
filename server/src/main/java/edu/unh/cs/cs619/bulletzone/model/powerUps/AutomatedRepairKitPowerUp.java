@@ -41,7 +41,9 @@ public class AutomatedRepairKitPowerUp extends TimedPowerUpDecorator {
                     if (time < 0) {
                         removeSelf();
                     } else if (affectedEntity.getLife() < affectedEntity.getMaxLife()) {
+                        System.out.println("Healing " + affectedEntity.toString() + " for " + interval);
                         affectedEntity.setLife(affectedEntity.getLife() + interval);
+                        System.out.println("health now at " + affectedEntity.getLife());
                     }
                 }
             }

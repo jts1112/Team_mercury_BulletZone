@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class DeflectorShieldPowerUpEntity extends PowerUpEntity {
 
@@ -12,7 +13,7 @@ public class DeflectorShieldPowerUpEntity extends PowerUpEntity {
     @Override
     public FieldEntity copy() {return new DeflectorShieldPowerUpEntity();}
 
-    public DeflectorShieldPowerUpEntity() {}
+    public DeflectorShieldPowerUpEntity() {this.type = PowerUpType.DeflectorShield;}
 
     public DeflectorShieldPowerUpEntity(int pos) {
         this.pos = pos;
