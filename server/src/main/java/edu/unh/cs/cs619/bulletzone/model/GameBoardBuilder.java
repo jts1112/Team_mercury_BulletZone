@@ -158,6 +158,11 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setEntranceTerrain(int index, Direction direction){
+        fieldHolderGrid.get(index).setTerrain(new EntranceTerrain(direction));
+        return this;
+    }
+
     /**
      * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
      * @param rowNumber
