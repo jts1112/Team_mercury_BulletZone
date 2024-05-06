@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.LimitExceededException;
 import android.util.Log;
 
 import org.androidannotations.annotations.Background;
@@ -9,6 +10,14 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.greenrobot.eventbus.EventBus;
+import org.springframework.web.client.RestClientException;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import edu.unh.cs.cs619.bulletzone.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.events.GameEvent;
@@ -32,6 +41,7 @@ public class ActionController {
     BZRestErrorhandler bzRestErrorhandler;
     public UnitIds Ids; // public only for testing
     private long currentUnitId = -1;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // ---------------------------------- Initialization ----------------------------------
 
@@ -82,20 +92,39 @@ public class ActionController {
     // ---------------------------------- 2nd Row Buttons ----------------------------------
 
     public void spawnUnit(String unit) {
-        switch (unit) {
-            case "miner":
-                LongWrapper minerIdWrapper = restClient.spawnMiner(Ids.getDropshipId());
-                long minerId = minerIdWrapper.getResult();
-                Ids.addMinerId(minerId);
-                currentUnitId = minerId;
-                break;
-            case "tank":
-                LongWrapper tankIdWrapper = restClient.spawnTank(Ids.getDropshipId());
-                long tankId = tankIdWrapper.getResult();
-                Ids.addTankId(tankId);
-                currentUnitId = tankId;
-                break;
+        long shipId = Ids.getDropshipId();
+        long entityId;
+        if (unit.equals("tank")) {
+            Future<LongWrapper> future=executorService.submit(()->restClient.spawnTank(shipId));
+            try {
+                LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
+                assert idWrapper != null;
+                entityId = idWrapper.getResult();
+                Ids.addTankId(entityId);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else {
+            Future<LongWrapper> future=executorService.submit(()->restClient.spawnMiner(shipId));
+            try {
+                LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
+                assert idWrapper != null;
+                entityId = idWrapper.getResult();
+                Ids.addMinerId(entityId);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+        currentUnitId = entityId;
         Ids.setControlledUnitId(currentUnitId);
         EventBus.getDefault().post(new CreditEvent(0));
     }

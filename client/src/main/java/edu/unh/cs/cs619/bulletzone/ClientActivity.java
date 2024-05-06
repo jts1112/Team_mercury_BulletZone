@@ -102,9 +102,13 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Background
     void joinAsync() {
-        actionController.join();
-        gridPollTask.startPolling();
-        onPlayerCreditUpdate(gameData.getPlayerCredits());
+        try {
+            actionController.join();
+            gridPollTask.startPolling();
+            onPlayerCreditUpdate(gameData.getPlayerCredits());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ---------------------------------- Top Row Buttons ----------------------------------

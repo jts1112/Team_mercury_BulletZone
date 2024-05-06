@@ -151,16 +151,7 @@ class GamesController {
         return e.getMessage();
     }
 
-
     // ------------------------ Spawn Endpoints ------------------------
-    @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId) throws EntityDoesNotExistException {
-        long minerId = gameRepository.spawnMiner(dropshipId);
-        LongWrapper response = new LongWrapper(minerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/tank",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -168,6 +159,15 @@ class GamesController {
     ResponseEntity<LongWrapper> spawnTank(@PathVariable long dropshipId) throws EntityDoesNotExistException {
         long tankId = gameRepository.spawnTank(dropshipId);
         LongWrapper response = new LongWrapper(tankId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/{dropshipId}/spawn/miner",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId) throws EntityDoesNotExistException {
+        long minerId = gameRepository.spawnMiner(dropshipId);
+        LongWrapper response = new LongWrapper(minerId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

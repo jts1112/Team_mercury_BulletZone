@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FireCommand implements Command {
-    private  long playableEntityId;
+    private final long playableEntityId;
     private int bulletType;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;

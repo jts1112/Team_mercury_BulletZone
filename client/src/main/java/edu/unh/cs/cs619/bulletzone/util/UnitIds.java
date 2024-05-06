@@ -54,6 +54,14 @@ public class UnitIds {
         return controlledUnitId;
     }
 
+    public Queue<Long> getTankIdQueue() {
+        return tankIds;
+    }
+
+    public Queue<Long> getMinerIdQueue() {
+        return minerIds;
+    }
+
     // -------- Setters --------
 
     public void setIds(long dropshipId, long minerId, long tankId) {
