@@ -135,6 +135,7 @@ public class PowerUpComponentTest {
 
         tank.hit(50);
 
-        assertEquals(tank.getMaxLife() - 5, tank.getLife());
+        // delta due to random timing differences allowing for the shield to regenerate 1 point sometimes, thanks reality :)
+        assertEquals((double) (tank.getMaxLife() - 5), (double) tank.getLife(), 1.0);
     }
 }
