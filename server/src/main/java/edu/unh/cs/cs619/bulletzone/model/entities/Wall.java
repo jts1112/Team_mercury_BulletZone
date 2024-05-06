@@ -23,7 +23,12 @@ public class Wall extends FieldEntity {
 
     @Override
     public int getIntValue() {
-        return destructValue;
+//        return destructValue;
+        if (destructValue == 1000) { // check if invincible wall
+            return destructValue;
+        } else {
+            return 1000 + life;
+        }
     }
 
     @Override

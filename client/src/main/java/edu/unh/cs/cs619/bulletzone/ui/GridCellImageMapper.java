@@ -1,4 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.ui;
+import android.util.Log;
+
 import org.androidannotations.annotations.EBean;
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
@@ -71,8 +73,16 @@ public class GridCellImageMapper {
 
         if (cellValue == 1000) {
             imageResource = R.drawable.wall5;
-        } else if ((cellValue > 1000 && cellValue < 2000)) {
-            imageResource = R.drawable.wall2;
+        } else if ((cellValue > 1000 && cellValue < 2000)) { // destructable wall
+
+            if ((cellValue - 1000) <= 100 && (cellValue - 1000) >= 51){ // full health
+                imageResource = R.drawable.wall2;
+            } else if ((cellValue - 1000) >= 26 && (cellValue - 1000) <= 50) { // half health
+                imageResource = R.drawable.wall2low;
+            } else { // 25% health
+                imageResource = R.drawable.wall2verylow;
+            }
+
         } else if ((cellValue >= 2000 && cellValue < 3000)) {
             powerUp = cellValue - 2000;
         } else if ((cellValue >= 3000 && cellValue < 4000)) {
@@ -87,13 +97,29 @@ public class GridCellImageMapper {
             imageResource = R.drawable.streaked_dirt;
         } else if (cellValue >= 2000000 && cellValue <= 3000000) {
             imageResource = R.drawable.bullet1;
-        } else if (cellValue >= 10000000 && cellValue <= 20000000) {
+        } else if (cellValue >= 10000000 && cellValue <= 20000000) { // TANKS
+            int health = (cellValue % 10000) / 10;
+//                        Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
             if (Ids.getTankId() == (cellValue - 10000000) / 10000) {
-                imageResource = R.drawable.tank_icon2;
+                if (health <= 100 && health >= 51) { // full health
+                    imageResource = R.drawable.tank_icon2full;
+                } else if (health <= 50 && health >= 26) { // half health
+                    imageResource = R.drawable.tank_icon2low;
+                } else { // low health
+                    imageResource = R.drawable.tank_icon2verylow;
+                }
+//                imageResource = R.drawable.tank_icon2;
             } else {
-                imageResource = R.drawable.tankicon4;
+                if (health <= 100 && health >= 51) { // full health
+                    imageResource = R.drawable.tankicon4full;
+                } else if (health <= 50 && health >= 26) { // half health
+                    imageResource = R.drawable.tankicon4low;
+                } else { // low health
+                    imageResource = R.drawable.tankicon4verylow;
+                }
+//                imageResource = R.drawable.tankicon4;
             }
-        } else if (cellValue >= 20000000 && cellValue <= 30000000) {
+        } else if (cellValue >= 20000000 && cellValue <= 30000000) { // MINERS
             if (Ids.getMinerId() == (cellValue - 20000000) / 10000) {
                 imageResource = R.drawable.miner1;
             } else {
