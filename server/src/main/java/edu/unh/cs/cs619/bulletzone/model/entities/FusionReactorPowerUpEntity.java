@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.entities;
 
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class FusionReactorPowerUpEntity extends PowerUpEntity {
     @Override
@@ -13,7 +14,7 @@ public class FusionReactorPowerUpEntity extends PowerUpEntity {
         return new FusionReactorPowerUpEntity();
     }
 
-    public FusionReactorPowerUpEntity() {}
+    public FusionReactorPowerUpEntity() {this.type = PowerUpType.FusionReactor;}
 
     public FusionReactorPowerUpEntity(int pos) {
         this.pos = pos;

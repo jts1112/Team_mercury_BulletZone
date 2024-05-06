@@ -13,7 +13,7 @@ public class AutomatedRepairKitPowerUpEntity extends PowerUpEntity {
     @Override
     public FieldEntity copy() {return new AutomatedRepairKitPowerUpEntity();}
 
-    public AutomatedRepairKitPowerUpEntity() {}
+    public AutomatedRepairKitPowerUpEntity() {this.type = PowerUpType.AutomatedRepairKit;}
 
     public AutomatedRepairKitPowerUpEntity(int pos) {
         this.pos = pos;

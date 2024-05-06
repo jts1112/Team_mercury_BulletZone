@@ -408,9 +408,11 @@ public class RockyTerrainMinerMovementTest {
     public void execute_FacingWallMove_ReturnsFalse() {
         miner.setDirection(Direction.Down);
 
-        // add wall below miner
+        // add wall below tank
         FieldHolder fieldElementBelow = game.getHolderGrid().get(3 * 16 + 2);
-        fieldElementBelow.setFieldEntity(new Wall(1000, 3 * 16 + 2));
+        Wall wall = new Wall(1000, 3 * 16 + 2);
+        fieldElementBelow.setFieldEntity(wall);
+        wall.setParent(fieldElementBelow);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
