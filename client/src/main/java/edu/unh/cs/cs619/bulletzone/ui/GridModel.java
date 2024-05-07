@@ -1,4 +1,8 @@
 package edu.unh.cs.cs619.bulletzone.ui;
+import android.util.Log;
+
+import java.util.Arrays;
+
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
@@ -111,19 +115,28 @@ public class GridModel {
 
     public GridCell getCurrentUnit() {
         int controlledUnitId = (int) ids.getControlledUnitId();
-        int val = 0;
+        int val1 = 0;
+        int val2 = 0;
+        int val3 = 0;
         if (controlledUnitId == ids.getTankId()) {
-            val = R.drawable.tank_icon2;
+            val1 = R.drawable.tank_icon2full;
+            val2 = R.drawable.tank_icon2low;
+            val3 = R.drawable.tank_icon2verylow;
         } else if (controlledUnitId == ids.getMinerId()) {
-            val = R.drawable.miner1;
+            val1 = R.drawable.miner1full;
+            val2 = R.drawable.miner1low;
+            val3 = R.drawable.miner1verylow;
         } else if (controlledUnitId == ids.getDropshipId()) {
-            val = R.drawable.dropship1;
+            val1 = R.drawable.dropship1full;
+            val2 = R.drawable.dropship1low;
+            val3 = R.drawable.dropship1verylow;
         }
 
         for (int k = 0; k < grid3d.length; k++) {
             for (int i = 0; i < grid3d[k].length; i++) {
                 for (int j = 0; j < grid3d[k][i].length; j++) {
-                    if (grid3d[k][i][j].getEntityResourceID() == val) {
+                    int p = grid3d[k][i][j].getEntityResourceID();
+                    if (p == val1 || p == val2 || p == val3) {
                         return grid3d[k][i][j];
                     }
                 }
@@ -136,12 +149,29 @@ public class GridModel {
         GridCell[][] currentGrid = getLayerGrid();
         GridCell currentUnit = getCurrentUnit();
 
+//        StringBuilder builder = new StringBuilder();
+//        for (int i = 0; i < 16; i++) {
+//            for (int j = 0; j < 16; j++) {
+//                if (currentGrid[i][j].getEntityResourceID() == R.drawable.bullet1) {
+////                    builder.append(currentGrid[i][j].toString() + " ");
+//                    Log.d("INFO", "Bullet r:" + j + " c: " + i);
+//                } else {
+////                    builder.append("0");
+//                }
+//            }
+////            builder.append("\n");
+//        }
+//
+////        Log.d("Board", builder.toString());
+
         if (currentUnit == null) {
+            Log.d("Collision","NUll");
             return false; // No current unit, so no collision
         }
 
         int row = currentUnit.getRow();
         int col = currentUnit.getCol();
+//        Log.d("INFO", "Current r:" + row + " c: " + col);
         int gridLength = currentGrid.length;
 
         // Check row for bullet

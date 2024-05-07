@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.AntiGravPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.AutomatedRepairKitPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.DeflectorShieldPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.Game;
@@ -27,6 +29,7 @@ import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FusionReactorPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.PoweredDrillPowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.ThingamajigEntity;
@@ -472,24 +475,37 @@ public class InMemoryGameRepository implements GameRepository {
             Random random = new Random();
             int x = Math.abs(random.nextInt(FIELD_DIM));
             int y = Math.abs(random.nextInt(FIELD_DIM));
-            int lottery = Math.abs(random.nextInt(100));
+            int lottery = Math.abs(random.nextInt(120));
             // get a random space.
             FieldHolder startingPoint = game.getHolderGrid().get(x * y);
             FieldHolder spawnLocation = findFreeSpace(startingPoint);
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
-            if (lottery >= 0 && lottery <= 25) {
-//                System.out.println("Setting thingamajig power-up in spawn");
+            if (lottery >= 0 && lottery <= 20) {
+                System.out.println("Setting thingamajig power-up in spawn");
                 powerUp = new ThingamajigEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
-            } else if (lottery >= 26 && lottery <= 50) {
-//                System.out.println("Setting AntiGrav power-up in spawn");
+            } else if (lottery >= 21 && lottery <= 40) {
+                System.out.println("Setting AntiGrav power-up in spawn");
                 powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
-            } else { // it has to be a FusionReactor
-//                System.out.println("Setting Fusion Reactor power-up in spawn");
+            } else if (lottery >= 41 && lottery <= 60){ // it has to be a FusionReactor
+                System.out.println("Setting Fusion Reactor power-up in spawn");
                 powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(3);
+            } else if (lottery >= 61 && lottery <= 80) { // Power Drill set for 4
+                System.out.println("Setting Power Drill power-up in spawn");
+                powerUp = new PoweredDrillPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(4);
+            } else if (lottery >= 81 && lottery <= 100) { // Automatic repair Kit set for 5
+                System.out.println("Setting Automatic Repair kit power-up in spawn");
+                powerUp = new AutomatedRepairKitPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(5);
+
+            } else { // DeflectorPower Sheild set for 6
+                System.out.println("Setting Deflector Power Sheild power-up in spawn");
+                powerUp = new DeflectorShieldPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(6);
             }
 
 //            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());

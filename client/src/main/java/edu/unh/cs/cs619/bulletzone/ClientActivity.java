@@ -184,6 +184,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         }
         actionController.onButtonMove(direction);
 
+//        Log.d("Collision",gridModel.checkCollision().toString());
         if (gridModel.checkCollision()) {
             bulletIncoming();
         }

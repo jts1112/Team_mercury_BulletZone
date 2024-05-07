@@ -169,6 +169,8 @@ public class GridCellImageMapper {
             imageResource = R.drawable.antigrav1;
         } else if (cellValue == 3)  {
             imageResource = R.drawable.fusionreactor1;
+        } else {
+            Log.d("NewPowerUp", String.valueOf(powerUp));
         }
         return imageResource;
     }
