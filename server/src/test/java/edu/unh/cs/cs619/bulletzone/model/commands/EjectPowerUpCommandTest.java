@@ -3,7 +3,7 @@ package edu.unh.cs.cs619.bulletzone.model.commands;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
@@ -53,7 +53,7 @@ public class EjectPowerUpCommandTest {
 
         try {
             assertTrue(ejectPowerUpCommand.execute(playableEntity));
-        } catch (TankDoesNotExistException e) {
+        } catch (EntityDoesNotExistException e) {
             throw new RuntimeException(e);
         }
 

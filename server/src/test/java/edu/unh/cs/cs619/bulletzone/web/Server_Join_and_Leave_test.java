@@ -20,7 +20,7 @@ import org.springframework.web.client.RestClientException;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import edu.unh.cs.cs619.bulletzone.util.LongWrapper;
@@ -100,7 +100,7 @@ public class Server_Join_and_Leave_test {
 
 
     @Test
-    public void Server_userLeaveSuccessScenario() throws TankDoesNotExistException {
+    public void Server_userLeaveSuccessScenario() throws EntityDoesNotExistException {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
@@ -118,7 +118,7 @@ public class Server_Join_and_Leave_test {
 
 
     @Test
-    public void Server_userLeaveFailureScenario() throws TankDoesNotExistException {
+    public void Server_userLeaveFailureScenario() throws EntityDoesNotExistException {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRemoteAddr()).thenReturn("127.0.0.1");

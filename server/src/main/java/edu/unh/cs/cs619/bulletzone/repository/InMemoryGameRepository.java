@@ -21,8 +21,18 @@ import java.util.concurrent.atomic.AtomicLong;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.entities.AntiGravPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.AutomatedRepairKitPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.DeflectorShieldPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
+import edu.unh.cs.cs619.bulletzone.model.entities.FusionReactorPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
+import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.PoweredDrillPowerUpEntity;
+import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.entities.ThingamajigEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.util.LogUtil;
@@ -64,7 +74,7 @@ public class InMemoryGameRepository implements GameRepository {
                 return existingDropship;
             }
 
-            long dropshipId = this.idGenerator.getAndIncrement();
+            long dropshipId = this.idGenerator.getAndIncrement() + 5;
 
             dropship = new Dropship(dropshipId, Direction.Up, ip);
 
@@ -100,7 +110,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean move(long entityId, Direction direction) throws TankDoesNotExistException {
+    public boolean move(long entityId, Direction direction) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             PlayableEntity playableEntity = game.getPlayableEntity(entityId);
 
@@ -116,7 +126,7 @@ public class InMemoryGameRepository implements GameRepository {
         }
     }
 
-    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException {
+    public void moveTo(long entityId, int targetX, int targetY) throws EntityDoesNotExistException, InterruptedException {
 
         if (game.getDropship(entityId) != null) {
             return ;
@@ -132,7 +142,7 @@ public class InMemoryGameRepository implements GameRepository {
                     synchronized (monitor) {
                         PlayableEntity playableEntity = game.getPlayableEntity(entityId);
                         if (playableEntity == null) {
-                            throw new TankDoesNotExistException(entityId);
+                            throw new EntityDoesNotExistException(entityId);
                         }
 
                         if (commands == null){
@@ -172,7 +182,7 @@ public class InMemoryGameRepository implements GameRepository {
                         }
                         commands.executeCommands(sleepTime, playableEntity);
                     }
-                } catch (InterruptedException | TankDoesNotExistException e) {
+                } catch (InterruptedException | EntityDoesNotExistException e) {
                     log.error("Error during moveTo operation", e);
                 }
             }
@@ -181,7 +191,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean fire(long playableEntityId, int bulletType) throws TankDoesNotExistException {
+    public boolean fire(long playableEntityId, int bulletType) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             FireCommand fireCommand = new FireCommand(playableEntityId, bulletType, this.monitor);
             PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
@@ -190,7 +200,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public void mine(long minerId) throws TankDoesNotExistException {
+    public void mine(long minerId) throws EntityDoesNotExistException {
         PlayableEntity miner = game.getMiner(minerId);
         long fireTime = miner.getLastFireTime();
         long moveTime = miner.getLastMoveTime();
@@ -202,7 +212,7 @@ public class InMemoryGameRepository implements GameRepository {
                         MineCommand mineCommand = new MineCommand(minerId, monitor);
                         try {
                             mineCommand.execute(miner);
-                        } catch (TankDoesNotExistException e) {
+                        } catch (EntityDoesNotExistException e) {
                             throw new RuntimeException(e);
                         }
                     } else {
@@ -215,14 +225,14 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public boolean dig(long playableEntityId) throws TankDoesNotExistException {
+    public boolean dig(long playableEntityId) throws EntityDoesNotExistException {
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
         DigCommand dig = new DigCommand(playableEntityId, monitor);
         return dig.execute(playableEntity);
     }
 
     @Override
-    public boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException {
+    public boolean ejectPowerUp(long playableEntityId) throws EntityDoesNotExistException {
         EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(playableEntityId);
         PlayableEntity playableEntity = game.getPlayableEntity(playableEntityId);
         game.incrementnumPowerups();
@@ -235,12 +245,12 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public void leave(long dropshipId) throws TankDoesNotExistException {
+    public void leave(long dropshipId) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             int totalPowerupValue = 0;
 
             if (!this.game.getDropships().containsKey(dropshipId)) {
-                throw new TankDoesNotExistException(dropshipId);
+                throw new EntityDoesNotExistException(dropshipId);
             }
 
             System.out.println("leave() called, dropship ID: " + dropshipId);
@@ -325,49 +335,19 @@ public class InMemoryGameRepository implements GameRepository {
 
     // ------------ Spawn Methods ------------
     @Override
-    public long spawnMiner(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
+    public long spawnTank(long dropshipId, int limit) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
-                throw new TankDoesNotExistException(dropshipId);
-            }
-            if (dropship.getNumMiners() <= 0) {
-                List<Long> miners = dropship.getMinerIds();
-                return miners.get(0);
+                throw new EntityDoesNotExistException(dropshipId);
             }
 
-            long minerId = this.idGenerator.getAndIncrement();
-            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
-
-            // Find a free space near the dropship to spawn the miner
-            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
-            if (spawningPoint != null) {
-                spawningPoint.setFieldEntity(miner);
-                miner.setParent(spawningPoint);
-                game.getMiners().put(minerId, miner);
-                dropship.setNumMiners(dropship.getNumMiners() - 1);
-                dropship.addMiner(minerId);
-                return minerId;
-            } else {
-                return dropshipId;
-            }
-        }
-    }
-
-    @Override
-    public long spawnTank(long dropshipId) throws TankDoesNotExistException, LimitExceededException {
-        synchronized (this.monitor) {
-            Dropship dropship = game.getDropship(dropshipId);
-            if (dropship == null) {
-                throw new TankDoesNotExistException(dropshipId);
-            }
-
-            if (dropship.getNumTanks() <= 0) {
+            if (dropship.getTankIds().size() >= limit) {
                 List<Long> tanks = dropship.getTankIds();
                 return tanks.get(0);
             }
 
-            long tankId = this.idGenerator.getAndIncrement();
+            long tankId = this.idGenerator.getAndIncrement() + 5;
             Tank tank = new Tank(tankId, Direction.Up, dropship.getIp());
 
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
@@ -375,9 +355,41 @@ public class InMemoryGameRepository implements GameRepository {
                 spawningPoint.setFieldEntity(tank);
                 tank.setParent(spawningPoint);
                 game.getTanks().put(tankId, tank);
-                dropship.setNumTanks(dropship.getNumTanks() - 1);
                 dropship.addTank_(tankId);
+                SpawnEvent spawnEvent = new SpawnEvent(tank.getIntValue(), tank.getPosition());
+                EventBus.getDefault().post(spawnEvent);
                 return tankId;
+            } else {
+                return dropshipId;
+            }
+        }
+    }
+
+    @Override
+    public long spawnMiner(long dropshipId, int limit) throws EntityDoesNotExistException {
+        synchronized (this.monitor) {
+            Dropship dropship = game.getDropship(dropshipId);
+            if (dropship == null) {
+                throw new EntityDoesNotExistException(dropshipId);
+            }
+
+            if (dropship.getMinerIds().size() >= limit) {
+                List<Long> miners = dropship.getMinerIds();
+                return miners.get(0);
+            }
+
+            long minerId = this.idGenerator.getAndIncrement() + 5;
+            Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
+
+            FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
+            if (spawningPoint != null) {
+                spawningPoint.setFieldEntity(miner);
+                miner.setParent(spawningPoint);
+                game.getMiners().put(minerId, miner);
+                dropship.addMiner(minerId);
+                SpawnEvent spawnEvent = new SpawnEvent(miner.getIntValue(), miner.getPosition());
+                EventBus.getDefault().post(spawnEvent);
+                return minerId;
             } else {
                 return dropshipId;
             }
@@ -465,44 +477,49 @@ public class InMemoryGameRepository implements GameRepository {
             Random random = new Random();
             int x = Math.abs(random.nextInt(FIELD_DIM));
             int y = Math.abs(random.nextInt(FIELD_DIM));
-            int lottery = Math.abs(random.nextInt(100));
+            int lottery = Math.abs(random.nextInt(120));
             // get a random space.
             FieldHolder startingPoint = game.getHolderGrid().get(x * y);
             FieldHolder spawnLocation = findFreeSpace(startingPoint);
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
-            if (lottery <= 15) {
-//                System.out.println("Setting thingamajig power-up in spawn");
+            if (lottery <= 20) {
+                System.out.println("Setting thingamajig power-up in spawn");
                 powerUp = new ThingamajigEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
-            } else if (lottery <= 30) {
-//                System.out.println("Setting AntiGrav power-up in spawn");
+            } else if (lottery <= 40) {
+                System.out.println("Setting AntiGrav power-up in spawn");
                 powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
-            } else if (lottery <= 60) {
-//                System.out.println("Setting Fusion Reactor power-up in spawn");
+            } else if (lottery <= 60){ // it has to be a FusionReactor
+                System.out.println("Setting Fusion Reactor power-up in spawn");
                 powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(3);
-            } else if (lottery <= 73) {
+            } else if (lottery <= 80) { // Power Drill set for 4
+                System.out.println("Setting Power Drill power-up in spawn");
                 powerUp = new PoweredDrillPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(4);
-            } else if (lottery <= 86) {
-                powerUp = new DeflectorShieldPowerUpEntity(spawnLocation.getPosition());
-                spawnLocation.getTerrain().setPresentItem(5);
-            } else {
+            } else if (lottery <= 100) { // Automatic repair Kit set for 5
+                System.out.println("Setting Automatic Repair kit power-up in spawn");
                 powerUp = new AutomatedRepairKitPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(5);
+
+            } else { // DeflectorPower Shield set for 6
+                System.out.println("Setting Deflector Power Sheild power-up in spawn");
+                powerUp = new DeflectorShieldPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(6);
             }
 
 //            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
 
-            // increment current powerup counter.
+            // increment current power-up counter.
             game.incrementnumPowerups();
 
             spawnLocation.clearField();
             spawnLocation.setFieldEntity(powerUp);
             powerUp.setParent(spawnLocation);
-            EventBus.getDefault().post(new SpawnEvent(powerUp.getIntValue(), powerUp.getPos()));
+            SpawnEvent spawnEvent = new SpawnEvent(powerUp.getIntValue(), powerUp.getPos());
+            EventBus.getDefault().post(spawnEvent);
 
         }
     }

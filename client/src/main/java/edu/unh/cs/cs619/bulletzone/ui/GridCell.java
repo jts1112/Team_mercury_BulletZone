@@ -1,4 +1,6 @@
 package edu.unh.cs.cs619.bulletzone.ui;
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -104,5 +106,11 @@ public class GridCell {
         json.put("row", row);
         json.put("col", col);
         return json;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(entityResourceID);
     }
 }

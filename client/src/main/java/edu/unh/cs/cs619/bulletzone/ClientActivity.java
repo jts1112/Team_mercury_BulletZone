@@ -1,4 +1,6 @@
 package edu.unh.cs.cs619.bulletzone;
+import static java.lang.String.*;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +24,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,6 +57,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
+    int spawnCost = 100;
+    private final String msg = format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost);
 
     private Timer collisionTimer;
     // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
@@ -84,7 +91,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 onEventSwitch();
             }
         }, 2000);
-
     }
 
     @Override
@@ -101,9 +107,9 @@ public class ClientActivity extends Activity implements GameDataObserver {
             actionController.join();
             gridPollTask.startPolling();
             onPlayerCreditUpdate(gameData.getPlayerCredits());
-
-
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ---------------------------------- Top Row Buttons ----------------------------------
@@ -145,14 +151,26 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Click(R.id.buttonSpawnTank)
     protected void onSpawnTankButtonClick() {
-        actionController.updateCurrentUnit("tank");
-        updateControlsForUnit("tank");
+        long playerCredits = gameData.getPlayerCredits();
+        if (playerCredits >= spawnCost) {
+            actionController.spawnUnit("tank");
+            updateControlsForUnit("tank");
+            gameData.addPlayerCredits(-spawnCost);
+        } else {
+            showInsufficientCreditsDialog();
+        }
     }
 
     @Click(R.id.buttonSpawnMiner)
     protected void onSpawnMinerButtonClick() {
-        actionController.updateCurrentUnit("miner");
-        updateControlsForUnit("miner");
+        long playerCredits = gameData.getPlayerCredits();
+        if (playerCredits >= spawnCost) {
+            actionController.spawnUnit("miner");
+            updateControlsForUnit("miner");
+            gameData.addPlayerCredits(-spawnCost);
+        } else {
+            showInsufficientCreditsDialog();
+        }
     }
 
     // ---------------------------------- Move Buttons ----------------------------------
@@ -180,10 +198,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 direction = 2;
                 break;
             default:
+                System.out.println("Invalid direction");
                 direction = 0;
         }
         actionController.onButtonMove(direction);
 
+//        Log.d("Collision",gridModel.checkCollision().toString());
         if (gridModel.checkCollision()) {
             bulletIncoming();
         }
@@ -204,7 +224,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 break;
         }
     }
-
 
     // ---------------------------------- 2nd to Last Row Buttons ----------------------------------
 
@@ -270,7 +289,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
                                     // Player clicked yes. Leave game
                                     System.out.println("leaveGame() called");
 
-                                    // minus 1000 credits from the player
+                                    // minus 1000 credits
                                     gameData.addPlayerCredits(-1000);
                                     actionController.leaveAsync();
                                     Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
@@ -379,6 +398,14 @@ public class ClientActivity extends Activity implements GameDataObserver {
         }
     }
 
+    private void showInsufficientCreditsDialog() {
+        new AlertDialog.Builder(ClientActivity.this)
+                .setTitle("Insufficient Credits")
+                .setMessage(String.format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost))
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
     /**
      * Flashes the back ground when a bullet is incoming
      */
@@ -421,7 +448,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
             collisionTimer = null;
         }
     }
-
     /**
      * Otto has a limitation (as per design) that it will only find methods on the immediate
      * class type. As a result, if at runtime this instance actually points to a subclass

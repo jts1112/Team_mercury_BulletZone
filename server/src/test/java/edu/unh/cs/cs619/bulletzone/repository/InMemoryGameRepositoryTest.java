@@ -58,12 +58,12 @@ public class InMemoryGameRepositoryTest {
     @Test
     public void testLeave() throws Exception {
         Dropship dropship = repo.join("127.0.0.1");
-        long minerId = repo.spawnMiner(dropship.getId());
-        long tankId = repo.spawnTank(dropship.getId());
-        long minerId2 = repo.spawnMiner(dropship.getId());
-        long tankId2 = repo.spawnTank(dropship.getId());
-        long minerId3 = repo.spawnMiner(dropship.getId());
-        long tankId3 = repo.spawnTank(dropship.getId());
+        long minerId = repo.spawnMiner(dropship.getId(), 10);
+        long tankId = repo.spawnTank(dropship.getId(), 10);
+        long minerId2 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId2 = repo.spawnTank(dropship.getId(), 10);
+        long minerId3 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId3 = repo.spawnTank(dropship.getId(), 10);
 
         repo.leave(dropship.getId());
         assertNull(repo.getGame().getDropship(dropship.getId()));
@@ -96,29 +96,29 @@ public class InMemoryGameRepositoryTest {
         GameUser user = dataRepo.getUser(dropship.getIp());
         double originalBal = dataRepo.getBankBalance(user) - 1000; // accounting for the leave fee
 
-        long minerId = repo.spawnMiner(dropship.getId());
+        long minerId = repo.spawnMiner(dropship.getId(), 9);
         game.getMiner(minerId).pickupPowerUp(PowerUpType.AntiGrav);
         expectedValue += expectedAntiGravVal;
 
-        long tankId = repo.spawnTank(dropship.getId());
+        long tankId = repo.spawnTank(dropship.getId(), 9);
         game.getTank(tankId).pickupPowerUp(PowerUpType.FusionReactor);
         expectedValue += expectedFusionReactorVal;
         game.getTank(tankId).pickupPowerUp(PowerUpType.PoweredDrill);
         expectedValue += expectedPoweredDrillVal;
 
-        long minerId2 = repo.spawnMiner(dropship.getId());
+        long minerId2 = repo.spawnMiner(dropship.getId(), 9);
         game.getMiner(minerId2).pickupPowerUp(PowerUpType.AntiGrav);
         expectedValue += expectedAntiGravVal;
 
-        long tankId2 = repo.spawnTank(dropship.getId());
+        long tankId2 = repo.spawnTank(dropship.getId(), 9);
         game.getTank(tankId2).pickupPowerUp(PowerUpType.DeflectorShield);
         expectedValue += expectedDeflectorShieldVal;
 
-        long minerId3 = repo.spawnMiner(dropship.getId());
+        long minerId3 = repo.spawnMiner(dropship.getId(), 9);
         game.getMiner(minerId3).pickupPowerUp(PowerUpType.AntiGrav);
         expectedValue += expectedAntiGravVal;
 
-        long tankId3 = repo.spawnTank(dropship.getId());
+        long tankId3 = repo.spawnTank(dropship.getId(), 9);
         game.getTank(tankId3).pickupPowerUp(PowerUpType.DeflectorShield);
         expectedValue += expectedDeflectorShieldVal;
         game.getTank(tankId3).pickupPowerUp(PowerUpType.AutomatedRepairKit);

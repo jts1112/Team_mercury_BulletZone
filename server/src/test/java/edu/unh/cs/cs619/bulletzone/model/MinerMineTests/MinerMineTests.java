@@ -1,30 +1,23 @@
 package edu.unh.cs.cs619.bulletzone.model.MinerMineTests;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import edu.unh.cs.cs619.bulletzone.datalayer.BulletZoneData;
-import edu.unh.cs.cs619.bulletzone.datalayer.account.BankAccount;
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MineCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 
-import static org.hamcrest.core.IsInstanceOf.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class MinerMineTests {
 
@@ -46,7 +39,7 @@ public class MinerMineTests {
     }
 
     @Test
-    public void MeadowTerrainMineTest() throws TankDoesNotExistException {
+    public void MeadowTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16, new Object()).setLayerRowTerrain(0,0, 9).
@@ -86,7 +79,7 @@ public class MinerMineTests {
     }
 
     @Test
-    public void ForestTerrainMineTest() throws TankDoesNotExistException {
+    public void ForestTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,3).
@@ -127,7 +120,7 @@ public class MinerMineTests {
 
 
     @Test
-    public void HillsTerrainMineTest() throws TankDoesNotExistException {
+    public void HillsTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,2).
@@ -167,7 +160,7 @@ public class MinerMineTests {
     }
 
     @Test
-    public void RockyTerrainMineTest() throws TankDoesNotExistException {
+    public void RockyTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setRowTerrain(0,1).
@@ -207,7 +200,7 @@ public class MinerMineTests {
 
     @Test
     // TODO needs to be implemented
-    public void IronTerrainMineTest() throws TankDoesNotExistException {
+    public void IronTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,6).
@@ -248,7 +241,7 @@ public class MinerMineTests {
 
     @Test
     // TODO needs to be implemented
-    public void GemTerrainMineTest() throws TankDoesNotExistException {
+    public void GemTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,7).
@@ -289,7 +282,7 @@ public class MinerMineTests {
 
     @Test
     // TODO needs to be implemented
-    public void UbontiumTerrainMineTest() throws TankDoesNotExistException {
+    public void UbontiumTerrainMineTest() throws EntityDoesNotExistException {
 
         game.getHolderGrid().clear();
         game.getHolderGrid().addAll(new GameBoardBuilder(16,new Object()).setLayerRowTerrain(0,0,8).

@@ -8,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
 /**
@@ -78,7 +77,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -97,7 +96,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -116,7 +115,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -135,7 +134,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -155,7 +154,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -174,7 +173,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -193,7 +192,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -212,7 +211,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -232,7 +231,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -251,7 +250,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -270,7 +269,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -289,7 +288,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -309,7 +308,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -328,7 +327,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -347,7 +346,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -366,7 +365,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -389,13 +388,13 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
             assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -418,7 +417,7 @@ public class HillsTerrainMinerMovementTest {
 
         try {
             assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 

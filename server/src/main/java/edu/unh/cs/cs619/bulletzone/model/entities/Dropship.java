@@ -30,8 +30,8 @@ public class Dropship extends PlayableEntity {
         this.direction = direction;
         this.ip = ip;
         this.life = INITIAL_LIFE;
-        this.numMiners = 1;
-        this.numTanks = 1;
+        this.numMiners = 2;
+        this.numTanks = 2;
         this.numberOfBullets = 0;
         this.lastFireTime = 0;
         this.lastMoveTime = 0;

@@ -11,7 +11,7 @@ import edu.unh.cs.cs619.bulletzone.datalayer.terrain.MeadowTerrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.DigCommand;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -95,7 +95,7 @@ public class TunnelTerrainMinerMovementTest {
         DigCommand digCommand = new DigCommand(1,new Object());
         try {
             assertTrue(digCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -107,7 +107,7 @@ public class TunnelTerrainMinerMovementTest {
             assertTrue(moveDownCommand.execute(miner));
             assertTrue(moveUpCommand.execute(miner));
             assertTrue(moveUpCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -125,7 +125,7 @@ public class TunnelTerrainMinerMovementTest {
         DigCommand digCommand = new DigCommand(1,new Object());
         try {
             assertTrue(digCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -138,7 +138,7 @@ public class TunnelTerrainMinerMovementTest {
             assertTrue(moveAboveCommand.execute(miner));
             assertTrue(moveUpCommand.execute(miner));
             assertTrue(moveUpCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
