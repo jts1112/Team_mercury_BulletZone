@@ -6,6 +6,7 @@ package edu.unh.cs.cs619.bulletzone.repository;
 import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.commands.*;
 
+import edu.unh.cs.cs619.bulletzone.model.entities.*;
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,18 +19,10 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.entities.AntiGravPowerUpEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
-import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
-import edu.unh.cs.cs619.bulletzone.model.entities.FusionReactorPowerUpEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-import edu.unh.cs.cs619.bulletzone.model.entities.ThingamajigEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.util.LogUtil;
@@ -462,7 +455,7 @@ public class InMemoryGameRepository implements GameRepository {
                     }
                 }
             }
-        }, 0, 100000000); // Attempt to spawn every second.
+        }, 0, 1000); // Attempt to spawn every second.
     }
 
 
@@ -478,18 +471,27 @@ public class InMemoryGameRepository implements GameRepository {
             FieldHolder spawnLocation = findFreeSpace(startingPoint);
             // Create a power-up instance and add it to the game world
             PowerUpEntity powerUp;
-            if (lottery >= 0 && lottery <= 25) {
+            if (lottery <= 15) {
 //                System.out.println("Setting thingamajig power-up in spawn");
                 powerUp = new ThingamajigEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(1); // presentItemValue of 1 for thingamajig
-            } else if (lottery >= 26 && lottery <= 50) {
+            } else if (lottery <= 30) {
 //                System.out.println("Setting AntiGrav power-up in spawn");
                 powerUp = new AntiGravPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
-            } else { // it has to be a FusionReactor
+            } else if (lottery <= 60) {
 //                System.out.println("Setting Fusion Reactor power-up in spawn");
                 powerUp = new FusionReactorPowerUpEntity(spawnLocation.getPosition());
                 spawnLocation.getTerrain().setPresentItem(3);
+            } else if (lottery <= 73) {
+                powerUp = new PoweredDrillPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(4);
+            } else if (lottery <= 86) {
+                powerUp = new DeflectorShieldPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(5);
+            } else {
+                powerUp = new AutomatedRepairKitPowerUpEntity(spawnLocation.getPosition());
+                spawnLocation.getTerrain().setPresentItem(6);
             }
 
 //            System.out.println("Spawning power-up. Type: " + powerUp.getType() + " pos: " + powerUp.getPos());
