@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.*;
 
@@ -41,40 +42,7 @@ public class ReplayTest {
         gameReplay = new GameReplay(mockDatabase, values);
     }
 
-    /**
-    @Test
-    public void InitializeDatabase_GameReplayManagerInitialization_Success() {
-        // Mock the Cursor object
-        Cursor mockCursor = mock(Cursor.class);
 
-        SQLiteOpenHelper dbHelper = mock(SQLiteOpenHelper.class);
-        when(dbHelper.getWritableDatabase()).thenReturn(mockDatabase);
-
-        // Mock the behavior of Cursor and JSONObject
-        try {
-            JSONObject mockJSONObject = mock(JSONObject.class);
-            when(mockJSONObject.getJSONArray(anyString())).thenReturn(mock(JSONArray.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        when(mockDatabase.query(anyString(), any(), any(), any(), any(), any(), any()))
-                .thenReturn(mockCursor);
-        when(mockCursor.moveToFirst()).thenReturn(true);
-        when(mockCursor.getInt(anyInt())).thenReturn(1); // Mocking game_id column
-        when(mockCursor.getColumnIndex("game_id")).thenReturn(0); // Mocking column index
-
-        // Call the method to be tested
-        gameReplayManager.initializeDatabase(dbHelper);
-
-        // Verify that the correct data is retrieved from the database
-        verify(mockCursor, atLeastOnce()).getColumnIndex("game_id");
-        verify(mockCursor, atLeastOnce()).getInt(0); // Assuming game_id is at index 0
-        verify(mockCursor, atLeastOnce()).moveToFirst();
-        verify(mockCursor, atLeastOnce()).close();
-        verify(mockDatabase).close();
-    }
-     */
 
     @Test
     public void testConstructor() {
@@ -85,13 +53,27 @@ public class ReplayTest {
     }
 
     @Test
-    public void testTakeSnapshot() {
+    public void GameReplay_TakeSnapshot_IncreasesSnapshotAmount() {
         GridCell[][] gridData = new GridCell[16][16];
 
 
         gameReplay.takeSnapshot(gridData, mockDatabase, values);
 
         // Verify that a new snapshot is added to the snapshots list
+        assertNotEquals("Snapshot list should not be empty", 0, gameReplay.getSnapshotSize());
+    }
+
+    @Test
+    public void GameReplay_TakeSnapshot_CreatesCorrectSnapshot() {
+        GridCell[][] gridData = new GridCell[16][16];
+
+
+        long Id = gameReplay.getGameID();
+        gameReplay.takeSnapshot(gridData, mockDatabase, values);
+
+
+        // check that gamereplay id is 0 as the first replay
+        assertEquals("Snapshot list should not be empty", 0, Id);
         assertNotEquals("Snapshot list should not be empty", 0, gameReplay.getSnapshotSize());
     }
 

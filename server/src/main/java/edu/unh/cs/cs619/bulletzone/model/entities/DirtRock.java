@@ -22,7 +22,7 @@ public class DirtRock extends FieldEntity {
 
     @Override
     public int getIntValue() {
-        return destructValue;
+        return 5000 + life;
     }
 
     @Override

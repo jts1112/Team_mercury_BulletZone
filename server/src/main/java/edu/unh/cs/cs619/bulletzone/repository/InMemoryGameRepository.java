@@ -210,26 +210,12 @@ public class InMemoryGameRepository implements GameRepository {
     @Override
     public void mine(long minerId) throws EntityDoesNotExistException {
         PlayableEntity miner = game.getMiner(minerId);
-        long fireTime = miner.getLastFireTime();
-        long moveTime = miner.getLastMoveTime();
-        Timer mineTimer = new Timer();
-        mineTimer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                synchronized (monitor) {
-                    if (miner.getLastFireTime() == fireTime && miner.getLastMoveTime() == moveTime) {
-                        MineCommand mineCommand = new MineCommand(minerId, monitor);
-                        try {
-                            mineCommand.execute(miner);
-                        } catch (EntityDoesNotExistException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        mineTimer.cancel();
-                        mineTimer.purge();
-                    }
-                }
-            }
-        }, 1000, 1000);
+        MineCommand mine = new MineCommand(minerId, monitor);
+        try {
+            mine.execute(miner);
+        } catch (EntityDoesNotExistException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

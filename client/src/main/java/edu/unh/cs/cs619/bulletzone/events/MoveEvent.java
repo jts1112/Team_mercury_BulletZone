@@ -41,8 +41,8 @@ public class MoveEvent extends GameEvent {
             cell.setEntityResourceID(0);
             cell.setRotationForValue(0);
         }
-
-        if (newCell.getEntityResourceID() != R.drawable.dropship1) {
+        int id = newCell.getEntityResourceID();
+        if (id != R.drawable.dropship1full && id != R.drawable.dropship1low && id != R.drawable.dropship1verylow) {
             newCell.setEntityResourceID(resourceId);
             newCell.setRotationForValue(rawServerValue);
         }

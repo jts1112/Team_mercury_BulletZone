@@ -63,7 +63,7 @@ public class MoveCommand implements Command {
         if (direction != Direction.Above && direction != Direction.Below) {
             int desired = Byte.toUnsignedInt(Direction.toByte(desiredDirection));
             if (desired == ((current + 2) % 8) || desired == ((current - 2) % 8)
-                    || entity instanceof Dropship) {
+                    || entity.isImmobile()) {
                 // Set new direction
                 entity.setDirection(desiredDirection);
 
@@ -130,7 +130,7 @@ public class MoveCommand implements Command {
                 isCompleted = true;
                 entity.setLastMoveTime(millis + entity.getAllowedMoveInterval());
                 dropship.repairUnits();
-            } else if (nextEntity instanceof PowerUpEntity) {
+            } else if (nextEntity.isUsable()) {
                 System.out.println("In move command. Power-up type is: " + ((PowerUpEntity) nextEntity).getType());
                 entity.pickupPowerUp(((PowerUpEntity) nextEntity).getType());
 

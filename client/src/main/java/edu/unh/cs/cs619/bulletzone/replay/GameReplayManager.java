@@ -31,6 +31,11 @@ public class GameReplayManager {
     }
 
     public static synchronized GameReplayManager getInstance() {
+        if (instance == null) {
+            instance = new GameReplayManager();
+            instance.gameReplays = new Stack<>();
+        }
+
         return instance;
     }
 

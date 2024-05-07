@@ -69,10 +69,12 @@ public class DigCommand implements Command {
             } else {
                 long fireTime = entity.getLastFireTime();
                 long moveTime = entity.getLastMoveTime();
+
                 Timer digTimer = new Timer();
                 digTimer.scheduleAtFixedRate(new TimerTask() {
                     public void run() {
                         synchronized (monitor) {
+                            boolean isAlive = true;
                             if (entity.getLastFireTime() == fireTime && entity.getLastMoveTime() == moveTime
                             && entity.getLife() > 0) {
                                 entity.setDigging(true);
@@ -80,18 +82,18 @@ public class DigCommand implements Command {
                                 EventBus.getDefault().post(new DamageEvent(entity.getPosition(), entity.getIntValue()));
 
                                 if (entity.getLife() <= 0) {
-                                    entity.getParent().clearField();
-                                    entity.setParent(null);
-
                                     // Create new removalEvent
                                     RemovalEvent removalEvent = new RemovalEvent(entity.getPosition());
                                     EventBus.getDefault().post(removalEvent);
+                                    entity.getParent().clearField();
+                                    entity.setParent(null);
+                                    isAlive = false;
                                 }
 
                                 under.getEntity().hit(entity.getHitDamage());
                                 EventBus.getDefault().post(new DamageEvent(under.getPosition(), under.getEntity().getIntValue()));
 
-                                if (under.getEntity().getIntValue() <= 5000) {
+                                if (under.getEntity().getLife() <= 0) {
                                     under.clearField();
 
                                     EventBus.getDefault().post(new RemovalEvent(under.getPosition()));
@@ -102,12 +104,16 @@ public class DigCommand implements Command {
                                     EventBus.getDefault().post(new EntranceEvent(parent.getTerrain().getIntValue(), parent.getPosition()));
                                     EventBus.getDefault().post(new EntranceEvent(under.getTerrain().getIntValue(), under.getPosition()));
 
-                                    entity.setDigging(false);
+                                    if (isAlive) {
+                                        entity.setDigging(false);
+                                    }
                                     digTimer.cancel();
                                     digTimer.purge();
                                 }
                             } else {
-                                entity.setDigging(false);
+                                if (isAlive) {
+                                    entity.setDigging(false);
+                                }
                                 digTimer.cancel();
                                 digTimer.purge();
                             }

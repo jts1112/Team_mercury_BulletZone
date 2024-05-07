@@ -41,4 +41,9 @@ public abstract class PowerUpEntity extends FieldEntity {
     public PowerUpType getType() {
         return type;
     }
+
+    @Override
+    public boolean isUsable() {
+        return true;
+    }
 }

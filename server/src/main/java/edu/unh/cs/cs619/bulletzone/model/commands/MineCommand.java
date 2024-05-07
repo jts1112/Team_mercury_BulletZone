@@ -2,6 +2,9 @@ package edu.unh.cs.cs619.bulletzone.model.commands;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -43,10 +46,27 @@ public class MineCommand implements Command {
         System.out.println(terrain.getrescourceValue());
         int resourceVal = (int) terrain.getrescourceValue();
 
-        eventBus.post(new CreditEvent(resourceVal));
+        long fireTime = miner.getLastFireTime();
+        long moveTime = miner.getLastMoveTime();
+        if (miner.isDigging()) {
+            return false;
+        }
+        miner.setDigging(true);
+        Timer mineTimer = new Timer();
+        mineTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                synchronized (monitor) {
+                    if (miner.getLastFireTime() == fireTime && miner.getLastMoveTime() == moveTime) {
+                        eventBus.post(new CreditEvent(resourceVal));
+                    } else {
+                        miner.setDigging(false);
+                        mineTimer.cancel();
+                        mineTimer.purge();
+                    }
+                }
+            }
+        }, 1000, 1000);
         return true;
     }
 
-
-    // Have a seem method with the
 }

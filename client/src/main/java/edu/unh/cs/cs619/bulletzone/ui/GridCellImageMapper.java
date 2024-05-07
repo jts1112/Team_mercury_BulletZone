@@ -55,13 +55,6 @@ public class GridCellImageMapper {
             } else if (cellValue >= 10_000 && cellValue < 11_000) {
                 imageResource = R.drawable.granite;
             }
-            if (powerUp == 1) {
-                imageResource = R.drawable.thingamajig1;
-            } else if (powerUp == 2)  {
-                imageResource = R.drawable.antigrav1;
-            } else if (cellValue == 3)  {
-                imageResource = R.drawable.fusionreactor1;
-            }
         }
 
         return imageResource;
@@ -164,18 +157,18 @@ public class GridCellImageMapper {
             }
         }
 
-        if (powerUp == 1) {
+        if (powerUp == 4) {
             imageResource = R.drawable.thingamajig1;
         } else if (powerUp == 2)  {
             imageResource = R.drawable.antigrav1;
         } else if (cellValue == 3)  {
             imageResource = R.drawable.fusionreactor1;
-        } else if (powerUp == 4){ //  Power Drill powerup set 4
+        } else if (powerUp == 7){ //  Power Drill powerup set 7
 //            Log.d("NewPowerUp", String.valueOf(powerUp));
             imageResource = R.drawable.powereddrill1;
-        } else if (powerUp == 5) { // automatic repair kit set 5
+        } else if (powerUp == 9) { // automatic repair kit set 9
             imageResource = R.drawable.repairkit1;
-        } else if (powerUp == 6){ // deflector sheild 6
+        } else if (powerUp == 8){ // deflector sheild 8
             imageResource = R.drawable.deflectorshield1;
         }
         return imageResource;

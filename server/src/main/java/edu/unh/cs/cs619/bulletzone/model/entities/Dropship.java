@@ -169,4 +169,9 @@ public class Dropship extends PlayableEntity {
     public Boolean isTracked() {
         return false;
     }
+
+    @Override
+    public boolean isImmobile() {
+        return false;
+    }
 }
