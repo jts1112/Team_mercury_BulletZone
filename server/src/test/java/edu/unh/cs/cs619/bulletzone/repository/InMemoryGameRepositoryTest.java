@@ -56,12 +56,12 @@ public class InMemoryGameRepositoryTest {
     @Test
     public void testLeave() throws Exception {
         Dropship dropship = repo.join("127.0.0.1");
-        long minerId = repo.spawnMiner(dropship.getId());
-        long tankId = repo.spawnTank(dropship.getId());
-        long minerId2 = repo.spawnMiner(dropship.getId());
-        long tankId2 = repo.spawnTank(dropship.getId());
-        long minerId3 = repo.spawnMiner(dropship.getId());
-        long tankId3 = repo.spawnTank(dropship.getId());
+        long minerId = repo.spawnMiner(dropship.getId(), 10);
+        long tankId = repo.spawnTank(dropship.getId(), 10);
+        long minerId2 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId2 = repo.spawnTank(dropship.getId(), 10);
+        long minerId3 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId3 = repo.spawnTank(dropship.getId(), 10);
 
         repo.leave(dropship.getId());
         assertNull(repo.getGame().getDropship(dropship.getId()));

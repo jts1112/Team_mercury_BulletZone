@@ -31,9 +31,9 @@ public interface GameRepository {
     public void moveTo(long entityId, int targetX, int targetY) throws EntityDoesNotExistException, InterruptedException;
 
         // New ⬇️⬇️
-    long spawnMiner(long dropshipId)
+    long spawnMiner(long dropshipId, int limit)
             throws EntityDoesNotExistException, LimitExceededException;
 
-    long spawnTank(long dropshipId)
+    long spawnTank(long dropshipId, int limit)
             throws EntityDoesNotExistException, LimitExceededException;
 }

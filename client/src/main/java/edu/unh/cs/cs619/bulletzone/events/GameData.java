@@ -1,7 +1,5 @@
 package edu.unh.cs.cs619.bulletzone.events;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +68,8 @@ public class GameData {
     }
 
     public void setMinerLife(long minerVal) {
-        if ((minerVal - 20000000) / 10000 == unitIds.getMinerId()) {
-            this.minerLife = (minerVal - (20000000 + (unitIds.getMinerId() * 10000))) / 10;
+        if ((minerVal - 20000000) / 10000 == unitIds.getFirstMinerId()) {
+            this.minerLife = (minerVal - (20000000 + (unitIds.getFirstMinerId() * 10000))) / 10;
             notifyMinerLifeObservers();
         }
     }
@@ -81,8 +79,8 @@ public class GameData {
     }
 
     public void setTankLife(long tankVal) {
-        if ((tankVal - 10000000) / 10000 == unitIds.getTankId()) {
-            this.tankLife = (tankVal - (10000000 + (unitIds.getTankId() * 10000))) / 10;
+        if ((tankVal - 10000000) / 10000 == unitIds.getFirstTankId()) {
+            this.tankLife = (tankVal - (10000000 + (unitIds.getFirstTankId() * 10000))) / 10;
             notifyTankLifeObservers();
         }
     }

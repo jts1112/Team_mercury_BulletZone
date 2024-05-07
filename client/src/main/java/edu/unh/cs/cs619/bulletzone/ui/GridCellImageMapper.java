@@ -87,16 +87,18 @@ public class GridCellImageMapper {
         } else if (cellValue >= 2_000_000 && cellValue <= 3_000_000) {
             imageResource = R.drawable.bullet1;
         } else if (cellValue >= 10_000_000 && cellValue <= 20_000_000) {
-            if (Ids.getTankIdQueue().contains( (long) (cellValue - 10_000_000) / 10_000)) {
-                imageResource = R.drawable.tank_icon2;
+            long tankId = (cellValue - 10_000_000) / 10_000;
+            if (Ids.getTankIdQueue().contains( (long) tankId)) {
+                imageResource = getTankImageResource(tankId);
             } else {
-                imageResource = R.drawable.tankicon4;
+                imageResource = R.drawable.tank_icon_enemy;
             }
         } else if (cellValue >= 20_000_000 && cellValue <= 30_000_000) {
+            long minerId = (cellValue - 20_000_000) / 10_000;
             if (Ids.getMinerIdQueue().contains( (long) (cellValue - 20_000_000) / 10_000)) {
-                imageResource = R.drawable.miner1;
+                imageResource = getMinerImageResource(minerId);
             } else {
-                imageResource = R.drawable.miner2;
+                imageResource = R.drawable.miner_icon_enemy;
             }
         } else if (cellValue >= 30_000_000 && cellValue <= 40_000_000) {
             if (Ids.getDropshipId() == (cellValue - 30_000_000) / 10_000) {
@@ -114,5 +116,23 @@ public class GridCellImageMapper {
             imageResource = R.drawable.fusionreactor1;
         }
         return imageResource;
+    }
+
+    public int getTankImageResource(long tankId) {
+        Integer resourceId = Ids.tankImageResources.get(tankId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.tank_icon_enemy;
+        }
+    }
+
+    public int getMinerImageResource(long minerId) {
+        Integer resourceId = Ids.minerImageResources.get(minerId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.miner_icon_enemy;
+        }
     }
 }

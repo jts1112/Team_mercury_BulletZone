@@ -86,21 +86,28 @@ public class GridModel {
         return grid3d;
     }
 
-    public GridCell[][] getLayerGrid() {
-        int controlledUnitId = (int) ids.getControlledUnitId();
-        int val = 0;
-        if (controlledUnitId == ids.getTankId()) {
-            val = R.drawable.tank_icon2;
-        } else if (controlledUnitId == ids.getMinerId()) {
-            val = R.drawable.miner1;
-        } else if (controlledUnitId == ids.getDropshipId()) {
-            val = R.drawable.dropship1;
+    public int getResourceValue(long controlledUnitId) {
+        int resourceVal = 0;
+
+        if (ids.getTankIdSet().contains(controlledUnitId)) {
+            return ids.tankImageResources.get(controlledUnitId);
+        } else if (ids.getMinerIdSet().contains(controlledUnitId)) {
+            return ids.minerImageResources.get(controlledUnitId);
+        } else if (ids.getDropshipId() == controlledUnitId){
+            return R.drawable.dropship1;
+        } else { // Error
+            return resourceVal;
         }
+    }
+
+    public GridCell[][] getLayerGrid() {
+        int resourceValue = getResourceValue(ids.getControlledUnitId());
 
         for (int k = 0; k < grid3d.length; k++) {
             for (int i = 0; i < grid3d[k].length; i++) {
                 for (int j = 0; j < grid3d[k][i].length; j++) {
-                    if (grid3d[k][i][j].getEntityResourceID() == val) {
+                    int entityResourceVal = grid3d[k][i][j].getEntityResourceID();
+                    if (entityResourceVal == resourceValue) {
                         return grid3d[k];
                     }
                 }
@@ -110,20 +117,13 @@ public class GridModel {
     }
 
     public GridCell getCurrentUnit() {
-        int controlledUnitId = (int) ids.getControlledUnitId();
-        int val = 0;
-        if (controlledUnitId == ids.getTankId()) {
-            val = R.drawable.tank_icon2;
-        } else if (controlledUnitId == ids.getMinerId()) {
-            val = R.drawable.miner1;
-        } else if (controlledUnitId == ids.getDropshipId()) {
-            val = R.drawable.dropship1;
-        }
+        int resourceValue = getResourceValue(ids.getControlledUnitId());
 
         for (int k = 0; k < grid3d.length; k++) {
             for (int i = 0; i < grid3d[k].length; i++) {
                 for (int j = 0; j < grid3d[k][i].length; j++) {
-                    if (grid3d[k][i][j].getEntityResourceID() == val) {
+                    int entityResourceVal = grid3d[k][i][j].getEntityResourceID();
+                    if (entityResourceVal == resourceValue) {
                         return grid3d[k][i][j];
                     }
                 }
@@ -144,14 +144,12 @@ public class GridModel {
         int col = currentUnit.getCol();
         int gridLength = currentGrid.length;
 
-        // Check row for bullet
         for (int i = 0; i < gridLength; i++) {
             if (col >= 0 && col < gridLength && currentGrid[i][col].getEntityResourceID() == R.drawable.bullet1) {
                 return true; // Bullet found in the same column as the unit
             }
         }
 
-        // Check column for bullet
         for (int j = 0; j < gridLength; j++) {
             if (row >= 0 && row < gridLength && currentGrid[row][j].getEntityResourceID() == R.drawable.bullet1) {
                 return true; // Bullet found in the same row as the unit

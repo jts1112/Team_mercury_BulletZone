@@ -36,7 +36,7 @@ public class ActionControllerTest {
         // Initialize the mock BulletZoneRestClient
         restClient = mock(BulletZoneRestClient.class);
         UnitIds ids = UnitIds.getInstance();
-        ids.setIds(121, 122, 123);
+        ids.setIds(121);
         actionController = new ActionController();
         actionController.setCurrentUnitId(123);
         actionController.restClient = restClient;

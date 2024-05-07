@@ -1,4 +1,6 @@
 package edu.unh.cs.cs619.bulletzone;
+import static java.lang.String.*;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +24,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Timer;
@@ -54,6 +57,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
+    int spawnCost = 100;
+    private final String msg = format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost);
 
     private Timer collisionTimer;
     // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
@@ -147,10 +152,10 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Click(R.id.buttonSpawnTank)
     protected void onSpawnTankButtonClick() {
         long playerCredits = gameData.getPlayerCredits();
-        if (playerCredits >= 1000) {
+        if (playerCredits >= spawnCost) {
             actionController.spawnUnit("tank");
             updateControlsForUnit("tank");
-            gameData.addPlayerCredits(-1000);
+            gameData.addPlayerCredits(-spawnCost);
         } else {
             showInsufficientCreditsDialog();
         }
@@ -158,8 +163,14 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Click(R.id.buttonSpawnMiner)
     protected void onSpawnMinerButtonClick() {
-        actionController.updateCurrentUnit("miner");
-        updateControlsForUnit("miner");
+        long playerCredits = gameData.getPlayerCredits();
+        if (playerCredits >= spawnCost) {
+            actionController.spawnUnit("miner");
+            updateControlsForUnit("miner");
+            gameData.addPlayerCredits(-spawnCost);
+        } else {
+            showInsufficientCreditsDialog();
+        }
     }
 
     // ---------------------------------- Move Buttons ----------------------------------
@@ -389,58 +400,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private void showInsufficientCreditsDialog() {
         new AlertDialog.Builder(ClientActivity.this)
                 .setTitle("Insufficient Credits")
-                .setMessage("You need at least 1000 credits to spawn a unit.")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-    /**
-     * Flashes the back ground when a bullet is incoming
-     */
-    private void bulletIncoming(){
-        // Flash the background red
-        View rootView = getWindow().getDecorView().getRootView();
-        rootView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-
-        // Reset the background color after a delay
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
-            }
-        }, 100); // Change 100 to adjust the duration of the red flash
-    }
-
-
-    /**
-     * Used to start the collision checking from client side. run when joining.
-     */
-    private void startCollisionChecking() {
-        collisionTimer = new Timer();
-        collisionTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (gridModel.checkCollision()) {
-                    bulletIncoming();
-                }
-            }
-        }, 0, 1000); // Check every second (1000 milliseconds)
-    }
-
-    /**
-     * Used to stop the collision checking from client side. run when leaving.
-     */
-    private void stopCollisionChecking() {
-        if (collisionTimer != null) {
-            collisionTimer.cancel();
-            collisionTimer = null;
-        }
-    }
-
-
-    private void showInsufficientCreditsDialog() {
-        new AlertDialog.Builder(ClientActivity.this)
-                .setTitle("Insufficient Credits")
-                .setMessage("You need at least 1000 credits to spawn a unit.")
+                .setMessage(String.format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost))
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }

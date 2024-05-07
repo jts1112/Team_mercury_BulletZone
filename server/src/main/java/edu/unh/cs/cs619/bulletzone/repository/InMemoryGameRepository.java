@@ -71,7 +71,7 @@ public class InMemoryGameRepository implements GameRepository {
                 return existingDropship;
             }
 
-            long dropshipId = this.idGenerator.getAndIncrement();
+            long dropshipId = this.idGenerator.getAndIncrement() + 5;
 
             dropship = new Dropship(dropshipId, Direction.Up, ip);
 
@@ -331,19 +331,19 @@ public class InMemoryGameRepository implements GameRepository {
 
     // ------------ Spawn Methods ------------
     @Override
-    public long spawnTank(long dropshipId) throws EntityDoesNotExistException {
+    public long spawnTank(long dropshipId, int limit) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
                 throw new EntityDoesNotExistException(dropshipId);
             }
 
-            if (dropship.getNumTanks() <= 0) {
+            if (dropship.getTankIds().size() >= limit) {
                 List<Long> tanks = dropship.getTankIds();
                 return tanks.get(0);
             }
 
-            long tankId = this.idGenerator.getAndIncrement();
+            long tankId = this.idGenerator.getAndIncrement() + 5;
             Tank tank = new Tank(tankId, Direction.Up, dropship.getIp());
 
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());
@@ -351,7 +351,6 @@ public class InMemoryGameRepository implements GameRepository {
                 spawningPoint.setFieldEntity(tank);
                 tank.setParent(spawningPoint);
                 game.getTanks().put(tankId, tank);
-                dropship.setNumTanks(dropship.getNumTanks() - 1);
                 dropship.addTank_(tankId);
                 SpawnEvent spawnEvent = new SpawnEvent(tank.getIntValue(), tank.getPosition());
                 EventBus.getDefault().post(spawnEvent);
@@ -363,14 +362,19 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public long spawnMiner(long dropshipId) throws EntityDoesNotExistException {
+    public long spawnMiner(long dropshipId, int limit) throws EntityDoesNotExistException {
         synchronized (this.monitor) {
             Dropship dropship = game.getDropship(dropshipId);
             if (dropship == null) {
                 throw new EntityDoesNotExistException(dropshipId);
             }
 
-            long minerId = this.idGenerator.getAndIncrement();
+            if (dropship.getMinerIds().size() >= limit) {
+                List<Long> miners = dropship.getMinerIds();
+                return miners.get(0);
+            }
+
+            long minerId = this.idGenerator.getAndIncrement() + 5;
             Miner miner = new Miner(minerId, Direction.Up, dropship.getIp());
 
             FieldHolder spawningPoint = findFreeSpace(dropship.getParent());

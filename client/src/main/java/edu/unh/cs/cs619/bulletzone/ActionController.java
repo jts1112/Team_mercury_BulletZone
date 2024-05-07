@@ -65,7 +65,9 @@ public class ActionController {
             long dropshipId = units.getResult();
             long minerId = units.getResult2();
             long tankId = units.getResult3();
-            Ids.setIds(dropshipId, minerId, tankId);
+            Ids.setIds(dropshipId);
+            Ids.addTankId(tankId, R.drawable.tank_icon0);
+            Ids.addMinerId(minerId, R.drawable.miner_icon0);
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -81,10 +83,10 @@ public class ActionController {
                 currentUnitId = Ids.getDropshipId();
                 break;
             case "miner":
-                currentUnitId = Ids.getMinerId();
+                currentUnitId = Ids.getNextMinerId();
                 break;
             case "tank":
-                currentUnitId = Ids.getTankId();
+                currentUnitId = Ids.getNextTankId();
                 break;
         }
         Ids.setControlledUnitId(currentUnitId);
@@ -102,7 +104,7 @@ public class ActionController {
                 LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
                 assert idWrapper != null;
                 entityId = idWrapper.getResult();
-                Ids.addTankId(entityId);
+                Ids.addTankId(entityId, getNextTankImageResource());
             } catch (TimeoutException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -117,7 +119,7 @@ public class ActionController {
                 LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
                 assert idWrapper != null;
                 entityId = idWrapper.getResult();
-                Ids.addMinerId(entityId);
+                Ids.addMinerId(entityId, getNextMinerImageResource());
             } catch (TimeoutException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -130,6 +132,17 @@ public class ActionController {
         Ids.setControlledUnitId(currentUnitId);
         EventBus.getDefault().post(new CreditEvent(0));
     }
+
+    private int getNextTankImageResource() {
+        int size = Ids.getTankIdSet().size();
+        return size < 6 ? R.drawable.tank_icon0 + size : R.drawable.tank_icon_enemy;
+    }
+
+    private int getNextMinerImageResource() {
+        int size = Ids.getMinerIdSet().size();
+        return size < 6 ? R.drawable.miner_icon0 + size : R.drawable.miner_icon_enemy;
+    }
+
 
     // ---------------------------------- Move Buttons ----------------------------------
 
@@ -159,7 +172,7 @@ public class ActionController {
     }
 
     public void onButtonMine() {
-        restClient.mine(Ids.getMinerId());
+        restClient.mine(Ids.getControlledUnitId());
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------

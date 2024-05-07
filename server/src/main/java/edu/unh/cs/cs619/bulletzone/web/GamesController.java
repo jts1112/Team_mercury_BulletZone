@@ -46,8 +46,8 @@ class GamesController {
             String ip = request.getRemoteAddr();
             Dropship dropship = gameRepository.join(ip);
             long dropshipId = dropship.getId();
-            long minerId = gameRepository.spawnMiner(dropshipId);
-            long tankId = gameRepository.spawnTank(dropshipId);
+            long minerId = gameRepository.spawnMiner(dropshipId, 1);
+            long tankId = gameRepository.spawnTank(dropshipId, 1);
             log.info("Player joined: dropshipId={} minerId={} tankId={} IP={}",
                     dropshipId, minerId, tankId, request.getRemoteAddr());
 
@@ -161,7 +161,7 @@ class GamesController {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<LongWrapper> spawnTank(@PathVariable long dropshipId)
             throws LimitExceededException, EntityDoesNotExistException {
-        long tankId = gameRepository.spawnTank(dropshipId);
+        long tankId = gameRepository.spawnTank(dropshipId, 4);
         LongWrapper response = new LongWrapper(tankId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -170,7 +170,7 @@ class GamesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<LongWrapper> spawnMiner(@PathVariable long dropshipId) throws EntityDoesNotExistException, LimitExceededException {
-        long minerId = gameRepository.spawnMiner(dropshipId);
+        long minerId = gameRepository.spawnMiner(dropshipId, 4);
         LongWrapper response = new LongWrapper(minerId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
