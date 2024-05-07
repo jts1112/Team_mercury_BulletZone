@@ -179,8 +179,13 @@ public class GridCellImageMapper {
             imageResource = R.drawable.antigrav1;
         } else if (cellValue == 3)  {
             imageResource = R.drawable.fusionreactor1;
-        } else {
+        } else if (powerUp == 4){ //  Power Drill powerup set 4
 //            Log.d("NewPowerUp", String.valueOf(powerUp));
+            imageResource = R.drawable.powereddrill1;
+        } else if (powerUp == 5) { // automatic repair kit set 5
+            imageResource = R.drawable.repairkit1;
+        } else if (powerUp == 6){ // deflector sheild 6
+            imageResource = R.drawable.deflectorshield1;
         }
         return imageResource;
     }
