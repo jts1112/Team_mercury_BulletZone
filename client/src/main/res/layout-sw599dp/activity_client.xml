@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/dropship_armor_300"
                 android:textSize="16sp" />
-            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textCreditsView"

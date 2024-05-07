@@ -57,7 +57,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
-    int spawnCost = 100;
+    int spawnCost = 1000;
     private final String msg = format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost);
 
     private Timer collisionTimer;
@@ -99,6 +99,37 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
 //        replay.endRecording();
+    }
+
+
+    /**
+     * Otto has a limitation (as per design) that it will only find methods on the immediate
+     * class type. As a result, if at runtime this instance actually points to a subclass
+     * implementation, the methods registered in this class will not be found. This immediately
+     * becomes a problem when using the AndroidAnnotations framework as it always produces a
+     * subclass of annotated classes.
+     * <p>
+     * To get around the class hierarchy limitation, one can use a separate anonymous class to
+     * handle the events.
+
+     private Object gridEventHandler = new Object()
+     {
+     @Subscribe
+     public void onUpdateGrid(GridUpdateEvent event) {
+     updateGrid(event.gw);
+     }
+     };
+     */
+    @AfterInject
+    void afterInject() {
+        actionController.initialize(this);
+    }
+
+    @AfterViews
+    protected void afterViewInjection() {
+        joinAsync();
+        SystemClock.sleep(500);
+        gridView.setAdapter(mGridAdapter);
     }
 
     @Background
@@ -211,18 +242,32 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     @Click({R.id.buttonEvadeLeft, R.id.buttonEvadeRight})
     protected void onButtonEvade(View view) {
-        final int viewId = view.getId();
-
+        final int viewId = view.getId(); // This is fine as viewId is not modified after assignment.
+        byte b = 0;
         switch (viewId) {
             case R.id.buttonEvadeLeft:
-                actionController.onButtonMove((byte) 6);
+                b = 6;
                 break;
             case R.id.buttonEvadeRight:
-                actionController.onButtonMove((byte) 2);
+                b = 2;
                 break;
             default:
                 break;
         }
+
+        byte finalB = b;
+        new Thread(() -> {
+            for (int i = 0; i < 8; i++) {
+                int delay = 500;
+                    try {
+                        actionController.onButtonMove(finalB);
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+            }
+        }).start();
     }
 
     // ---------------------------------- 2nd to Last Row Buttons ----------------------------------
@@ -257,6 +302,12 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Background
     protected void onButtonMine() {
         actionController.onButtonMine();
+    }
+
+    @Click(R.id.cheat)
+    protected void onButtonCheat() {
+        actionController.onButtonCheat();
+        gameData.addPlayerCredits(spawnCost);
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------
@@ -353,13 +404,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Override
     public void onBackPressed() {}
 
-    @AfterViews
-    protected void afterViewInjection() {
-        joinAsync();
-        SystemClock.sleep(500);
-        gridView.setAdapter(mGridAdapter);
-    }
-
     public void showMoveToButton() {
         Button moveToButton = findViewById(R.id.buttonMoveTo);
         moveToButton.setVisibility(View.VISIBLE);
@@ -447,28 +491,5 @@ public class ClientActivity extends Activity implements GameDataObserver {
             collisionTimer.cancel();
             collisionTimer = null;
         }
-    }
-    /**
-     * Otto has a limitation (as per design) that it will only find methods on the immediate
-     * class type. As a result, if at runtime this instance actually points to a subclass
-     * implementation, the methods registered in this class will not be found. This immediately
-     * becomes a problem when using the AndroidAnnotations framework as it always produces a
-     * subclass of annotated classes.
-     * <p>
-     * To get around the class hierarchy limitation, one can use a separate anonymous class to
-     * handle the events.
-
-     private Object gridEventHandler = new Object()
-     {
-     @Subscribe
-     public void onUpdateGrid(GridUpdateEvent event) {
-     updateGrid(event.gw);
-     }
-     };
-     */
-    @AfterInject
-    void afterInject() {
-        // initialize actioncontroller
-        actionController.initialize(this);
     }
 }
