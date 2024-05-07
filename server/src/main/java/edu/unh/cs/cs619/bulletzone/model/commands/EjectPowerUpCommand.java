@@ -1,18 +1,15 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpComponent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
-import org.springframework.boot.origin.SystemEnvironmentOrigin;
 
 import java.util.Optional;
-import java.util.OptionalLong;
 
 public class EjectPowerUpCommand implements Command {
     long entityId;
@@ -24,13 +21,13 @@ public class EjectPowerUpCommand implements Command {
      *
      * @param entity entity ejecting the power-up
      * @return if ejected
-     * @throws TankDoesNotExistException
+     * @throws EntityDoesNotExistException
      */
     @Override
-    public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity entity) throws EntityDoesNotExistException {
         System.out.println("Currently ejecting powerup");
         if (entity == null) {
-            throw new TankDoesNotExistException(entityId);
+            throw new EntityDoesNotExistException(entityId);
         }
 
         Optional<PowerUpEntity> powerUp = entity.dropPowerUp();

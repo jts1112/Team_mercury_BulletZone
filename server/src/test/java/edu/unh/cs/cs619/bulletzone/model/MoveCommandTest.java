@@ -51,7 +51,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -70,7 +70,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -89,7 +89,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -108,7 +108,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -128,7 +128,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -147,7 +147,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -166,7 +166,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -185,7 +185,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -205,7 +205,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -224,7 +224,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -243,7 +243,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -262,7 +262,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -282,7 +282,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -301,7 +301,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -320,7 +320,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -339,7 +339,7 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -362,13 +362,13 @@ public class MoveCommandTest {
 
         try {
             assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
             assertFalse(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -391,7 +391,7 @@ public class MoveCommandTest {
 
         try {
             assertFalse(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 

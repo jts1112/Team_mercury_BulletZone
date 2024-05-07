@@ -36,7 +36,7 @@ public class ActionControllerTest {
         // Initialize the mock BulletZoneRestClient
         restClient = mock(BulletZoneRestClient.class);
         UnitIds ids = UnitIds.getInstance();
-        ids.setIds(121, 122, 123);
+        ids.setIds(121);
         actionController = new ActionController();
         actionController.setCurrentUnitId(123);
         actionController.restClient = restClient;
@@ -123,7 +123,6 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_Leave() {
         // Call the method to be tested
-        actionController.leave(123);
 
         // Verify that the restClient's leave method is called with the correct parameter
         verify(restClient).leave(123);

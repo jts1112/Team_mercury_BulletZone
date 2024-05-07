@@ -2,7 +2,7 @@ package edu.unh.cs.cs619.bulletzone.model.commands;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -15,8 +15,6 @@ import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.Optional;
 
 import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
@@ -37,14 +35,14 @@ public class MoveCommand implements Command {
     /**
      * MoveCommand Execute to run code from move() that was in InMemoryGameRepository
      * @return returns True if Successes and False if Failure.
-     * @throws TankDoesNotExistException if tank does not exist.
+     * @throws EntityDoesNotExistException if tank does not exist.
      */
     @Override
-    public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity entity) throws EntityDoesNotExistException {
 
         // Find tank
         if (entity == null) {
-            throw new TankDoesNotExistException(entityId);
+            throw new EntityDoesNotExistException(entityId);
         }
 
         // Check if the time from the last move is too short

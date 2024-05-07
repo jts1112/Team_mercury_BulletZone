@@ -1,7 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Bullet;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class FireCommand implements Command {
-    private  long playableEntityId;
+    private final long playableEntityId;
     private int bulletType;
     private final Timer timer = new Timer();
     private static final int BULLET_PERIOD = 200;
@@ -38,12 +38,12 @@ public class FireCommand implements Command {
     /**
      * FireCommands execute method that runs code originally in fire() from InMemoryGameRepo
      * @return True if success False if Failure
-     * @throws TankDoesNotExistException If the entity does not exist
+     * @throws EntityDoesNotExistException If the entity does not exist
      */
-    public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity playableEntity) throws EntityDoesNotExistException {
         // Find tank
         if (playableEntity == null) {
-            throw new TankDoesNotExistException(playableEntityId);
+            throw new EntityDoesNotExistException(playableEntityId);
         }
 
         long milliseconds = System.currentTimeMillis();

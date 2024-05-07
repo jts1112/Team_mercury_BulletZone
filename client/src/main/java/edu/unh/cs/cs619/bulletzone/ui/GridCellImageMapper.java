@@ -95,71 +95,27 @@ public class GridCellImageMapper {
             imageResource = R.drawable.dirt1;
         } else if (cellValue == 6000) {
             imageResource = R.drawable.streaked_dirt;
-        } else if (cellValue >= 2000000 && cellValue <= 3000000) {
+        } else if (cellValue >= 2_000_000 && cellValue <= 3_000_000) {
             imageResource = R.drawable.bullet1;
-        } else if (cellValue >= 10000000 && cellValue <= 20000000) { // TANKS
-            int health = (cellValue % 10000) / 10;
-//                        Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
-            if (Ids.getTankId() == (cellValue - 10000000) / 10000) {
-                if (health <= 100 && health >= 51) { // full health
-                    imageResource = R.drawable.tank_icon2full;
-                } else if (health <= 50 && health >= 26) { // half health
-                    imageResource = R.drawable.tank_icon2low;
-                } else { // low health
-                    imageResource = R.drawable.tank_icon2verylow;
-                }
+        } else if (cellValue >= 10_000_000 && cellValue <= 20_000_000) {
+            long tankId = (cellValue - 10_000_000) / 10_000;
+            if (Ids.getTankIdQueue().contains( (long) tankId)) {
+                imageResource = getTankImageResource(tankId);
             } else {
-                if (health <= 100 && health >= 51) { // full health
-                    imageResource = R.drawable.tankicon4full;
-                } else if (health <= 50 && health >= 26) { // half health
-                    imageResource = R.drawable.tankicon4low;
-                } else { // low health
-                    imageResource = R.drawable.tankicon4verylow;
-                }
+                imageResource = R.drawable.tank_icon_enemy;
             }
-        } else if (cellValue >= 20000000 && cellValue <= 30000000) { // MINERS
-            int health = (cellValue % 10000) / 10;
-//            Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
-
-            if (Ids.getMinerId() == (cellValue - 20000000) / 10000) {
-                if (health <= 120 && health >= 61) { // full health
-                    imageResource = R.drawable.miner1full;
-                } else if (health <= 60 && health >= 30) { // half health
-                    imageResource = R.drawable.miner1low;
-                } else { // low health
-                    imageResource = R.drawable.miner1verylow;
-                }
-//                imageResource = R.drawable.miner1;
+        } else if (cellValue >= 20_000_000 && cellValue <= 30_000_000) {
+            long minerId = (cellValue - 20_000_000) / 10_000;
+            if (Ids.getMinerIdQueue().contains( (long) (cellValue - 20_000_000) / 10_000)) {
+                imageResource = getMinerImageResource(minerId);
             } else {
-                if (health <= 120 && health >= 61) { // full health
-                    imageResource = R.drawable.miner2full;
-                } else if (health <= 60 && health >= 30) { // half health
-                    imageResource = R.drawable.miner2low;
-                } else { // low health
-                    imageResource = R.drawable.miner2verylow;
-                }
-//                imageResource = R.drawable.miner2;
+                imageResource = R.drawable.miner_icon_enemy;
             }
-        } else if (cellValue >= 30000000 && cellValue <= 40000000) {
-//            Log.d("Destruct",String.valueOf((cellValue %10000 ) / 10));
-            int health = (cellValue % 10000) / 10;
-            if (Ids.getDropshipId() == (cellValue - 30000000) / 10000) {
-                if (health <= 300 && health >= 151) { // full health
-                    imageResource = R.drawable.dropship1full;
-                } else if (health <= 150 && health >= 76) { // half health
-                    imageResource = R.drawable.dropship1low;
-                } else { // low health
-                    imageResource = R.drawable.dropship1verylow;
-                }
-
+        } else if (cellValue >= 30_000_000 && cellValue <= 40_000_000) {
+            if (Ids.getDropshipId() == (cellValue - 30_000_000) / 10_000) {
+                imageResource = R.drawable.dropship1;
             } else {
-                    if (health <= 300 && health >= 151) { // full health
-                        imageResource = R.drawable.dropship2full;
-                    } else if (health <= 150 && health >= 76) { // half health
-                        imageResource = R.drawable.dropship2low;
-                    } else { // low health
-                        imageResource = R.drawable.dropship2verylow;
-                    }
+                imageResource = R.drawable.dropship2;
             }
         }
 
@@ -173,5 +129,23 @@ public class GridCellImageMapper {
             Log.d("NewPowerUp", String.valueOf(powerUp));
         }
         return imageResource;
+    }
+
+    public int getTankImageResource(long tankId) {
+        Integer resourceId = Ids.tankImageResources.get(tankId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.tank_icon_enemy;
+        }
+    }
+
+    public int getMinerImageResource(long minerId) {
+        Integer resourceId = Ids.minerImageResources.get(minerId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.miner_icon_enemy;
+        }
     }
 }

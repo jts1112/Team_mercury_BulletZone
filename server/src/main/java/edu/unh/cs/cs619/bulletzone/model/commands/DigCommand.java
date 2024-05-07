@@ -8,11 +8,9 @@ import java.util.TimerTask;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.EntranceTerrain;
 import edu.unh.cs.cs619.bulletzone.datalayer.terrain.Terrain;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
-import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.EntranceEvent;
 import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
@@ -28,9 +26,9 @@ public class DigCommand implements Command {
     }
 
     @Override
-    public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity entity) throws EntityDoesNotExistException {
         if (entity == null) {
-            throw new TankDoesNotExistException(entityId);
+            throw new EntityDoesNotExistException(entityId);
         }
 
         FieldHolder parent = entity.getParent();

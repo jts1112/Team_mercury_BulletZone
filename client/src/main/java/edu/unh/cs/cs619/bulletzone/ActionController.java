@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.LimitExceededException;
 import android.util.Log;
 
 import org.androidannotations.annotations.Background;
@@ -9,6 +10,14 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.greenrobot.eventbus.EventBus;
+import org.springframework.web.client.RestClientException;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import edu.unh.cs.cs619.bulletzone.events.CreditEvent;
 import edu.unh.cs.cs619.bulletzone.events.GameEvent;
@@ -32,6 +41,7 @@ public class ActionController {
     BZRestErrorhandler bzRestErrorhandler;
     public UnitIds Ids; // public only for testing
     private long currentUnitId = -1;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // ---------------------------------- Initialization ----------------------------------
 
@@ -52,7 +62,12 @@ public class ActionController {
     public long join() {
         try {
             LongWrapper units = restClient.join();
-            Ids.setIds(units.getResult(), units.getResult2(), units.getResult3());
+            long dropshipId = units.getResult();
+            long minerId = units.getResult2();
+            long tankId = units.getResult3();
+            Ids.setIds(dropshipId);
+            Ids.addTankId(tankId, R.drawable.tank_icon0);
+            Ids.addMinerId(minerId, R.drawable.miner_icon0);
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -68,10 +83,10 @@ public class ActionController {
                 currentUnitId = Ids.getDropshipId();
                 break;
             case "miner":
-                currentUnitId = Ids.getMinerId();
+                currentUnitId = Ids.getNextMinerId();
                 break;
             case "tank":
-                currentUnitId = Ids.getTankId();
+                currentUnitId = Ids.getNextTankId();
                 break;
         }
         Ids.setControlledUnitId(currentUnitId);
@@ -80,6 +95,53 @@ public class ActionController {
 
     // ---------------------------------- 2nd Row Buttons ----------------------------------
 
+    public void spawnUnit(String unit) {
+        long shipId = Ids.getDropshipId();
+        long entityId;
+        if (unit.equals("tank")) {
+            Future<LongWrapper> future=executorService.submit(()->restClient.spawnTank(shipId));
+            try {
+                LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
+                assert idWrapper != null;
+                entityId = idWrapper.getResult();
+                Ids.addTankId(entityId, getNextTankImageResource());
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else {
+            Future<LongWrapper> future=executorService.submit(()->restClient.spawnMiner(shipId));
+            try {
+                LongWrapper idWrapper = future.get(10, TimeUnit.SECONDS);
+                assert idWrapper != null;
+                entityId = idWrapper.getResult();
+                Ids.addMinerId(entityId, getNextMinerImageResource());
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        currentUnitId = entityId;
+        Ids.setControlledUnitId(currentUnitId);
+        EventBus.getDefault().post(new CreditEvent(0));
+    }
+
+    private int getNextTankImageResource() {
+        int size = Ids.getTankIdSet().size();
+        return size < 6 ? R.drawable.tank_icon0 + size : R.drawable.tank_icon_enemy;
+    }
+
+    private int getNextMinerImageResource() {
+        int size = Ids.getMinerIdSet().size();
+        return size < 6 ? R.drawable.miner_icon0 + size : R.drawable.miner_icon_enemy;
+    }
 
 
     // ---------------------------------- Move Buttons ----------------------------------
@@ -110,14 +172,10 @@ public class ActionController {
     }
 
     public void onButtonMine() {
-        restClient.mine(Ids.getMinerId());
+        restClient.mine(Ids.getControlledUnitId());
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------
-
-    public void leave(long id) {
-        restClient.leave(id);
-    }
 
     @Background
     void leaveAsync() {

@@ -56,7 +56,7 @@ public class FireCommandTest {
 
         try {
             assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
-        } catch (TankDoesNotExistException e) {
+        } catch (EntityDoesNotExistException e) {
             fail();
         }
 
@@ -64,7 +64,7 @@ public class FireCommandTest {
 
         try {
             assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
-        } catch (TankDoesNotExistException e) {
+        } catch (EntityDoesNotExistException e) {
             fail();
         }
     }
@@ -75,13 +75,13 @@ public class FireCommandTest {
         Object monitor = new Object();
         try {
             assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
             assertFalse(new FireCommand(1L, 1, monitor).execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
     }
@@ -93,7 +93,7 @@ public class FireCommandTest {
         for (int i = 0; i < tank.getAllowedNumberOfBullets(); i++) {
             try {
                 assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
-            } catch(TankDoesNotExistException e) {
+            } catch(EntityDoesNotExistException e) {
                 fail();
             }
 
@@ -102,7 +102,7 @@ public class FireCommandTest {
 
         try {
             assertTrue(new FireCommand(1L, 1, monitor).execute(tank));
-        } catch(TankDoesNotExistException e) {
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
     }
