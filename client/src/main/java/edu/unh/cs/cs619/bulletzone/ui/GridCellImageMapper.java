@@ -50,9 +50,9 @@ public class GridCellImageMapper {
                 imageResource = R.drawable.ironterrain;
             } else if (cellValue >= 8000 && cellValue < 9000) {
                 imageResource = R.drawable.gemterrain;
-            } else if (cellValue >= 9000 && cellValue < 10000) {
+            } else if (cellValue >= 9000 && cellValue < 10_000) {
                 imageResource = R.drawable.unobtaniumterrain;
-            } else if (cellValue >= 10000 && cellValue < 11000) {
+            } else if (cellValue >= 10_000 && cellValue < 11_000) {
                 imageResource = R.drawable.granite;
             }
             if (powerUp == 1) {
@@ -73,7 +73,7 @@ public class GridCellImageMapper {
 
         if (cellValue == 1000) {
             imageResource = R.drawable.wall5;
-        } else if ((cellValue > 1000 && cellValue < 2000)) { // destructable wall
+        } else if ((cellValue > 1000 && cellValue < 2000)) { // destructible wall
 
             if ((cellValue - 1000) <= 100 && (cellValue - 1000) >= 51){ // full health
                 imageResource = R.drawable.wall2;
@@ -118,7 +118,6 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.tank_icon_enemy_very_low0;
                 }
-//                imageResource = R.drawable.tank_icon_enemy;
             }
         } else if (cellValue >= 20_000_000 && cellValue <= 30_000_000) { // Its a miner resource
             long minerId = (cellValue - 20_000_000) / 10_000;
@@ -141,9 +140,8 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.miner_enemy_very_low0;
                 }
-//                imageResource = R.drawable.miner_icon_enemy;
             }
-        } else if (cellValue >= 30_000_000 && cellValue <= 40_000_000) { // Its a drop ship rescource
+        } else if (cellValue >= 30_000_000 && cellValue <= 40_000_000) { // Dropship resource
             int health = (cellValue % 10000) / 10;
             if (Ids.getDropshipId() == (cellValue - 30_000_000) / 10_000) {
 
@@ -154,8 +152,6 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.dropship1verylow;
                 }
-
-//                imageResource = R.drawable.dropship1;
             } else {
 
                 if (health <= 300 && health >= 151) { // full health
@@ -165,8 +161,6 @@ public class GridCellImageMapper {
                 } else { // low health
                     imageResource = R.drawable.dropship2verylow;
                 }
-
-//                imageResource = R.drawable.dropship2;
             }
         }
 

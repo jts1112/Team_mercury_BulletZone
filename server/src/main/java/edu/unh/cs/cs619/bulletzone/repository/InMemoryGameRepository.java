@@ -154,7 +154,6 @@ public class InMemoryGameRepository implements GameRepository {
                         int currentX = currentPosition % FIELD_DIM;
                         int currentY = currentPosition / FIELD_DIM;
 
-//                        PlayableEntity playableEntity = game.getPlayableEntity(entityId); // similar was already declared above
                         int sleepTime = playableEntity.getAllowedMoveInterval() * 2;
 
                         // if current x is less than then go left. else go right.
