@@ -52,7 +52,16 @@ public class InMemoryGameRepository implements GameRepository {
     private final DataRepository data;
     private static final Logger log = LoggerFactory.getLogger(InMemoryGameRepository.class);
 
-    public InMemoryGameRepository() {
+    private static InMemoryGameRepository instance;
+
+    public static synchronized InMemoryGameRepository getInstance() {
+        if (instance == null) {
+            instance = new InMemoryGameRepository();
+        }
+        return instance;
+    }
+
+    private InMemoryGameRepository() {
         this.data = DataRepositoryFactory.getInstance();
     }
     /**
@@ -118,7 +127,7 @@ public class InMemoryGameRepository implements GameRepository {
             System.out.println("Entity type: " + playableEntity.getClass().getSimpleName());
 
             MoveCommand moveCommand = new MoveCommand(entityId, direction);
-            boolean moveResult = moveCommand.execute(playableEntity);
+            boolean moveResult = moveCommand.execute2(playableEntity, this.game);
 
             System.out.println("Move result: " + moveResult);
 
@@ -306,10 +315,11 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     public void create() {
-        if (game != null) {
+        if (instance != null || game != null) {
             return;
         }
         synchronized (this.monitor) {
+            instance = new InMemoryGameRepository();
             this.game = new Game();
             game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameRepositoryInitialize().build());
             startRepairTimer();
@@ -466,7 +476,7 @@ public class InMemoryGameRepository implements GameRepository {
                     }
                 }
             }
-        }, 0, 1000); // Attempt to spawn every second.
+        }, 0, 100); // Attempt to spawn every second.
     }
 
 
