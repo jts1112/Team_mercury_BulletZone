@@ -158,6 +158,11 @@ public class GameBoardBuilder {
         return this;
     }
 
+    public GameBoardBuilder setEntranceTerrain(int index, Direction direction){
+        fieldHolderGrid.get(index).setTerrain(new EntranceTerrain(direction));
+        return this;
+    }
+
     /**
      * Sets the row of a terrain to a certain terrain type. [0 - meadow][1 - rocky][2 - hilly][3 - forest][4> - meadow]
      * @param rowNumber
@@ -200,7 +205,13 @@ public class GameBoardBuilder {
                 setTunnelTerrain(index);
             } else if (terrainType == 5) { // walls
                 setGraniteTerrain(index);
-            } else {
+            } else if (terrainType == 6){ // iron terrain.
+                setIronTerrain(index);
+            }else if (terrainType ==7){ // gem terrain
+                setGemTerrain(index);
+            } else if(terrainType == 8){ // ubontium terrain
+                setUbontiumTerrain(index);
+            }else {
                 setMeadowTerrain(index);
             }
         }
@@ -221,7 +232,13 @@ public class GameBoardBuilder {
                 setTunnelTerrain(index);
             } else if (terrainType == 5) { // walls
                 setGraniteTerrain(index);
-            } else {
+            } else if (terrainType == 6){ // iron terrain.
+                setIronTerrain(index);
+            }else if (terrainType ==7){ // gem terrain
+                setGemTerrain(index);
+            } else if(terrainType == 8){ // ubontium terrain
+                setUbontiumTerrain(index);
+            }else {
                 setMeadowTerrain(index);
             }
         }
@@ -393,7 +410,10 @@ public class GameBoardBuilder {
     public GameBoardBuilder initializeFieldOfWalls(){
         // Test // TODO Move to more appropriate place (and if desired, integrate map loader)
         for (int i = 1; i <= 256; i++) {
-            fieldHolderGrid.get(1).setFieldEntity(new Wall());
+            FieldHolder fieldHolder = fieldHolderGrid.get(1);
+            Wall wall = new Wall();
+            fieldHolder.setFieldEntity(wall);
+            wall.setParent(fieldHolder);
         }
 
         return this;

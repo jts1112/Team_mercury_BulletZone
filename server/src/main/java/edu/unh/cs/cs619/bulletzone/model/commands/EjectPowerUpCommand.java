@@ -44,6 +44,10 @@ public class EjectPowerUpCommand implements Command {
             dropship.pickupPowerUp(powerUp.get().getType());
         } else {
             // vehicle is not docked, eject to surrounding tile if possible
+            if (powerUp.get().getType() == null) {
+                return false;
+            }
+
             System.out.println("Server is ejecting " + powerUp.get().getType());
 
             FieldHolder parent = entity.getParent();
@@ -58,6 +62,9 @@ public class EjectPowerUpCommand implements Command {
                     case AntiGrav -> availableField.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
                     case FusionReactor -> availableField.getTerrain().setPresentItem(3);
                     case Thingamajig -> availableField.getTerrain().setPresentItem(1);
+                    case PoweredDrill -> availableField.getTerrain().setPresentItem(4);
+                    case DeflectorShield -> availableField.getTerrain().setPresentItem(5);
+                    case AutomatedRepairKit -> availableField.getTerrain().setPresentItem(6);
                 }
                 EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
                 System.out.println("Ejecting in front");

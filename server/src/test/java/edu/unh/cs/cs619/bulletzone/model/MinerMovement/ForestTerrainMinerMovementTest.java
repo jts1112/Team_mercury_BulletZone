@@ -58,8 +58,6 @@ public class ForestTerrainMinerMovementTest {
                 setRowTerrain(15,3).setMeadowTerrain(2*16 + 2).
                 build());
 
-
-
         FieldHolder fieldElement = game.getHolderGrid().get(2 * 16 + 2);
 
         fieldElement.setFieldEntity(miner);
@@ -419,9 +417,11 @@ public class ForestTerrainMinerMovementTest {
     public void execute_FacingWallMove_ReturnsFalse() {
         miner.setDirection(Direction.Down);
 
-        // add wall below miner
+        // add wall below tank
         FieldHolder fieldElementBelow = game.getHolderGrid().get(3 * 16 + 2);
-        fieldElementBelow.setFieldEntity(new Wall(1000, 3 * 16 + 2));
+        Wall wall = new Wall(1000, 3 * 16 + 2);
+        fieldElementBelow.setFieldEntity(wall);
+        wall.setParent(fieldElementBelow);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 

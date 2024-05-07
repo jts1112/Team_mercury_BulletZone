@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <Button
             android:id="@+id/buttonTank"
             android:layout_width="0dp"
@@ -37,33 +38,45 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Miner" />
+            android:text="@string/miner" />
 
         <Button
             android:id="@+id/buttonDropship"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Dropship" />
+            android:text="@string/dropship" />
 
         <Button
             android:id="@+id/buttonFlag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Flag" />
+            android:text="@string/flag" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textCreditsView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="Credits: 1000"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonSpawnTank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Spawn Tank" />
+
+        <Button
+            android:id="@+id/buttonSpawnMiner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Spawn Miner" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,40 +87,106 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginEnd="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewTankLife"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tank_armor_100"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewMinerLife"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miner_armor_120"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewDropshipLife"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dropship_armor_300"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/buttonLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/left" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/buttonEvadeLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:text="@string/evade_left" />
 
-                <Button
-                    android:id="@+id/buttonUp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/up" />
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/buttonDown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/down" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            </LinearLayout>
+            <Button
+                android:id="@+id/buttonUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/up" />
+
+            <Button
+                android:id="@+id/buttonDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/down" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/buttonRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/right" />
 
+            <Button
+                android:id="@+id/buttonEvadeRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/evade_right" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textCreditsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="25dp"
+            android:text="@string/credits_1000"
+            android:textSize="16sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -115,40 +194,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textViewTankLife"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tank Armor: 100"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/textViewMinerLife"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Miner Armor: 120"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/textViewDropshipLife"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dropship Armor: 300"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
         <Button
             android:id="@+id/buttonTunnel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tunnel"
+            android:text="@string/tunnel"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:visibility="visible" />
@@ -166,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="MINE"
+            android:text="@string/mine"
             android:visibility="gone" />
 
         <Button
@@ -174,7 +224,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Move To" />
+            android:text="@string/move_to" />
 
     </LinearLayout>
 
@@ -210,7 +260,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Eject" />
+            android:text="@string/eject" />
     </LinearLayout>
 
 

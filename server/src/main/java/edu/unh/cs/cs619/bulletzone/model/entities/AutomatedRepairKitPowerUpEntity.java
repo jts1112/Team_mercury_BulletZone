@@ -4,8 +4,6 @@ import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 
 public class AutomatedRepairKitPowerUpEntity extends PowerUpEntity {
-    int pos;
-    PowerUpType type = PowerUpType.PoweredDrill;
 
     @Override
     public int getIntValue() {
@@ -15,7 +13,7 @@ public class AutomatedRepairKitPowerUpEntity extends PowerUpEntity {
     @Override
     public FieldEntity copy() {return new AutomatedRepairKitPowerUpEntity();}
 
-    public AutomatedRepairKitPowerUpEntity() {}
+    public AutomatedRepairKitPowerUpEntity() {this.type = PowerUpType.AutomatedRepairKit;}
 
     public AutomatedRepairKitPowerUpEntity(int pos) {
         this.pos = pos;
@@ -26,12 +24,4 @@ public class AutomatedRepairKitPowerUpEntity extends PowerUpEntity {
         return "R";
     }
 
-    /**
-     *
-     * @return powerUpType
-     */
-    @Override
-    public PowerUpType getType() {
-        return type;
-    }
 }

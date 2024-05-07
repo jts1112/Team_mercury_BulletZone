@@ -24,19 +24,19 @@ public class GridModel {
         }
     }
 
-    public void updateGrid(int[][] newData, int[][] newTerrainData) {
-        rawData = newData;
-        grid = new GridCell[16][16];
-        for (int i = 0; i < newData.length; i++) {
-            for (int j = 0; j < newData[0].length; j++) {
-                int terrainResource = mapper.getTerrainImageResource(newTerrainData[i][j]);
-                int entityResource = mapper.getEntityImageResource(newData[i][j]);
-                GridCell cell = new GridCell(terrainResource, entityResource, i, j);
-                cell.setRotationForValue(newData[i][j]);
-                grid[i][j] = cell;
-            }
-        }
-    }
+//    public void updateGrid(int[][] newData, int[][] newTerrainData) {
+//        rawData = newData;
+//        grid = new GridCell[16][16];
+//        for (int i = 0; i < newData.length; i++) {
+//            for (int j = 0; j < newData[0].length; j++) {
+//                int terrainResource = mapper.getTerrainImageResource(newTerrainData[i][j]);
+//                int entityResource = mapper.getEntityImageResource(newData[i][j]);
+//                GridCell cell = new GridCell(terrainResource, entityResource, i, j);
+//                cell.setRotationForValue(newData[i][j]);
+//                grid[i][j] = cell;
+//            }
+//        }
+//    }
 
     public void initializeGrid3d(int[][][] newData, int[][][] newTerrainData) {
         int layers = 3;
@@ -108,4 +108,60 @@ public class GridModel {
         }
         return grid3d[0]; // Controlled unit not found resorts to top layer
     }
+
+    public GridCell getCurrentUnit() {
+        int controlledUnitId = (int) ids.getControlledUnitId();
+        int val = 0;
+        if (controlledUnitId == ids.getTankId()) {
+            val = R.drawable.tank_icon2;
+        } else if (controlledUnitId == ids.getMinerId()) {
+            val = R.drawable.miner1;
+        } else if (controlledUnitId == ids.getDropshipId()) {
+            val = R.drawable.dropship1;
+        }
+
+        for (int k = 0; k < grid3d.length; k++) {
+            for (int i = 0; i < grid3d[k].length; i++) {
+                for (int j = 0; j < grid3d[k][i].length; j++) {
+                    if (grid3d[k][i][j].getEntityResourceID() == val) {
+                        return grid3d[k][i][j];
+                    }
+                }
+            }
+        }
+        return null; // no cell found.
+    }
+
+    public Boolean checkCollision(){
+        GridCell[][] currentGrid = getLayerGrid();
+        GridCell currentUnit = getCurrentUnit();
+
+        if (currentUnit == null) {
+            return false; // No current unit, so no collision
+        }
+
+        int row = currentUnit.getRow();
+        int col = currentUnit.getCol();
+        int gridLength = currentGrid.length;
+
+        // Check row for bullet
+        for (int i = 0; i < gridLength; i++) {
+            if (col >= 0 && col < gridLength && currentGrid[i][col].getEntityResourceID() == R.drawable.bullet1) {
+                return true; // Bullet found in the same column as the unit
+            }
+        }
+
+        // Check column for bullet
+        for (int j = 0; j < gridLength; j++) {
+            if (row >= 0 && row < gridLength && currentGrid[row][j].getEntityResourceID() == R.drawable.bullet1) {
+                return true; // Bullet found in the same row as the unit
+            }
+        }
+
+        // No nearby bullets
+        return false;
+    }
+
+
+
 }

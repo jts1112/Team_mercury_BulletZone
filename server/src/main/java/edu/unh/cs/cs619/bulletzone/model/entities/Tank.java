@@ -17,6 +17,7 @@ public class Tank extends PlayableEntity {
         this.direction = direction;
         this.ip = ip;
         this.life = INITIAL_LIFE;
+        this.maxLife = INITIAL_LIFE;
         this.numberOfBullets = 0;
         this.lastFireTime = 0;
         this.lastMoveTime = 0;

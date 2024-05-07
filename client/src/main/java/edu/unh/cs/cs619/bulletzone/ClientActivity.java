@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,9 +9,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -24,7 +21,9 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.api.BackgroundExecutor;
+import java.text.MessageFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
@@ -38,8 +37,6 @@ import edu.unh.cs.cs619.bulletzone.ui.GridModel;
 @SuppressLint("NonConstantResourceId")
 @EActivity(R.layout.activity_client)
 public class ClientActivity extends Activity implements GameDataObserver {
-
-//    private static final String TAG = "ClientActivity";
     @Bean
     protected GridAdapter mGridAdapter;
     @Bean
@@ -51,18 +48,15 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Bean
     GridPollerTask gridPollTask;
     @Bean
-    protected ActionController actionController;  // Add new controller for rest calls
+    protected ActionController actionController;
     private GridModel gridModel;
     protected GameData gameData;
     protected GameReplayManager replay;
 
-    /**
-     * Changed unitIds to a singleton used in actioncontroller
-     * and imagemapper to distinguish between player and enemy units
-     */
-    private int tappedX = -1;
-    private int tappedY = -1;
+    private Timer collisionTimer;
+    // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
 
+    // ---------------------------------- Initialization ----------------------------------
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +84,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
                 onEventSwitch();
             }
         }, 2000);
+
     }
 
     @Override
@@ -100,42 +95,153 @@ public class ClientActivity extends Activity implements GameDataObserver {
 //        replay.endRecording();
     }
 
-    /**
-     * Otto has a limitation (as per design) that it will only find methods on the immediate
-     * class type. As a result, if at runtime this instance actually points to a subclass
-     * implementation, the methods registered in this class will not be found. This immediately
-     * becomes a problem when using the AndroidAnnotations framework as it always produces a
-     * subclass of annotated classes.
-     * <p>
-     * To get around the class hierarchy limitation, one can use a separate anonymous class to
-     * handle the events.
-
-    private Object gridEventHandler = new Object()
-    {
-        @Subscribe
-        public void onUpdateGrid(GridUpdateEvent event) {
-            updateGrid(event.gw);
-        }
-    };
-    */
-
-
-    @AfterInject
-    void afterInject() {
-        // initialize actioncontroller
-        actionController.initialize(this);
-    }
-
     @Background
     void joinAsync() {
         try {
             actionController.join();
             gridPollTask.startPolling();
             onPlayerCreditUpdate(gameData.getPlayerCredits());
+
+
         } catch (Exception ignored) { }
     }
 
-    @SuppressLint("NonConstantResourceId")
+    // ---------------------------------- Top Row Buttons ----------------------------------
+
+    @Click(R.id.buttonTank)
+    protected void onTankButtonClick() {
+        actionController.updateCurrentUnit("tank");
+        updateControlsForUnit("tank");
+    }
+
+    @Click(R.id.buttonMiner)
+    protected void onMinerButtonClick() {
+        actionController.updateCurrentUnit("miner");
+        updateControlsForUnit("miner");
+    }
+
+    @Click(R.id.buttonDropship)
+    protected void onDropshipButtonClick() {
+        actionController.updateCurrentUnit("dropship");
+        updateControlsForUnit("dropship");
+    }
+
+    @Click(R.id.buttonFlag)
+    protected void onButtonFlag(){
+        mGridAdapter.setFlagplaced(mGridAdapter.getSelectedPosition());
+        mGridAdapter.notifyDataSetChanged();
+
+        // Schedule the removal of the flag after 30 seconds
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mGridAdapter.setFlagplaced(-1); // set flag bool to be removed.
+                mGridAdapter.notifyDataSetChanged();
+            }
+        }, 30000); // 30 seconds
+    }
+
+    // ---------------------------------- 2nd Row Buttons ----------------------------------
+
+    @Click(R.id.buttonSpawnTank)
+    protected void onSpawnTankButtonClick() {
+        actionController.updateCurrentUnit("tank");
+        updateControlsForUnit("tank");
+    }
+
+    @Click(R.id.buttonSpawnMiner)
+    protected void onSpawnMinerButtonClick() {
+        actionController.updateCurrentUnit("miner");
+        updateControlsForUnit("miner");
+    }
+
+    // ---------------------------------- Move Buttons ----------------------------------
+
+    /**
+     * Client side only sends a move request whenever direction is pressed
+     * Server determines whether to turn or move based on the tank direction
+     */
+    @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
+    protected void onButtonMove(View view) {
+        final int viewId = view.getId();
+        byte direction;
+
+        switch (viewId) {
+            case R.id.buttonUp:
+                direction = 0;
+                break;
+            case R.id.buttonDown:
+                direction = 4;
+                break;
+            case R.id.buttonLeft:
+                direction = 6;
+                break;
+            case R.id.buttonRight:
+                direction = 2;
+                break;
+            default:
+                direction = 0;
+        }
+        actionController.onButtonMove(direction);
+
+        if (gridModel.checkCollision()) {
+            bulletIncoming();
+        }
+    }
+
+    @Click({R.id.buttonEvadeLeft, R.id.buttonEvadeRight})
+    protected void onButtonEvade(View view) {
+        final int viewId = view.getId();
+
+        switch (viewId) {
+            case R.id.buttonEvadeLeft:
+                actionController.onButtonMove((byte) 6);
+                break;
+            case R.id.buttonEvadeRight:
+                actionController.onButtonMove((byte) 2);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    // ---------------------------------- 2nd to Last Row Buttons ----------------------------------
+
+    @Click(R.id.buttonTunnel)
+    @Background
+    protected void onButtonTunnel() {
+        actionController.onButtonTunnel();
+    }
+
+    @Click(R.id.buttonFire)
+    @Background
+    protected void onButtonFire() {
+        actionController.onButtonFire();
+    }
+
+    @Click(R.id.buttonMoveTo)
+    protected void onMoveToButtonClick() {
+        int selectedPosition = mGridAdapter.getSelectedPosition();
+        if (selectedPosition >= 0) {
+            int row = selectedPosition / 16;
+            int col = selectedPosition % 16;
+            actionController.moveToPosition(col, row);
+
+            Log.d("Flag", "Placed flag at " + row + ", " + col);
+        } else {
+            Log.d("Flag", "No grid cell selected.");
+        }
+    }
+
+    @Click(R.id.buttonMine)
+    @Background
+    protected void onButtonMine() {
+        actionController.onButtonMine();
+    }
+
+    // ---------------------------------- Bottom Row Buttons ----------------------------------
+
     @Click (R.id.eventSwitch)
     protected void onEventSwitch() {
         if (gridPollTask.toggleEventUsage()) {
@@ -147,150 +253,6 @@ public class ClientActivity extends Activity implements GameDataObserver {
         }
     }
 
-    /**
-     * Client side only sends a move request whenever direction is pressed
-     * Server determines whether to turn or move based on the tank direction
-     */
-    @Click({R.id.buttonUp, R.id.buttonDown, R.id.buttonLeft, R.id.buttonRight})
-    protected void onButtonMove(View view) {
-        final int viewId = view.getId();
-
-        actionController.onButtonMove(viewId);
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Click(R.id.buttonFire)
-    @Background
-    protected void onButtonFire() {
-        actionController.onButtonFire();
-    }
-
-    @Click(R.id.buttonFlag)
-    protected void onButtonFlag(){
-            mGridAdapter.setFlagplaced(mGridAdapter.getSelectedPosition());
-            // Update the grid view
-            mGridAdapter.notifyDataSetChanged();
-
-            // Schedule the removal of the flag after 30 seconds
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mGridAdapter.setFlagplaced(-1); // set flag bool to be removed.
-                    mGridAdapter.notifyDataSetChanged();
-                }
-            }, 30000); // 30 seconds
-    }
-
-    @Click(R.id.buttonMine)
-    @Background
-    protected void onButtonMine() {
-        actionController.onButtonMine();
-    }
-
-    @Click(R.id.buttonTunnel)
-    @Background
-    protected void onButtonTunnel() {
-        actionController.onButtonTunnel();
-    }
-
-    @Click(R.id.buttonEject)
-    @Background
-    protected void onButtonEjectPowerUp() {
-        System.out.println("Client ejecting power-up button pressed");
-        actionController.onButtonEjectPowerUp();
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Click(R.id.buttonTank)
-    protected void onTankButtonClick() {
-        actionController.updateCurrentUnit("tank");
-        updateControlsForUnit("tank");
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Click(R.id.buttonMiner)
-    protected void onMinerButtonClick() {
-        actionController.updateCurrentUnit("miner");
-        updateControlsForUnit("miner");
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Click(R.id.buttonDropship)
-    protected void onDropshipButtonClick() {
-        actionController.updateCurrentUnit("dropship");
-        updateControlsForUnit("dropship");
-    }
-
-    private void updateControlsForUnit(String unit) {
-        System.out.println("Updating controls for unit: " + unit);
-        Button buttonEjectPowerUp = findViewById(R.id.buttonEject);
-        Button buttonMine = findViewById(R.id.buttonMine);
-        Button buttonUp = findViewById(R.id.buttonUp);
-        Button buttonDown = findViewById(R.id.buttonDown);
-        Button buttonLeft = findViewById(R.id.buttonLeft);
-        Button buttonRight = findViewById(R.id.buttonRight);
-        Button buttonFire = findViewById(R.id.buttonFire);
-
-        buttonMine.setVisibility(View.GONE);  // Hide mine button first
-
-        // Show buttons based on the selected unit
-        if ("miner".equals(unit)) {
-            buttonMine.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
-        } else if ("dropship".equals(unit)) {
-//            buttonFire.setVisibility(View.GONE);  // Dropships can fire.
-            buttonUp.setVisibility(View.VISIBLE);
-            buttonDown.setVisibility(View.VISIBLE);
-            buttonLeft.setVisibility(View.VISIBLE);
-            buttonRight.setVisibility(View.VISIBLE);
-            buttonFire.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
-        } else { // Tank
-            buttonUp.setVisibility(View.VISIBLE);
-            buttonDown.setVisibility(View.VISIBLE);
-            buttonLeft.setVisibility(View.VISIBLE);
-            buttonRight.setVisibility(View.VISIBLE);
-            buttonFire.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
-        }
-    }
-
-    // Method to update tank life value in TextView
-    @Override
-    public void onTankLifeUpdate(long life) {
-        runOnUiThread(() -> {
-            TextView tankLife = findViewById(R.id.textViewTankLife);
-            tankLife.setText("Tank Armor: " + life);
-        });
-    }
-
-    // Method to update miner life value in TextView
-    @Override
-    public void onMinerLifeUpdate(long life) {
-        runOnUiThread(() -> {
-            TextView minerLife = findViewById(R.id.textViewMinerLife);
-            minerLife.setText("Miner Armor: " + life);
-        });
-    }
-
-    // Method to update dropship life value in TextView
-    @Override
-    public void onDropshipLifeUpdate(long life) {
-        runOnUiThread(() -> {
-            TextView dropshipLife = findViewById(R.id.textViewDropshipLife);
-            dropshipLife.setText("Dropship Armor: " + life);
-        });
-    }
-
-    @Override
-    public void onPlayerCreditUpdate(long creditVal) {
-        runOnUiThread(() -> {
-            TextView dropshipLife = findViewById(R.id.textCreditsView);
-            dropshipLife.setText("Credits: " + creditVal);
-        });
-    }
-
-    @SuppressLint("NonConstantResourceId")
     @Click(R.id.buttonLeave)
     @Background
     void leaveGame() {
@@ -310,7 +272,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
                                     // minus 1000 credits from the player
                                     gameData.addPlayerCredits(-1000);
-                                    leaveAsync();
+                                    actionController.leaveAsync();
                                     Intent intent = new Intent(ClientActivity.this, TitleScreenActivity.class);
                                     startActivity(intent);
                                 }
@@ -328,18 +290,49 @@ public class ClientActivity extends Activity implements GameDataObserver {
         });
     }
 
+    @Click(R.id.buttonEject)
     @Background
-    void leaveAsync() {
-        System.out.println("Leave called, leaving game");
-        BackgroundExecutor.cancelAll("grid_poller_task", true);
-        actionController.leave();
+    protected void onButtonEjectPowerUp() {
+        System.out.println("Client ejecting power-up button pressed");
+        actionController.onButtonEjectPowerUp();
+    }
+
+    // ---------------------------------- Helper Methods ----------------------------------
+
+    @Override
+    public void onTankLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView tankLife = findViewById(R.id.textViewTankLife);
+            tankLife.setText(MessageFormat.format("Tank Armor: {0}", life));
+        });
     }
 
     @Override
-    public void onBackPressed() {
-        // super.onBackPressed();
-        // Not calling **super**, disables back button in current screen.
+    public void onMinerLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView minerLife = findViewById(R.id.textViewMinerLife);
+            minerLife.setText(MessageFormat.format("Miner Armor: {0}", life));
+        });
     }
+
+    @Override
+    public void onDropshipLifeUpdate(long life) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textViewDropshipLife);
+            dropshipLife.setText(MessageFormat.format("Dropship Armor: {0}", life));
+        });
+    }
+
+    @Override
+    public void onPlayerCreditUpdate(long creditVal) {
+        runOnUiThread(() -> {
+            TextView dropshipLife = findViewById(R.id.textCreditsView);
+            dropshipLife.setText(MessageFormat.format("Credits: {0}", creditVal));
+        });
+    }
+
+    @Override
+    public void onBackPressed() {}
 
     @AfterViews
     protected void afterViewInjection() {
@@ -348,37 +341,108 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridView.setAdapter(mGridAdapter);
     }
 
-    public void onGridItemTapped(int tappedX, int tappedY) {
-        this.tappedX = tappedX;
-        this.tappedY = tappedY;
-        System.out.println("GridItemTapped at: " + tappedX + ", " + tappedY);
-        showMoveToButton();
-    }
-
-    private void showMoveToButton() {
-        // Shows the "Move To" button
+    public void showMoveToButton() {
         Button moveToButton = findViewById(R.id.buttonMoveTo);
         moveToButton.setVisibility(View.VISIBLE);
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Click(R.id.buttonMoveTo)
-    protected void onMoveToButtonClick() {
+    private void updateControlsForUnit(String unit) {
+        System.out.println("Updating controls for unit: " + unit);
+        Button buttonEjectPowerUp = findViewById(R.id.buttonEject);
+        Button buttonMine = findViewById(R.id.buttonMine);
+        Button buttonUp = findViewById(R.id.buttonUp);
+        Button buttonDown = findViewById(R.id.buttonDown);
+        Button buttonLeft = findViewById(R.id.buttonLeft);
+        Button buttonRight = findViewById(R.id.buttonRight);
+        Button buttonFire = findViewById(R.id.buttonFire);
 
-        int selectedPosition = mGridAdapter.getSelectedPosition();
-        if (selectedPosition >= 0) {
-            int row = selectedPosition / 16;
-            int col = selectedPosition % 16;
-            // Update the grid model to place a flag at the selected position
-            actionController.moveToPosition(col, row);
+        buttonMine.setVisibility(View.GONE);  // Hide mine button first
 
-            Log.d("Flag", "Placed flag at " + row + ", " + col);
-        } else {
-            Log.d("Flag", "No grid cell selected.");
+        // Show buttons based on the selected unit
+        if ("miner".equals(unit)) {
+            buttonMine.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
+        } else if ("dropship".equals(unit)) {
+            buttonUp.setVisibility(View.VISIBLE);
+            buttonDown.setVisibility(View.VISIBLE);
+            buttonLeft.setVisibility(View.VISIBLE);
+            buttonRight.setVisibility(View.VISIBLE);
+            buttonFire.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
+        } else { // Tank
+            buttonUp.setVisibility(View.VISIBLE);
+            buttonDown.setVisibility(View.VISIBLE);
+            buttonLeft.setVisibility(View.VISIBLE);
+            buttonRight.setVisibility(View.VISIBLE);
+            buttonFire.setVisibility(View.VISIBLE);
+            buttonEjectPowerUp.setVisibility(View.VISIBLE);
         }
     }
 
-    public void clickEvent(View view) {
+    /**
+     * Flashes the back ground when a bullet is incoming
+     */
+    private void bulletIncoming(){
+        // Flash the background red
+        View rootView = getWindow().getDecorView().getRootView();
+        rootView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
 
+        // Reset the background color after a delay
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+        }, 100); // Change 100 to adjust the duration of the red flash
+    }
+
+
+    /**
+     * Used to start the collision checking from client side. run when joining.
+     */
+    private void startCollisionChecking() {
+        collisionTimer = new Timer();
+        collisionTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (gridModel.checkCollision()) {
+                    bulletIncoming();
+                }
+            }
+        }, 0, 1000); // Check every second (1000 milliseconds)
+    }
+
+    /**
+     * Used to stop the collision checking from client side. run when leaving.
+     */
+    private void stopCollisionChecking() {
+        if (collisionTimer != null) {
+            collisionTimer.cancel();
+            collisionTimer = null;
+        }
+    }
+
+    /**
+     * Otto has a limitation (as per design) that it will only find methods on the immediate
+     * class type. As a result, if at runtime this instance actually points to a subclass
+     * implementation, the methods registered in this class will not be found. This immediately
+     * becomes a problem when using the AndroidAnnotations framework as it always produces a
+     * subclass of annotated classes.
+     * <p>
+     * To get around the class hierarchy limitation, one can use a separate anonymous class to
+     * handle the events.
+
+     private Object gridEventHandler = new Object()
+     {
+     @Subscribe
+     public void onUpdateGrid(GridUpdateEvent event) {
+     updateGrid(event.gw);
+     }
+     };
+     */
+    @AfterInject
+    void afterInject() {
+        // initialize actioncontroller
+        actionController.initialize(this);
     }
 }

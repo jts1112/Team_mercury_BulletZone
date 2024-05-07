@@ -102,7 +102,7 @@ public class GridAdapter extends BaseAdapter {
                 if (context instanceof ClientActivity) {
                     Toast.makeText(context, "Clicked" + row.getId() + "!!",
                             Toast.LENGTH_SHORT).show();
-                    ((ClientActivity) context).onGridItemTapped(colX, rowY);
+                    ((ClientActivity) context).showMoveToButton();
                     selectedPosition = row.getId();
                 }
                 Log.d("Cell Clicked", "onClick: ");
