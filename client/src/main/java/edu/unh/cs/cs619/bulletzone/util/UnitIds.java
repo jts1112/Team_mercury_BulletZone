@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import edu.unh.cs.cs619.bulletzone.R;
+
 
 /**
  * Adapted into singleton pattern to be used as one copy of the
@@ -88,7 +90,25 @@ public class UnitIds {
         return minerIdSet.isEmpty() ? null : minerIdSet.iterator().next();
     }
 
-    // -------- Setters --------
+    public int getTankImageResource(long tankId) {
+        Integer resourceId = tankImageResources.get(tankId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.tank_icon_enemy;
+        }
+    }
+
+    public int getMinerImageResource(long minerId) {
+        Integer resourceId = minerImageResources.get(minerId);
+        if (resourceId != null) {
+            return resourceId;
+        } else {
+            return R.drawable.miner_icon_enemy;
+        }
+    }
+
+    // ---------------- Setters ----------------
 
     public void setIds(long dropshipId) {
         this.dropshipId = dropshipId;
@@ -111,6 +131,5 @@ public class UnitIds {
             minerImageResources.put(minerId, imageResource);
         }
     }
-
 
 }
