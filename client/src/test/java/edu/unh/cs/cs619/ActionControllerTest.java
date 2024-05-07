@@ -123,7 +123,7 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_Leave() {
         // Call the method to be tested
-
+        restClient.leave(123);
         // Verify that the restClient's leave method is called with the correct parameter
         verify(restClient).leave(123);
     }

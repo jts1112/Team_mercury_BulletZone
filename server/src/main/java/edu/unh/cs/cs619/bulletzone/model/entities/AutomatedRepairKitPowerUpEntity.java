@@ -17,6 +17,7 @@ public class AutomatedRepairKitPowerUpEntity extends PowerUpEntity {
 
     public AutomatedRepairKitPowerUpEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.AutomatedRepairKit;
     }
 
     @Override

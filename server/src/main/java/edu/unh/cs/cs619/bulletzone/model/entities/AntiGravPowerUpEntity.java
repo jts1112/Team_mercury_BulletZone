@@ -16,6 +16,7 @@ public class AntiGravPowerUpEntity extends PowerUpEntity {
 
     public AntiGravPowerUpEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.AntiGrav;
     }
 
     @Override

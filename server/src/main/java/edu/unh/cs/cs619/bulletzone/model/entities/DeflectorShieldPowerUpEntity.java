@@ -17,6 +17,7 @@ public class DeflectorShieldPowerUpEntity extends PowerUpEntity {
 
     public DeflectorShieldPowerUpEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.DeflectorShield;
     }
 
     @Override

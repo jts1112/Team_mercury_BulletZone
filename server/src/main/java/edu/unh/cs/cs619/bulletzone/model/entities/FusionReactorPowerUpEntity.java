@@ -18,6 +18,7 @@ public class FusionReactorPowerUpEntity extends PowerUpEntity {
 
     public FusionReactorPowerUpEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.FusionReactor;
     }
 
     @Override

@@ -17,6 +17,7 @@ public class PoweredDrillPowerUpEntity extends PowerUpEntity {
 
     public PoweredDrillPowerUpEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.PoweredDrill;
     }
 
     @Override

@@ -17,6 +17,7 @@ public class ThingamajigEntity extends PowerUpEntity {
 
     public ThingamajigEntity(int pos) {
         this.pos = pos;
+        this.type = PowerUpType.Thingamajig;
     }
 
     @Override
