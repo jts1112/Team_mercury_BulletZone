@@ -1,8 +1,6 @@
 package edu.unh.cs.cs619.bulletzone;
-import android.annotation.SuppressLint;
+
 import android.content.Context;
-import android.os.LimitExceededException;
-import android.util.Log;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -10,7 +8,6 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.greenrobot.eventbus.EventBus;
-import org.springframework.web.client.RestClientException;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import edu.unh.cs.cs619.bulletzone.events.CreditEvent;
-import edu.unh.cs.cs619.bulletzone.events.GameEvent;
 import edu.unh.cs.cs619.bulletzone.rest.BZRestErrorhandler;
 import edu.unh.cs.cs619.bulletzone.rest.BulletZoneRestClient;
 import edu.unh.cs.cs619.bulletzone.util.BooleanWrapper;
@@ -66,8 +62,17 @@ public class ActionController {
             long minerId = units.getResult2();
             long tankId = units.getResult3();
             Ids.setIds(dropshipId);
-            Ids.addTankId(tankId, R.drawable.tank_icon0);
-            Ids.addMinerId(minerId, R.drawable.miner_icon0);
+            int a = R.drawable.tank_icon_full0;
+            Integer[] tankImageResources = new Integer[3];
+            tankImageResources[0] = R.drawable.tank_icon_full0;
+            tankImageResources[1] = R.drawable.tank_icon_low0;
+            tankImageResources[2] = R.drawable.tank_icon_very_low0;
+            Ids.addTankId(tankId, tankImageResources);
+            Integer[] minerImageResources = new Integer[3];
+            minerImageResources[0] = R.drawable.miner_icon_full0;
+            minerImageResources[1] = R.drawable.miner_icon_low0;
+            minerImageResources[2] = R.drawable.miner_icon_very_low0;
+            Ids.addMinerId(minerId, minerImageResources);
             currentUnitId = Ids.getDropshipId();
             return currentUnitId;
         } catch (Exception ignored) {
@@ -133,14 +138,22 @@ public class ActionController {
         EventBus.getDefault().post(new CreditEvent(0));
     }
 
-    private int getNextTankImageResource() {
+    private Integer[] getNextTankImageResource() {
         int size = Ids.getTankIdSet().size();
-        return size < 6 ? R.drawable.tank_icon0 + size : R.drawable.tank_icon_enemy;
+        Integer[] imageResources = new Integer[3];
+        imageResources[0] = R.drawable.tank_icon_full0 + size;
+        imageResources[1] = R.drawable.tank_icon_low0 + size;
+        imageResources[2] = R.drawable.tank_icon_very_low0 + size;
+        return imageResources;
     }
 
-    private int getNextMinerImageResource() {
+    private Integer[] getNextMinerImageResource() {
         int size = Ids.getMinerIdSet().size();
-        return size < 6 ? R.drawable.miner_icon0 + size : R.drawable.miner_icon_enemy;
+        Integer[] imageResources = new Integer[3];
+        imageResources[0] = R.drawable.miner_icon_full0 + size;
+        imageResources[1] = R.drawable.miner_icon_low0 + size;
+        imageResources[2] = R.drawable.miner_icon_very_low0 + size;
+        return imageResources;
     }
 
 

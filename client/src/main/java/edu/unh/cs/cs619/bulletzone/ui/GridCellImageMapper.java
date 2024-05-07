@@ -102,47 +102,44 @@ public class GridCellImageMapper {
             int health = (cellValue % 10_000) / 10;
 
             if (Ids.getTankIdQueue().contains( (long) tankId)) {
-
-//                if (health <= 100 && health >= 51) { // full health
-//                    imageResource = R.drawable.tank_icon2full;
-//                } else if (health <= 50 && health >= 26) { // half health
-//                    imageResource = R.drawable.tank_icon2low;
-//                } else { // low health
-//                    imageResource = R.drawable.tank_icon2verylow;
-//                }
-
-                imageResource = Ids.getTankImageResource(tankId);
-            } else {
-
+                Integer[] imageResources = Ids.getTankImageResource(tankId);
                 if (health <= 100 && health >= 51) { // full health
-                    imageResource = R.drawable.tankicon4full;
+                    imageResource = imageResources[0];
                 } else if (health <= 50 && health >= 26) { // half health
-                    imageResource = R.drawable.tankicon4low;
+                    imageResource = imageResources[1];
                 } else { // low health
-                    imageResource = R.drawable.tankicon4verylow;
+                    imageResource = imageResources[2];
                 }
-
+            } else {
+                if (health <= 100 && health >= 51) { // full health
+                    imageResource = R.drawable.tank_icon_enemy_full0;
+                } else if (health <= 50 && health >= 26) { // half health
+                    imageResource = R.drawable.tank_icon_enemy_low0;
+                } else { // low health
+                    imageResource = R.drawable.tank_icon_enemy_very_low0;
+                }
 //                imageResource = R.drawable.tank_icon_enemy;
             }
         } else if (cellValue >= 20_000_000 && cellValue <= 30_000_000) { // Its a miner resource
             long minerId = (cellValue - 20_000_000) / 10_000;
             int health = (cellValue % 10_000) / 10;
             if (Ids.getMinerIdQueue().contains( (long) (cellValue - 20_000_000) / 10_000)) {
-                imageResource = Ids.getMinerImageResource(minerId);
-//                if (health <= 120 && health >= 61) { // full health
-//                    imageResource = R.drawable.miner1full;
-//                } else if (health <= 60 && health >= 30) { // half health
-//                    imageResource = R.drawable.miner1low;
-//                } else { // low health
-//                    imageResource = R.drawable.miner1verylow;
-//                }
+                Integer[] imageResources = Ids.getMinerImageResource(minerId);
+
+                if (health <= 120 && health >= 61) { // full health
+                    imageResource = imageResources[0];
+                } else if (health <= 60 && health >= 30) { // half health
+                    imageResource = imageResources[1];
+                } else { // low health
+                    imageResource = imageResources[2];
+                }
             } else {
                 if (health <= 120 && health >= 61) { // full health
-                    imageResource = R.drawable.miner2full;
+                    imageResource = R.drawable.miner_enemy_full0;
                 } else if (health <= 60 && health >= 30) { // half health
-                    imageResource = R.drawable.miner2low;
+                    imageResource = R.drawable.miner_enemy_low0;
                 } else { // low health
-                    imageResource = R.drawable.miner2verylow;
+                    imageResource = R.drawable.miner_enemy_very_low0;
                 }
 //                imageResource = R.drawable.miner_icon_enemy;
             }

@@ -90,29 +90,34 @@ public class GridModel {
         return grid3d;
     }
 
-    public int getResourceValue(long controlledUnitId) {
-        int resourceVal = 0;
+    public Integer[] getResourceValue(long controlledUnitId) {
+        Integer[] resourceVal = {0};
 
         if (ids.getTankIdSet().contains(controlledUnitId)) {
             return ids.tankImageResources.get(controlledUnitId);
         } else if (ids.getMinerIdSet().contains(controlledUnitId)) {
             return ids.minerImageResources.get(controlledUnitId);
-        } else if (ids.getDropshipId() == controlledUnitId){
-            return R.drawable.dropship1;
-        } else { // Error
+        } else {
             return resourceVal;
         }
     }
 
     public GridCell[][] getLayerGrid() {
-        int resourceValue = getResourceValue(ids.getControlledUnitId());
+        long controlledUnitId = ids.getControlledUnitId();
+        int dropshipResource = -1;
+        if (ids.getDropshipId() == controlledUnitId){
+             dropshipResource = R.drawable.dropship1;
+        }
+        Integer[] resourceValueArray = getResourceValue(controlledUnitId);
 
         for (int k = 0; k < grid3d.length; k++) {
             for (int i = 0; i < grid3d[k].length; i++) {
                 for (int j = 0; j < grid3d[k][i].length; j++) {
                     int entityResourceVal = grid3d[k][i][j].getEntityResourceID();
-                    if (entityResourceVal == resourceValue) {
-                        return grid3d[k];
+                    for (Integer resourceValue : resourceValueArray) {
+                        if (entityResourceVal == resourceValue || entityResourceVal == dropshipResource) {
+                            return grid3d[k];
+                        }
                     }
                 }
             }
@@ -121,14 +126,21 @@ public class GridModel {
     }
 
     public GridCell getCurrentUnit() {
-        int resourceValue = getResourceValue(ids.getControlledUnitId());
+        long controlledUnitId = ids.getControlledUnitId();
+        int dropshipResource = -1;
+        if (ids.getDropshipId() == controlledUnitId){
+            dropshipResource = R.drawable.dropship1;
+        }
+        Integer[] resourceValueArray = getResourceValue(controlledUnitId);
 
         for (int k = 0; k < grid3d.length; k++) {
             for (int i = 0; i < grid3d[k].length; i++) {
                 for (int j = 0; j < grid3d[k][i].length; j++) {
                     int entityResourceVal = grid3d[k][i][j].getEntityResourceID();
-                    if (entityResourceVal == resourceValue) {
-                        return grid3d[k][i][j];
+                    for (Integer resourceValue : resourceValueArray) {
+                        if (entityResourceVal == resourceValue || entityResourceVal == dropshipResource) {
+                            return grid3d[k][i][j];
+                        }
                     }
                 }
             }

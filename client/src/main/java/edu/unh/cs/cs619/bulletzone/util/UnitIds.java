@@ -24,8 +24,8 @@ public class UnitIds {
     private Set<Long> tankIdSet = new LinkedHashSet<>();
     private Set<Long> minerIdSet = new LinkedHashSet<>();
 
-    public Map<Long, Integer> tankImageResources = new HashMap<>();
-    public Map<Long, Integer> minerImageResources = new HashMap<>();
+    public Map<Long, Integer[]> tankImageResources = new HashMap<>();
+    public Map<Long, Integer[]> minerImageResources = new HashMap<>();
 
     private long dropshipId = -1;
 
@@ -90,22 +90,12 @@ public class UnitIds {
         return minerIdSet.isEmpty() ? null : minerIdSet.iterator().next();
     }
 
-    public int getTankImageResource(long tankId) {
-        Integer resourceId = tankImageResources.get(tankId);
-        if (resourceId != null) {
-            return resourceId;
-        } else {
-            return R.drawable.tank_icon_enemy;
-        }
+    public Integer[] getTankImageResource(long tankId) {
+        return tankImageResources.get(tankId);
     }
 
-    public int getMinerImageResource(long minerId) {
-        Integer resourceId = minerImageResources.get(minerId);
-        if (resourceId != null) {
-            return resourceId;
-        } else {
-            return R.drawable.miner_icon_enemy;
-        }
+    public Integer[] getMinerImageResource(long minerId) {
+        return minerImageResources.get(minerId);
     }
 
     // ---------------- Setters ----------------
@@ -118,17 +108,17 @@ public class UnitIds {
         this.controlledUnitId = controlledUnitId;
     }
 
-    public void addTankId(long tankId, int imageResource) {
+    public void addTankId(long tankId, Integer[] imageResources) {
         if (tankIdSet.add(tankId)) {
             tankIds.add(tankId);
-            tankImageResources.put(tankId, imageResource);
+            tankImageResources.put(tankId, imageResources);
         }
     }
 
-    public void addMinerId(long minerId, int imageResource) {
+    public void addMinerId(long minerId, Integer[] imageResources) {
         if (minerIdSet.add(minerId)) {
             minerIds.add(minerId);
-            minerImageResources.put(minerId, imageResource);
+            minerImageResources.put(minerId, imageResources);
         }
     }
 
