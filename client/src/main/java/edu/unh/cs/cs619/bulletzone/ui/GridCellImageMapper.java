@@ -149,6 +149,7 @@ public class GridCellImageMapper {
 
                 if (health <= 300 && health >= 151) { // full health
                     imageResource = R.drawable.dropship2full;
+
                 } else if (health <= 150 && health >= 76) { // half health
                     imageResource = R.drawable.dropship2low;
                 } else { // low health

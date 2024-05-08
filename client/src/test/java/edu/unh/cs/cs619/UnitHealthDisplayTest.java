@@ -2,10 +2,19 @@ package edu.unh.cs.cs619;
 
 import edu.unh.cs.cs619.bulletzone.R;
 import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
+import edu.unh.cs.cs619.bulletzone.util.UnitIds;
+
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class UnitHealthDisplayTest {
+
+    @Before
+    public void setup() {
+        UnitIds ids = UnitIds.getInstance();
+        ids.setIds(1L);
+    }
 
     @Test
     public void testOtherTankFullHealth() {
@@ -114,7 +123,7 @@ public class UnitHealthDisplayTest {
         GridCellImageMapper mapper = GridCellImageMapper.getInstance();
 
         // Simulate a cell value representing another dropship with full health
-        int cellValue = 30002500; // Other dropship, full health
+        int cellValue = 30002800; // Other dropship, full health
 
         // Expected image resource for full health
         int expectedImageResource = R.drawable.dropship2full;
@@ -131,7 +140,7 @@ public class UnitHealthDisplayTest {
         GridCellImageMapper mapper = GridCellImageMapper.getInstance();
 
         // Simulate a cell value representing another dropship with half health
-        int cellValue = 30001500; // Other dropship, half health
+        int cellValue = 30000900; // Other dropship, half health
 
         // Expected image resource for half health
         int expectedImageResource = R.drawable.dropship2low;
@@ -148,7 +157,7 @@ public class UnitHealthDisplayTest {
         GridCellImageMapper mapper = GridCellImageMapper.getInstance();
 
         // Simulate a cell value representing another dropship with low health
-        int cellValue = 30000100; // Other dropship, low health
+        int cellValue = 30000500; // Other dropship, low health
 
         // Expected image resource for low health
         int expectedImageResource = R.drawable.dropship2verylow;
