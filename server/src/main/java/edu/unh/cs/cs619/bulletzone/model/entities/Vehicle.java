@@ -4,4 +4,5 @@ public interface Vehicle {
     public Boolean isWheeled();
 
     public Boolean isTracked();
+
 }
