@@ -62,7 +62,6 @@ public class ActionController {
             long minerId = units.getResult2();
             long tankId = units.getResult3();
             Ids.setIds(dropshipId);
-            int a = R.drawable.tank_icon_full0;
             Integer[] tankImageResources = new Integer[3];
             tankImageResources[0] = R.drawable.tank_icon_full0;
             tankImageResources[1] = R.drawable.tank_icon_low0;
@@ -186,6 +185,10 @@ public class ActionController {
 
     public void onButtonMine() {
         restClient.mine(Ids.getControlledUnitId());
+    }
+
+    public void onButtonCheat() {
+        EventBus.getDefault().post(new CreditEvent(1000));
     }
 
     // ---------------------------------- Bottom Row Buttons ----------------------------------

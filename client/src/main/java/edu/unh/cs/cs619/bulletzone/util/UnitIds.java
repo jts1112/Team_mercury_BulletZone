@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import edu.unh.cs.cs619.bulletzone.R;
-
 
 /**
  * Adapted into singleton pattern to be used as one copy of the
@@ -121,5 +119,4 @@ public class UnitIds {
             minerImageResources.put(minerId, imageResources);
         }
     }
-
 }
