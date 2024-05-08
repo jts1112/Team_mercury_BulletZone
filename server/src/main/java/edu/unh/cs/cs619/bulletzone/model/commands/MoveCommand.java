@@ -1,6 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.core.Entity;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.Game;
@@ -16,6 +17,8 @@ import edu.unh.cs.cs619.bulletzone.model.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import edu.unh.cs.cs619.bulletzone.repository.InMemoryGameRepository;
 import org.greenrobot.eventbus.EventBus;
+
+import javax.sound.midi.Track;
 
 import edu.unh.cs.cs619.bulletzone.model.events.TurnEvent;
 
@@ -89,11 +92,12 @@ public class MoveCommand implements Command {
             System.out.println("Move Case 1 !nextField.isPresent()=" + !nextField.isPresent() + "   difficulty=" + difficulty);
             int oldPos = entity.getPosition();
             FieldEntity parentEntity = parent.getEntity();
-            if (parentEntity instanceof Dropship dropship) {
-                if (entity instanceof Tank tank) {
-                    dropship.undockTank(tank);
-                } else if (entity instanceof Miner miner) {
-                    dropship.undockMiner(miner);
+            if (parentEntity.isImmobile()) {
+                Dropship dropship = (Dropship) parentEntity;
+                if (entity.isTracked()) {
+                    dropship.undockTank((Tank) entity);
+                } else if (entity.isWheeled()) {
+                    dropship.undockMiner((Miner) entity);
                 }
             } else {
                 parent.clearField();
@@ -113,13 +117,14 @@ public class MoveCommand implements Command {
 
 
 
-            if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship
+            if (nextEntity.isImmobile()) { // Move the entity into the Dropship
                 System.out.println("Move Case 2a");
+                Dropship dropship = (Dropship) nextEntity;
                 parent.clearField();
-                if (entity instanceof Tank tank) {
-                    dropship.dockTank(tank);
-                } else if (entity instanceof Miner miner) {
-                    dropship.dockMiner(miner);
+                if (entity.isTracked()) {
+                    dropship.dockTank((Tank)entity);
+                } else if (entity.isWheeled()) {
+                    dropship.dockMiner((Miner) entity);
                 }
 
                 int oldPos = entity.getPosition();
@@ -230,11 +235,12 @@ public class MoveCommand implements Command {
             System.out.println("Move Case 1 !nextField.isPresent()=" + !nextField.isPresent() + "   difficulty=" + difficulty);
             int oldPos = entity.getPosition();
             FieldEntity parentEntity = parent.getEntity();
-            if (parentEntity instanceof Dropship dropship) {
-                if (entity instanceof Tank tank) {
-                    dropship.undockTank(tank);
-                } else if (entity instanceof Miner miner) {
-                    dropship.undockMiner(miner);
+            if (parentEntity.isImmobile()) {
+                Dropship dropship = (Dropship) parentEntity;
+                if (entity.isTracked()) {
+                    dropship.undockTank((Tank)entity);
+                } else if (entity.isWheeled()) {
+                    dropship.undockMiner((Miner) entity);
                 }
             } else {
                 parent.clearField();
@@ -252,15 +258,13 @@ public class MoveCommand implements Command {
             System.out.println("Move Case 2");
             FieldEntity nextEntity = nextField.getEntity(); // TODO OLD
 
-
-
             if (nextEntity instanceof Dropship dropship) { // Move the entity into the Dropship
                 System.out.println("Move Case 2a");
                 parent.clearField();
-                if (entity instanceof Tank tank) {
-                    dropship.dockTank(tank);
-                } else if (entity instanceof Miner miner) {
-                    dropship.dockMiner(miner);
+                if (entity.isTracked()) {
+                    dropship.dockTank((Tank)entity);
+                } else if (entity.isWheeled()) {
+                    dropship.dockMiner((Miner) entity);
                 }
 
                 int oldPos = entity.getPosition();

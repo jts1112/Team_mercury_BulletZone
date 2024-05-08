@@ -331,10 +331,15 @@ public class GameBoardBuilder {
             takenIndices.add(squared + i);
         }
         int[] wallIndices = {1, 17, 34, 35, 51, 5, 21, 37, 53, 7, 23, 39, 8, 40, 9, 41, 73};
+        int[] rockIndices = {257, 298, 397, 398, 399, 469, 689, 688, 687, 671, 523, 524, 534, 601};
         int[] destructibleWallIndices = {33, 106, 69, 71, 72};
 
         for (int index : wallIndices) {
             newBoard.setWall(index);
+        }
+
+        for (int index : rockIndices) {
+            newBoard.setRock(index);
         }
 
         for (int index : destructibleWallIndices) {

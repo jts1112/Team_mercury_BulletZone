@@ -1,6 +1,9 @@
 package edu.unh.cs.cs619.bulletzone.model.powerUps;
 
+import org.greenrobot.eventbus.EventBus;
+
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
+import edu.unh.cs.cs619.bulletzone.model.events.DamageEvent;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,6 +46,7 @@ public class AutomatedRepairKitPowerUp extends TimedPowerUpDecorator {
                     } else if (affectedEntity.getLife() < affectedEntity.getMaxLife()) {
                         System.out.println("Healing " + affectedEntity.toString() + " for " + interval);
                         affectedEntity.setLife(affectedEntity.getLife() + interval);
+                        EventBus.getDefault().post(new DamageEvent(affectedEntity.getPosition(), affectedEntity.getIntValue()));
                         System.out.println("health now at " + affectedEntity.getLife());
                     }
                 }

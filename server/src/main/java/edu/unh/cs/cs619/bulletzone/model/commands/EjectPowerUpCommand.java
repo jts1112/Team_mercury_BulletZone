@@ -3,12 +3,14 @@ package edu.unh.cs.cs619.bulletzone.model.commands;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 public class EjectPowerUpCommand implements Command {
@@ -35,9 +37,9 @@ public class EjectPowerUpCommand implements Command {
             return false;
         }
 
-        if (entity.getParent().getEntity() instanceof Dropship dropship) {
+        if (entity.getParent().getEntity().isImmobile()) {
             // Unit in dropship, transfer power-up
-
+            Dropship dropship = (Dropship) entity.getParent().getEntity(); // TODO added
             dropship.pickupPowerUp(powerUp.get().getType());
         } else {
             // vehicle is not docked, eject to surrounding tile if possible
