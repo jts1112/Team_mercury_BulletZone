@@ -51,12 +51,9 @@ public class DropshipControlState implements ControlState {
         buttonRight.setText("Turn Right");
         buttonUp.setText("Turn Up");
         buttonDown.setText("Turn Down");
-
-        updateControlConditions(surroundingCells);
     }
 
     @Override
     public void updateControlConditions(GridCell[] surroundingCells) {
-        // Logic for updating control conditions for dropship unit
     }
 }
