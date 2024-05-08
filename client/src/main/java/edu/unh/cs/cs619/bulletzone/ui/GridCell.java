@@ -10,13 +10,15 @@ public class GridCell {
     private int entityRotation;
     private int row;
     private int col;
+    private int layer;
 
-    public GridCell(int terrainValue, int entityValue, int row, int col) {
+    public GridCell(int terrainValue, int entityValue, int row, int col, int layer) {
         this.terrainResourceID = terrainValue;
         this.entityResourceID = entityValue;
         this.entityRotation = 0;
         this.row = row;
         this.col = col;
+        this.layer = layer;
     }
 
     // Constructor to create GridCell object from JSON
@@ -54,6 +56,9 @@ public class GridCell {
 
     public int getCol() {
         return col;
+    }
+    public int getLayer() {
+        return layer;
     }
 
     public void setRotationForValue(int rawValue) {

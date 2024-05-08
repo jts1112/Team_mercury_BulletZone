@@ -28,20 +28,6 @@ public class GridModel {
         }
     }
 
-//    public void updateGrid(int[][] newData, int[][] newTerrainData) {
-//        rawData = newData;
-//        grid = new GridCell[16][16];
-//        for (int i = 0; i < newData.length; i++) {
-//            for (int j = 0; j < newData[0].length; j++) {
-//                int terrainResource = mapper.getTerrainImageResource(newTerrainData[i][j]);
-//                int entityResource = mapper.getEntityImageResource(newData[i][j]);
-//                GridCell cell = new GridCell(terrainResource, entityResource, i, j);
-//                cell.setRotationForValue(newData[i][j]);
-//                grid[i][j] = cell;
-//            }
-//        }
-//    }
-
     public void initializeGrid3d(int[][][] newData, int[][][] newTerrainData) {
         int layers = 3;
         rawData3d = newData;
@@ -51,7 +37,7 @@ public class GridModel {
                 for (int j = 0; j < newData[0][0].length; j++) {
                     int terrainResource = mapper.getTerrainImageResource(newTerrainData[k][i][j]);
                     int entityResource = mapper.getEntityImageResource(newData[k][i][j]);
-                    GridCell cell = new GridCell(terrainResource, entityResource, i, j);
+                    GridCell cell = new GridCell(terrainResource, entityResource, i, j, k);
                     cell.setRotationForValue(newData[k][i][j]);
                     grid3d[k][i][j] = cell;
                 }
@@ -193,6 +179,32 @@ public class GridModel {
         return false;
     }
 
+    public GridCell[] getSurroundingCells() {
+        GridCell[] surroundingCells = new GridCell[5];
+        GridCell unit = getCurrentUnit();
+        if (unit == null) {
+            return null;
+        }
+        int row = unit.getRow();
+        int col = unit.getCol();
+        int prevRow = row - 1;
+        int prevCol = col - 1;
+        if (row == 0) {
+            prevRow = 15;
+        }
+        if (col == 0) {
+            prevCol = 15;
+        }
+        int layer = unit.getLayer();
+
+        surroundingCells[0] = unit;
+        surroundingCells[1] = grid3d[layer][(prevRow) % 16][col]; // up down left right
+        surroundingCells[2] = grid3d[layer][(row + 1) % 16][col];
+        surroundingCells[3] = grid3d[layer][row][(prevCol) % 16];
+        surroundingCells[4] = grid3d[layer][row][(col + 1) % 16];
+
+        return surroundingCells;
+    }
 
 
 }
