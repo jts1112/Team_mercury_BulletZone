@@ -1,9 +1,10 @@
 package edu.unh.cs.cs619.bulletzone.events;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Comparator;
+
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
 
 //This class is adapted from group Alpha's project from 2020, courtesy Gersi Doko
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -13,7 +14,8 @@ import java.util.Comparator;
         @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
         @JsonSubTypes.Type(name = "turn", value = TurnEvent.class),
-        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class)
+        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class),
+        @JsonSubTypes.Type(name = "entrance", value = EntranceEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;
@@ -48,7 +50,7 @@ public abstract class GameEvent {
         return e1Time.compareTo(e2Time);
     };
 
-    abstract void applyTo(int [][]board);
+    public abstract void applyTo(GridCell[][][] board);
 
     @Override
     public String toString() {

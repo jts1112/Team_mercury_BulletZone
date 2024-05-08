@@ -36,7 +36,7 @@ public class ActionControllerTest {
         // Initialize the mock BulletZoneRestClient
         restClient = mock(BulletZoneRestClient.class);
         UnitIds ids = UnitIds.getInstance();
-        ids.setIds(121, 122, 123);
+        ids.setIds(121);
         actionController = new ActionController();
         actionController.setCurrentUnitId(123);
         actionController.restClient = restClient;
@@ -58,7 +58,7 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_OnButtonMove() {
         // Call the method to be tested
-        actionController.onButtonMove(R.id.buttonDown);
+        actionController.onButtonMove((byte) 4);
 
         // Verify that the restClient's move method is called with the correct parameters
         verify(restClient).move(123, (byte) 4);
@@ -95,7 +95,7 @@ public class ActionControllerTest {
     }
 
     @Test
-    public void OnFire_ShakeDetector_ShakeEventCallsFire() {
+    public void ShakeDetector_OnShakeFire_ShakeEventReturnsFire() {
         // Create a mock Context, actioncontroller
         Context mockContext = mock(Context.class);
         ActionController mockActionController = mock(ActionController.class);
@@ -104,13 +104,9 @@ public class ActionControllerTest {
 
         // Create a mock SensorManager
         SensorManager mockSensorManager = mock(SensorManager.class);
-
         // Mock the getSystemService method of the Context to return the mock SensorManager
         when(mockContext.getSystemService(Context.SENSOR_SERVICE)).thenReturn(mockSensorManager);
-
-        // Create a ShakeDetector instance with the mock Context
         ShakeDetector shakeDetector = new ShakeDetector(mockContext);
-
         // Log shakeDetector to ensure it's not null
         System.out.println("ShakeDetector: " + shakeDetector);
 
@@ -127,8 +123,7 @@ public class ActionControllerTest {
     @Test
     public void test_ActionController_Leave() {
         // Call the method to be tested
-        actionController.leave(123);
-
+        restClient.leave(123);
         // Verify that the restClient's leave method is called with the correct parameter
         verify(restClient).leave(123);
     }

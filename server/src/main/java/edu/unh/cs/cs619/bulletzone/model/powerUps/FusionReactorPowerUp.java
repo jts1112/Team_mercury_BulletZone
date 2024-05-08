@@ -7,7 +7,7 @@ public class FusionReactorPowerUp extends PowerUpDecorator {
      * @param powerUp parent powerup
      */
     public FusionReactorPowerUp(PowerUpComponent powerUp) {
-        super(powerUp, PowerUpType.FusionReactor);
+        super(powerUp, PowerUpType.FusionReactor, 400);
     }
 
     @Override

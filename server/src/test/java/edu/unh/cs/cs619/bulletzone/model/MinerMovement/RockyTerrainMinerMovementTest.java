@@ -8,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
 /**
@@ -77,8 +76,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -96,8 +95,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -115,8 +114,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -134,8 +133,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -154,8 +153,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -173,8 +172,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -192,8 +191,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -211,8 +210,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -231,8 +230,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -250,8 +249,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -269,8 +268,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -288,8 +287,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -308,8 +307,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -327,8 +326,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -346,8 +345,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -365,8 +364,8 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -388,14 +387,14 @@ public class RockyTerrainMinerMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertFalse(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -408,15 +407,17 @@ public class RockyTerrainMinerMovementTest {
     public void execute_FacingWallMove_ReturnsFalse() {
         miner.setDirection(Direction.Down);
 
-        // add wall below miner
+        // add wall below tank
         FieldHolder fieldElementBelow = game.getHolderGrid().get(3 * 16 + 2);
-        fieldElementBelow.setFieldEntity(new Wall(1000, 3 * 16 + 2));
+        Wall wall = new Wall(1000, 3 * 16 + 2);
+        fieldElementBelow.setFieldEntity(wall);
+        wall.setParent(fieldElementBelow);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(miner));
-        } catch(TankDoesNotExistException e) {
+            assertFalse(moveCommand.execute2(miner, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 

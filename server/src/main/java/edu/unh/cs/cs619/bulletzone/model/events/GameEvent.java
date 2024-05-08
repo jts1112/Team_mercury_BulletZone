@@ -1,5 +1,4 @@
 package edu.unh.cs.cs619.bulletzone.model.events;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -13,7 +12,8 @@ import java.util.Comparator;
         @JsonSubTypes.Type(name = "spawn", value = SpawnEvent.class),
         @JsonSubTypes.Type(name = "damage", value = DamageEvent.class),
         @JsonSubTypes.Type(name = "remove", value = RemovalEvent.class),
-        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class)
+        @JsonSubTypes.Type(name = "credit", value = CreditEvent.class),
+        @JsonSubTypes.Type(name = "entrance", value = EntranceEvent.class)
 })
 public abstract class GameEvent {
     private long timeStamp;

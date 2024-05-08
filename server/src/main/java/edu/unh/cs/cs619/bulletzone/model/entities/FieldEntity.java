@@ -7,6 +7,10 @@ public abstract class FieldEntity {
     protected Direction direction;
     protected long lastMoveTime;
     protected int allowedMoveInterval;
+    protected boolean isImmobile;
+    protected boolean isTracked;
+    protected boolean isWheeled;
+    protected boolean isUsable;
 
     /**
      * Serializes the current {@link FieldEntity} instance.
@@ -14,6 +18,10 @@ public abstract class FieldEntity {
      * @return Integer representation of the current {@link FieldEntity}
      */
     public abstract int getIntValue();
+
+    public int getLife() {
+        return 0;
+    }
 
     public FieldHolder getParent() {
         return parent;
@@ -56,5 +64,21 @@ public abstract class FieldEntity {
 
     public void setAllowedMoveInterval(int allowedMoveInterval) {
         this.allowedMoveInterval = allowedMoveInterval;
+    }
+
+    public boolean isImmobile() {
+        return isImmobile;
+    }
+
+    public Boolean isTracked() {
+        return isTracked;
+    }
+
+    public Boolean isWheeled() {
+        return isWheeled;
+    }
+
+    public boolean isUsable() {
+        return isUsable;
     }
 }

@@ -5,19 +5,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Optional;
-
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.commands.MoveCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
-import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
-import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
-import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
-import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import edu.unh.cs.cs619.bulletzone.model.entities.Wall;
 
 /**
@@ -82,8 +76,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1L, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -107,8 +101,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1L, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -125,8 +119,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -144,8 +138,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -164,8 +158,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -183,8 +177,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -202,8 +196,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -221,8 +215,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -241,8 +235,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -260,8 +254,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -279,8 +273,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -298,8 +292,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -318,8 +312,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -337,8 +331,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -356,8 +350,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -375,8 +369,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -398,14 +392,14 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertFalse(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -425,8 +419,8 @@ public class RockyTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(dropship, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 

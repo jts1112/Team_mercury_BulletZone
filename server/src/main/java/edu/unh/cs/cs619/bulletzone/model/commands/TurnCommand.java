@@ -1,7 +1,7 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 
 public class TurnCommand implements Command {
@@ -21,12 +21,12 @@ public class TurnCommand implements Command {
     /**
      * Runs code from turnMethod that was found in InMemoryGameRepository.
      * @return True if Success and False if Failure.
-     * @throws TankDoesNotExistException If Tank does not exist.
+     * @throws EntityDoesNotExistException If Tank does not exist.
      */
-    public Boolean execute(PlayableEntity playableEntity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity playableEntity) throws EntityDoesNotExistException {
         if (playableEntity == null) {
             //Log.i(TAG, "Cannot find user with id: " + tankId);
-            throw new TankDoesNotExistException(playableEntityId);
+            throw new EntityDoesNotExistException(playableEntityId);
         }
 
         long milliseconds = System.currentTimeMillis();

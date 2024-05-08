@@ -5,7 +5,7 @@ import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
 import edu.unh.cs.cs619.bulletzone.model.IllegalTransitionException;
 import edu.unh.cs.cs619.bulletzone.model.LimitExceededException;
 import edu.unh.cs.cs619.bulletzone.model.Game;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 
 public interface GameRepository {
 
@@ -14,24 +14,26 @@ public interface GameRepository {
     Game getGame();
 
     boolean move(long entityId, Direction direction)
-            throws TankDoesNotExistException, IllegalTransitionException, LimitExceededException;
+            throws EntityDoesNotExistException, IllegalTransitionException, LimitExceededException;
 
     boolean fire(long tankId, int strength)
-            throws TankDoesNotExistException, LimitExceededException;
+            throws EntityDoesNotExistException, LimitExceededException;
 
-    void mine(long minerId) throws TankDoesNotExistException;
+    void mine(long minerId) throws EntityDoesNotExistException;
 
-    boolean ejectPowerUp(long playableEntityId) throws TankDoesNotExistException;
+    boolean dig(long playableEntityId) throws EntityDoesNotExistException;
+
+    boolean ejectPowerUp(long playableEntityId) throws EntityDoesNotExistException;
 
     public void leave(long tankId)
-            throws TankDoesNotExistException;
+            throws EntityDoesNotExistException;
 
-    public void moveTo(long entityId, int targetX, int targetY) throws TankDoesNotExistException, InterruptedException;
+    public void moveTo(long entityId, int targetX, int targetY) throws EntityDoesNotExistException, InterruptedException;
 
         // New ⬇️⬇️
-    long spawnMiner(long dropshipId)
-            throws TankDoesNotExistException, LimitExceededException;
+    long spawnMiner(long dropshipId, int limit)
+            throws EntityDoesNotExistException, LimitExceededException;
 
-    long spawnTank(long dropshipId)
-            throws TankDoesNotExistException, LimitExceededException;
+    long spawnTank(long dropshipId, int limit)
+            throws EntityDoesNotExistException, LimitExceededException;
 }

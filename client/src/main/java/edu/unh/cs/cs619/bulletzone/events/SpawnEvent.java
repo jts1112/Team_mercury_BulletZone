@@ -2,11 +2,16 @@ package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
+
 public class SpawnEvent extends GameEvent {
     @JsonProperty
     private int rawServerValue;
     @JsonProperty
     private int position;
+
+    GridCellImageMapper mapper;
 
     public SpawnEvent() {}
 
@@ -21,8 +26,14 @@ public class SpawnEvent extends GameEvent {
     /*
      Public only for testing.
     */
-    public void applyTo(int[][] board) {
-        board[position / 16][position % 16] = rawServerValue;
+    public void applyTo(GridCell[][][] board) {
+        this.mapper = GridCellImageMapper.getInstance();
+        int layerPos = position % 256;
+        GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
+        if (cell.getEntityResourceID() == 0) {
+            cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
+            cell.setRotationForValue(rawServerValue);
+        }
     }
 
     @Override
@@ -31,5 +42,4 @@ public class SpawnEvent extends GameEvent {
                 " at " + position +
                 super.toString();
     }
-
 }

@@ -3,12 +3,18 @@ package edu.unh.cs.cs619.bulletzone.model.powerUps;
 import edu.unh.cs.cs619.bulletzone.model.Direction;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.commands.EjectPowerUpCommand;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PowerUpComponentTest {
@@ -96,5 +102,40 @@ public class PowerUpComponentTest {
         tank.pickupPowerUp(PowerUpType.FusionReactor);
         tank.pickupPowerUp(PowerUpType.AntiGrav);
         assertEquals(350, tank.getAllowedFireInterval());
+    }
+
+    @Test
+    public void timedAction_AutomatedRepairKit_Heal1PerSecTillFull() {
+        tank.hit(5);
+
+        int currentHealth = tank.getLife();
+        int lastHealth = tank.getLife();
+        int count = 0;
+
+        tank.pickupPowerUp(PowerUpType.AutomatedRepairKit);
+        while (currentHealth < tank.getMaxLife() && ++count < 5000) {
+            int healthChange = currentHealth - lastHealth;
+            assertTrue(healthChange == 1 || healthChange == 0);
+            lastHealth = currentHealth;
+            currentHealth = tank.getLife();
+            try {
+                sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Test
+    public void timedAction_DeflectorShield_Recharge1PerSecTillFull() {
+        tank.pickupPowerUp(PowerUpType.DeflectorShield);
+        tank.hit(5);
+
+        assertEquals(tank.getMaxLife(), tank.getLife());
+
+        tank.hit(50);
+
+        // delta due to random timing differences allowing for the shield to regenerate 1 point sometimes, thanks reality :)
+        assertEquals((double) (tank.getMaxLife() - 5), (double) tank.getLife(), 1.0);
     }
 }

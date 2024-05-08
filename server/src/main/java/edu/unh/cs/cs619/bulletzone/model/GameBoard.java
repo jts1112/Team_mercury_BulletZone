@@ -37,28 +37,38 @@ public class GameBoard {
                 board = new ArrayList<FieldHolder>();
             }
 
-            for (int i = 0; i < fieldDimension * fieldDimension; i++) {
+            // three distinct layers
+            for (int i = 0; i < fieldDimension * fieldDimension * 3; i++) {
                 board.add(new FieldHolder(i));
             }
 
             FieldHolder targetHolder;
             FieldHolder rightHolder;
             FieldHolder downHolder;
+            FieldHolder belowHolder;
 
             // Build connections
-            for (int i = 0; i < fieldDimension; i++) {
-                for (int j = 0; j < fieldDimension; j++) {
-                    targetHolder = board.get(i * fieldDimension + j);
-                    rightHolder = board.get(i * fieldDimension
-                            + ((j + 1) % fieldDimension));
-                    downHolder = board.get(((i + 1) % fieldDimension)
-                            * fieldDimension + j);
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        targetHolder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        rightHolder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension
+                                + ((j + 1) % fieldDimension));
+                        downHolder = board.get((k * fieldDimension * fieldDimension) + ((i + 1) % fieldDimension)
+                                * fieldDimension + j);
 
-                    targetHolder.addNeighbor(Direction.Right, rightHolder);
-                    rightHolder.addNeighbor(Direction.Left, targetHolder);
+                        if (k < 2) {
+                            belowHolder = board.get(((k + 1) * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                            targetHolder.addNeighbor(Direction.Below, belowHolder);
+                            belowHolder.addNeighbor(Direction.Above, targetHolder);
+                        }
 
-                    targetHolder.addNeighbor(Direction.Down, downHolder);
-                    downHolder.addNeighbor(Direction.Up, targetHolder);
+                        targetHolder.addNeighbor(Direction.Right, rightHolder);
+                        rightHolder.addNeighbor(Direction.Left, targetHolder);
+
+                        targetHolder.addNeighbor(Direction.Down, downHolder);
+                        downHolder.addNeighbor(Direction.Up, targetHolder);
+                    }
                 }
             }
         }
@@ -147,6 +157,47 @@ public class GameBoard {
                     }
                 }
             }
+        }
+
+        return grid;
+    }
+
+    public int[][][] getTerrain3DGrid(){
+        int[][][] grid = new int[3][fieldDimension][fieldDimension];
+        synchronized (board) {
+            FieldHolder holder;
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        holder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        grid[k][i][j] = holder.getTerrain().getIntValue();
+                    }
+                }
+            }
+
+        }
+
+        return grid;
+    }
+
+    public int[][][] getGrid3D() {
+        int[][][] grid = new int[3][fieldDimension][fieldDimension];
+
+        synchronized (board) {
+            FieldHolder holder;
+            for (int k = 0; k < 3; k++) {
+                for (int i = 0; i < fieldDimension; i++) {
+                    for (int j = 0; j < fieldDimension; j++) {
+                        holder = board.get((k * fieldDimension * fieldDimension) + i * fieldDimension + j);
+                        if (holder.isPresent()) {
+                            grid[k][i][j] = holder.getEntity().getIntValue();
+                        } else {
+                            grid[k][i][j] = 0;
+                        }
+                    }
+                }
+            }
+
         }
 
         return grid;

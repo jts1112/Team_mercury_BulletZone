@@ -55,12 +55,9 @@ public class GridPollerTask {
             GameEventCollectionWrapper events = restClient.events(previousTimeStamp);
             boolean haveEvents = false;
             for (GameEvent event : events.getEvents()) {
-                EventBus.getDefault().post(event);
+                onEventUpdate(event);
                 previousTimeStamp = event.getTimeStamp();
                 haveEvents = true;
-            }
-            if (haveEvents) {
-                onGridUpdate(restClient.grid()); // Update grid after processing events
             }
         }
     }
@@ -68,5 +65,11 @@ public class GridPollerTask {
     public void onGridUpdate(GridWrapper gw) {
         EventBus.getDefault().post(new GridUpdateEvent(gw));
         //Log.d("poller", "new gridupdateevent " + gw.getGrid());
+    }
+
+    @UiThread
+    public void onEventUpdate(GameEvent event) {
+        EventBus.getDefault().post(event);
+        //Log.d("poller", "new gridupdateevent "
     }
 }

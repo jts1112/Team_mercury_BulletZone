@@ -63,11 +63,12 @@ public final class Game {
     }
 
     public void addPlayableEntity(PlayableEntity playableEntity) {
-        if (playableEntity instanceof Tank) {
+        if (playableEntity.isTracked()) {
             addTank((Tank) playableEntity);
-        } else if (playableEntity instanceof Dropship) {
+        } else if (playableEntity.isImmobile()) {
+//            else if (playableEntity instanceof Dropship) { // OLd
             addDropship((Dropship) playableEntity);
-        } else if (playableEntity instanceof Miner) {
+        } else if (playableEntity.isWheeled()) {
             addMiner((Miner) playableEntity);
         }
     }
@@ -102,11 +103,11 @@ public final class Game {
 
     @Subscribe
     public void removePlayableEntityEvent(PlayableEntity playableEntity) {
-        if (playableEntity instanceof Tank) {
+        if (playableEntity.isTracked()) {
             removeTankEvent((Tank) playableEntity);
-        } else if (playableEntity instanceof Dropship) {
+        } else if (playableEntity.isImmobile()) {
             removeDropshipEvent((Dropship) playableEntity);
-        } else if (playableEntity instanceof Miner) {
+        } else if (playableEntity.isWheeled()) {
             removeMinerEvent((Miner) playableEntity);
         }
     }
@@ -235,7 +236,7 @@ public final class Game {
     }
 
     //--- Power up Methods ---- // just keep track of power ups on the field
-    public int getnumPowerups(){
+    public int getNumPowerups(){
         return this.numberOfPowerUps;
     }
 
@@ -254,6 +255,3 @@ public final class Game {
 
 
 }
-
-
-

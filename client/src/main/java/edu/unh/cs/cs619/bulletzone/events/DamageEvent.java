@@ -2,12 +2,16 @@ package edu.unh.cs.cs619.bulletzone.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
+
 public class DamageEvent extends GameEvent {
     @JsonProperty
     private int position;
     @JsonProperty
     private int rawServerValue;
 
+    GridCellImageMapper mapper;
     public DamageEvent() {}
 
     /**
@@ -18,6 +22,7 @@ public class DamageEvent extends GameEvent {
     public DamageEvent( int position, int rawServerValue) {
         this.position = position;
         this.rawServerValue = rawServerValue;
+
     }
 
     /**
@@ -25,11 +30,15 @@ public class DamageEvent extends GameEvent {
      * @param board The game board.
     */
     @Override
-    public void applyTo(int[][] board) {
+    public void applyTo(GridCell[][][] board) {
+        this.mapper = GridCellImageMapper.getInstance();
         GameData gameData = GameData.getInstance();
-        int row = position / 16;
-        int col = position % 16;
-        board[row][col] = rawServerValue;
+
+        int layerPos = position % 256;
+        GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
+
+        cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
+
         if (rawServerValue >= 10000000 && rawServerValue <= 20000000) {
             gameData.setTankLife(rawServerValue);
         } else if (rawServerValue >= 20000000 && rawServerValue <= 30000000) {

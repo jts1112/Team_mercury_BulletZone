@@ -1,9 +1,11 @@
 package edu.unh.cs.cs619.bulletzone.repository;
 
+import edu.unh.cs.cs619.bulletzone.datalayer.user.GameUser;
 import edu.unh.cs.cs619.bulletzone.model.Game;
 import edu.unh.cs.cs619.bulletzone.model.GameBoardBuilder;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Tank;
+import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +41,7 @@ public class InMemoryGameRepositoryTest {
         assertNotNull(dropship);
         Assert.assertTrue(dropship.getId() >= 0);
         assertNotNull(dropship.getDirection());
-        Assert.assertTrue(dropship.getDirection() == Direction.Up);
+        assertSame(dropship.getDirection(), Direction.Up);
         assertNotNull(dropship.getParent());
     }
 
@@ -56,12 +58,12 @@ public class InMemoryGameRepositoryTest {
     @Test
     public void testLeave() throws Exception {
         Dropship dropship = repo.join("127.0.0.1");
-        long minerId = repo.spawnMiner(dropship.getId());
-        long tankId = repo.spawnTank(dropship.getId());
-        long minerId2 = repo.spawnMiner(dropship.getId());
-        long tankId2 = repo.spawnTank(dropship.getId());
-        long minerId3 = repo.spawnMiner(dropship.getId());
-        long tankId3 = repo.spawnTank(dropship.getId());
+        long minerId = repo.spawnMiner(dropship.getId(), 10);
+        long tankId = repo.spawnTank(dropship.getId(), 10);
+        long minerId2 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId2 = repo.spawnTank(dropship.getId(), 10);
+        long minerId3 = repo.spawnMiner(dropship.getId(), 10);
+        long tankId3 = repo.spawnTank(dropship.getId(), 10);
 
         repo.leave(dropship.getId());
         assertNull(repo.getGame().getDropship(dropship.getId()));
@@ -71,6 +73,60 @@ public class InMemoryGameRepositoryTest {
         assertNull(repo.getGame().getTank(tankId2));
         assertNull(repo.getGame().getMiner(minerId3));
         assertNull(repo.getGame().getTank(tankId3));
+    }
+
+    @Test
+    public void Leave_sellPowerUps_ValueCorrect() throws Exception {
+        int expectedValue = 0;
+
+        int expectedAntiGravVal = 300;
+        int expectedFusionReactorVal = 400;
+        int expectedPoweredDrillVal = 400;
+        int expectedDeflectorShieldVal = 300;
+        int expectedAutoRepairKitVal = 200;
+
+        Game game = repo.getGame();
+        Dropship dropship = repo.join("127.0.0.1");
+        dropship.pickupPowerUp(PowerUpType.DeflectorShield);
+        expectedValue += expectedDeflectorShieldVal;
+
+        DataRepository dataRepo = DataRepositoryFactory.getInstance();
+        assertTrue(dataRepo.validateUser("test", "user", dropship.getIp(), true).isPresent());
+
+        GameUser user = dataRepo.getUser(dropship.getIp());
+        double originalBal = dataRepo.getBankBalance(user) - 1000; // accounting for the leave fee
+
+        long minerId = repo.spawnMiner(dropship.getId(), 9);
+        game.getMiner(minerId).pickupPowerUp(PowerUpType.AntiGrav);
+        expectedValue += expectedAntiGravVal;
+
+        long tankId = repo.spawnTank(dropship.getId(), 9);
+        game.getTank(tankId).pickupPowerUp(PowerUpType.FusionReactor);
+        expectedValue += expectedFusionReactorVal;
+        game.getTank(tankId).pickupPowerUp(PowerUpType.PoweredDrill);
+        expectedValue += expectedPoweredDrillVal;
+
+        long minerId2 = repo.spawnMiner(dropship.getId(), 9);
+        game.getMiner(minerId2).pickupPowerUp(PowerUpType.AntiGrav);
+        expectedValue += expectedAntiGravVal;
+
+        long tankId2 = repo.spawnTank(dropship.getId(), 9);
+        game.getTank(tankId2).pickupPowerUp(PowerUpType.DeflectorShield);
+        expectedValue += expectedDeflectorShieldVal;
+
+        long minerId3 = repo.spawnMiner(dropship.getId(), 9);
+        game.getMiner(minerId3).pickupPowerUp(PowerUpType.AntiGrav);
+        expectedValue += expectedAntiGravVal;
+
+        long tankId3 = repo.spawnTank(dropship.getId(), 9);
+        game.getTank(tankId3).pickupPowerUp(PowerUpType.DeflectorShield);
+        expectedValue += expectedDeflectorShieldVal;
+        game.getTank(tankId3).pickupPowerUp(PowerUpType.AutomatedRepairKit);
+        expectedValue += expectedAutoRepairKitVal;
+
+        repo.leave(dropship.getId());
+
+        assertEquals(expectedValue, (dataRepo.getBankBalance(user) - originalBal), 0.9);
     }
 
 //    @Test

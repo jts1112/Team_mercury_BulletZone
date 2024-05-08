@@ -1,18 +1,17 @@
 package edu.unh.cs.cs619.bulletzone.model.commands;
 
 import edu.unh.cs.cs619.bulletzone.model.Direction;
-import edu.unh.cs.cs619.bulletzone.model.TankDoesNotExistException;
+import edu.unh.cs.cs619.bulletzone.model.EntityDoesNotExistException;
 import edu.unh.cs.cs619.bulletzone.model.entities.Dropship;
+import edu.unh.cs.cs619.bulletzone.model.entities.FieldEntity;
 import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.PlayableEntity;
 import edu.unh.cs.cs619.bulletzone.model.events.SpawnEvent;
-import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpComponent;
 import edu.unh.cs.cs619.bulletzone.model.powerUps.PowerUpEntity;
 import org.greenrobot.eventbus.EventBus;
-import org.springframework.boot.origin.SystemEnvironmentOrigin;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.OptionalLong;
 
 public class EjectPowerUpCommand implements Command {
     long entityId;
@@ -24,13 +23,13 @@ public class EjectPowerUpCommand implements Command {
      *
      * @param entity entity ejecting the power-up
      * @return if ejected
-     * @throws TankDoesNotExistException
+     * @throws EntityDoesNotExistException
      */
     @Override
-    public Boolean execute(PlayableEntity entity) throws TankDoesNotExistException {
+    public Boolean execute(PlayableEntity entity) throws EntityDoesNotExistException {
         System.out.println("Currently ejecting powerup");
         if (entity == null) {
-            throw new TankDoesNotExistException(entityId);
+            throw new EntityDoesNotExistException(entityId);
         }
 
         Optional<PowerUpEntity> powerUp = entity.dropPowerUp();
@@ -38,12 +37,16 @@ public class EjectPowerUpCommand implements Command {
             return false;
         }
 
-        if (entity.getParent().getEntity() instanceof Dropship dropship) {
+        if (entity.getParent().getEntity().isImmobile()) {
             // Unit in dropship, transfer power-up
-
+            Dropship dropship = (Dropship) entity.getParent().getEntity(); // TODO added
             dropship.pickupPowerUp(powerUp.get().getType());
         } else {
             // vehicle is not docked, eject to surrounding tile if possible
+            if (powerUp.get().getType() == null) {
+                return false;
+            }
+
             System.out.println("Server is ejecting " + powerUp.get().getType());
 
             FieldHolder parent = entity.getParent();
@@ -58,6 +61,9 @@ public class EjectPowerUpCommand implements Command {
                     case AntiGrav -> availableField.getTerrain().setPresentItem(2); // 1 thing, 2 anti, 3 is fusion.
                     case FusionReactor -> availableField.getTerrain().setPresentItem(3);
                     case Thingamajig -> availableField.getTerrain().setPresentItem(1);
+                    case PoweredDrill -> availableField.getTerrain().setPresentItem(4);
+                    case DeflectorShield -> availableField.getTerrain().setPresentItem(5);
+                    case AutomatedRepairKit -> availableField.getTerrain().setPresentItem(6);
                 }
                 EventBus.getDefault().post(new SpawnEvent(powerUp.get().getIntValue(), powerUp.get().getPos()));
                 System.out.println("Ejecting in front");

@@ -50,8 +50,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -69,8 +69,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -88,8 +88,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -107,8 +107,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -127,8 +127,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -146,8 +146,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -165,8 +165,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -184,8 +184,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -204,8 +204,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -223,8 +223,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -242,8 +242,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -261,8 +261,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -281,8 +281,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -300,8 +300,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -319,8 +319,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -338,8 +338,8 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -361,14 +361,14 @@ public class MoveCommandTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertTrue(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertFalse(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 
@@ -383,13 +383,15 @@ public class MoveCommandTest {
 
         // add wall below tank
         FieldHolder fieldElementBelow = game.getHolderGrid().get(3 * 16 + 2);
-        fieldElementBelow.setFieldEntity(new Wall(1000, 3 * 16 + 2));
+        Wall wall = new Wall(1000, 3 * 16 + 2);
+        fieldElementBelow.setFieldEntity(wall);
+        wall.setParent(fieldElementBelow);
 
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertFalse(moveCommand.execute(tank));
-        } catch(TankDoesNotExistException e) {
+            assertFalse(moveCommand.execute2(tank, game));
+        } catch(EntityDoesNotExistException e) {
             fail();
         }
 

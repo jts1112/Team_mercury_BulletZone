@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="evade_left">Evade Left</string>
+    <string name="evade_right">Evade right</string>
+    <string name="miner">Miner</string>
+    <string name="dropship">Dropship</string>
+    <string name="flag">Flag</string>
+    <string name="credits_1000">Credits: 1000</string>
+    <string name="tunnel">Tunnel</string>
+    <string name="mine">MINE</string>
+    <string name="move_to">Move To</string>
+    <string name="eject">Eject</string>
+    <string name="miner_armor_120">Miner Armor: 120</string>
+    <string name="dropship_armor_300">Dropship Armor: 300</string>
+    <string name="tank_armor_100">Tank Armor: 100</string>
+    <string name="spawn_tank">Spawn Tank</string>
+    <string name="spawn_miner">Spawn Miner</string>
+    <string name="update_using_events">Update using events</string>
+    <string name="tank">Tank</string>
+    <string name="cheat">CHEAT</string>
+</resources>
