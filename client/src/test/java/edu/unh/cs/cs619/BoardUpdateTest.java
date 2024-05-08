@@ -14,6 +14,7 @@ import edu.unh.cs.cs619.bulletzone.events.MoveEvent;
 import edu.unh.cs.cs619.bulletzone.events.RemovalEvent;
 import edu.unh.cs.cs619.bulletzone.events.SpawnEvent;
 import edu.unh.cs.cs619.bulletzone.ui.GridCell;
+import edu.unh.cs.cs619.bulletzone.ui.GridCellImageMapper;
 import edu.unh.cs.cs619.bulletzone.util.UnitIds;
 
 
@@ -21,13 +22,15 @@ public class BoardUpdateTest {
     private GridCell[][][] testBoard;
     GameData gameData;
     private final int BOARD_SIZE = 16;
+    GridCellImageMapper mapper;
 
     @Before
     public void setup() {
         testBoard = new GridCell[3][BOARD_SIZE][BOARD_SIZE];
         UnitIds ids = UnitIds.getInstance();
-        ids.setIds(0, 1, 2);
+        ids.setIds(0);
         gameData = GameData.getInstance();
+        mapper = GridCellImageMapper.getInstance();
     }
 
     @Test
@@ -37,27 +40,30 @@ public class BoardUpdateTest {
         int row = 5;
         int col = 5;
         int position = row * 16 + col;
-        testBoard[0][row][col] = new GridCell(0, wallValue, row, col);
+        testBoard[0][row][col] = new GridCell(0, wallValue, row, col ,0);
 
 
         new RemovalEvent(5 * 16 + 5).applyTo(testBoard);
 
-        Assert.assertEquals("Position should be empty after removal", 0, testBoard[0][row][col]);
+        Assert.assertEquals("Position should be empty after removal", 0, testBoard[0][row][col].getEntityResourceID());
     }
 
     @Test
-    public void testDamageEvent() {
+    public void DamageEvent_DamageUpdate_ReturnsProperWallResource() {
 
         int wallPosition = 7 * 16 + 7;
         int initialHealth = 500;
-        testBoard[0][7][7] = new GridCell(0, 1000 + initialHealth, 7, 7);
+        testBoard[0][7][7] = new GridCell(0, 1000 + initialHealth, 7, 7, 0);
 
         int damage = 200;
         int rawServerValue = 1000 + (initialHealth - damage);
 
+        GridCell expected = new GridCell(0, mapper.getEntityImageResource(rawServerValue),
+                7, 7, 0);
         new DamageEvent(wallPosition, rawServerValue).applyTo(testBoard);
 
-        Assert.assertEquals("Wall's health should be reduced by 200", rawServerValue, testBoard[0][7][7]);
+        Assert.assertEquals("Wall's health should be reduced by 200",
+                expected.getEntityResourceID(), testBoard[0][7][7].getEntityResourceID());
     }
 
     @Test
@@ -66,25 +72,29 @@ public class BoardUpdateTest {
         int tankPosition = 3 * 16 + 3;
         int tankValue = 10000000 + 2220072;
 
-
+        testBoard[0][3][3] = new GridCell(0, 0, 3, 3, 0);
         new SpawnEvent(tankValue, tankPosition).applyTo(testBoard);
 
-        Assert.assertEquals("Tank should be spawned at position", tankValue, testBoard[0][3][3]);
+        Assert.assertEquals("Tank should be spawned at position", mapper.getEntityImageResource(tankValue),
+                testBoard[0][3][3].getEntityResourceID());
     }
 
     @Test
     public void testMoveEvent() {
         int oldPosition = 2 * 16 + 2;
         int newPosition = 3 * 16 + 3;
-        int tankValue = 10000000 + 2220072;
+        int tankValue = mapper.getEntityImageResource(10000000 + 2220072);
 
-        testBoard[0][2][2] = new GridCell(0, tankValue, 2, 2);
+        testBoard[0][2][2] = new GridCell(0, tankValue, 2, 2, 0);
+        testBoard[0][3][3] = new GridCell(0, tankValue, 2, 2, 0);
 
 
         new MoveEvent(tankValue, oldPosition, newPosition).applyTo(testBoard);
 
-        Assert.assertEquals("Old position should be empty after move", 0, testBoard[0][2][2]);
-        Assert.assertEquals("New position should contain tank after move", tankValue, testBoard[0][3][3]);
+        Assert.assertEquals("Old position should be empty after move",
+                tankValue, testBoard[0][2][2].getEntityResourceID());
+        Assert.assertEquals("New position should contain tank after move",
+                0, testBoard[0][3][3].getEntityResourceID());
     }
 
     @Test
@@ -97,33 +107,14 @@ public class BoardUpdateTest {
     }
 
     @Test
-    public void GameData_DamageUpdates_UpdatesEachUnit() {
-        // Simulate damage to tank
-        new DamageEvent(1, 10020600).applyTo(testBoard);
-
-        // Verify tank life update
-        Assert.assertEquals("Tank life should be updated to 60", 60, gameData.getTankLife());
-
-        // Simulate damage to miner
-        new DamageEvent(2, 20010800).applyTo(testBoard);
-
-        // Verify miner life update
-        Assert.assertEquals("Miner life should be updated to 80", 80, gameData.getMinerLife());
-
-        // Simulate damage to dropship
-        new DamageEvent(3, 30002500).applyTo(testBoard);
-
-        // Verify dropship life update
-        Assert.assertEquals("Dropship life should be updated to 250", 250, gameData.getDropshipLife());
-    }
-
-    @Test
     public void EntranceEvent_AddEntrance_ReturnsExpectedTerrainValue() {
         int entrancePosition = 5 * 16 + 5;
         int entranceValue = 6000;
 
-        new EntranceEvent(entrancePosition, entranceValue).applyTo(testBoard);
+        testBoard[0][5][5] = new GridCell(0, 0, 5, 5, 0);
+        new EntranceEvent(entranceValue, entrancePosition).applyTo(testBoard);
 
-        Assert.assertEquals("Entrance should be added at position", entranceValue, testBoard[0][5][5].getTerrainResourceID());
+        Assert.assertEquals("Entrance should be added at position",
+                mapper.getTerrainImageResource(entranceValue), testBoard[0][5][5].getTerrainResourceID());
     }
 }

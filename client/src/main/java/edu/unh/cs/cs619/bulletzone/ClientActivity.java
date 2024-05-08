@@ -30,6 +30,8 @@ import java.util.TimerTask;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.unh.cs.cs619.bulletzone.control.ControlState;
+import edu.unh.cs.cs619.bulletzone.control.*;
 import edu.unh.cs.cs619.bulletzone.events.GameData;
 import edu.unh.cs.cs619.bulletzone.events.GameDataObserver;
 import edu.unh.cs.cs619.bulletzone.events.GameEventProcessor;
@@ -59,6 +61,8 @@ public class ClientActivity extends Activity implements GameDataObserver {
     protected GameReplayManager replay;
     int spawnCost = 1000;
     private final String msg = format(Locale.US, "You need at least %d credits to spawn a unit.", spawnCost);
+    private ControlState controlState;
+    private ControlUpdater controlUpdater;
 
     private Timer collisionTimer;
     // unitIds are a singleton in actionController + imageMapper to distinguish player / enemy units
@@ -84,13 +88,16 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridEventHandler = new GridEventHandler(gridModel, mGridAdapter);
         gameData.registerObserver(this);
 
+        controlUpdater = new ControlUpdater(this, gridModel);
+        controlUpdater.startControlUpdateTimer();
+
         // Automatically activate eventSwitch after a delay
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 onEventSwitch();
             }
-        }, 2000);
+        }, 1000);
     }
 
     @Override
@@ -99,37 +106,7 @@ public class ClientActivity extends Activity implements GameDataObserver {
         gridEventHandler.unregister();
         gameData.unregisterObserver(this);
 //        replay.endRecording();
-    }
-
-
-    /**
-     * Otto has a limitation (as per design) that it will only find methods on the immediate
-     * class type. As a result, if at runtime this instance actually points to a subclass
-     * implementation, the methods registered in this class will not be found. This immediately
-     * becomes a problem when using the AndroidAnnotations framework as it always produces a
-     * subclass of annotated classes.
-     * <p>
-     * To get around the class hierarchy limitation, one can use a separate anonymous class to
-     * handle the events.
-
-     private Object gridEventHandler = new Object()
-     {
-     @Subscribe
-     public void onUpdateGrid(GridUpdateEvent event) {
-     updateGrid(event.gw);
-     }
-     };
-     */
-    @AfterInject
-    void afterInject() {
-        actionController.initialize(this);
-    }
-
-    @AfterViews
-    protected void afterViewInjection() {
-        joinAsync();
-        SystemClock.sleep(500);
-        gridView.setAdapter(mGridAdapter);
+        controlUpdater.stopControlUpdateTimer();
     }
 
     @Background
@@ -404,6 +381,13 @@ public class ClientActivity extends Activity implements GameDataObserver {
     @Override
     public void onBackPressed() {}
 
+    @AfterViews
+    protected void afterViewInjection() {
+        joinAsync();
+        SystemClock.sleep(500);
+        gridView.setAdapter(mGridAdapter);
+    }
+
     public void showMoveToButton() {
         Button moveToButton = findViewById(R.id.buttonMoveTo);
         moveToButton.setVisibility(View.VISIBLE);
@@ -411,34 +395,20 @@ public class ClientActivity extends Activity implements GameDataObserver {
 
     private void updateControlsForUnit(String unit) {
         System.out.println("Updating controls for unit: " + unit);
-        Button buttonEjectPowerUp = findViewById(R.id.buttonEject);
-        Button buttonMine = findViewById(R.id.buttonMine);
-        Button buttonUp = findViewById(R.id.buttonUp);
-        Button buttonDown = findViewById(R.id.buttonDown);
-        Button buttonLeft = findViewById(R.id.buttonLeft);
-        Button buttonRight = findViewById(R.id.buttonRight);
-        Button buttonFire = findViewById(R.id.buttonFire);
 
-        buttonMine.setVisibility(View.GONE);  // Hide mine button first
-
-        // Show buttons based on the selected unit
-        if ("miner".equals(unit)) {
-            buttonMine.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
-        } else if ("dropship".equals(unit)) {
-            buttonUp.setVisibility(View.VISIBLE);
-            buttonDown.setVisibility(View.VISIBLE);
-            buttonLeft.setVisibility(View.VISIBLE);
-            buttonRight.setVisibility(View.VISIBLE);
-            buttonFire.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
-        } else { // Tank
-            buttonUp.setVisibility(View.VISIBLE);
-            buttonDown.setVisibility(View.VISIBLE);
-            buttonLeft.setVisibility(View.VISIBLE);
-            buttonRight.setVisibility(View.VISIBLE);
-            buttonFire.setVisibility(View.VISIBLE);
-            buttonEjectPowerUp.setVisibility(View.VISIBLE);
+        // Set the appropriate control state based on the unit
+        switch (unit) {
+            case "tank":
+                controlState = new TankControlState(this);
+                break;
+            case "miner":
+                controlState = new MinerControlState(this);
+                break;
+            case "dropship":
+                controlState = new DropshipControlState(this);
+                break;
+            default:
+                break;
         }
     }
 
@@ -491,5 +461,33 @@ public class ClientActivity extends Activity implements GameDataObserver {
             collisionTimer.cancel();
             collisionTimer = null;
         }
+    }
+
+    public ControlState getControlState() {
+        return controlState;
+    }
+
+    /**
+     * Otto has a limitation (as per design) that it will only find methods on the immediate
+     * class type. As a result, if at runtime this instance actually points to a subclass
+     * implementation, the methods registered in this class will not be found. This immediately
+     * becomes a problem when using the AndroidAnnotations framework as it always produces a
+     * subclass of annotated classes.
+     * <p>
+     * To get around the class hierarchy limitation, one can use a separate anonymous class to
+     * handle the events.
+
+     private Object gridEventHandler = new Object()
+     {
+     @Subscribe
+     public void onUpdateGrid(GridUpdateEvent event) {
+     updateGrid(event.gw);
+     }
+     };
+     */
+    @AfterInject
+    void afterInject() {
+        // initialize actioncontroller
+        actionController.initialize(this);
     }
 }
