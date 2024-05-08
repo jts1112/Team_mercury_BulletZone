@@ -44,7 +44,7 @@ public class EjectPowerUpCommandTest {
         game.removeTank(1);
     }
     @Test
-    public void ejectCommand_EjectPowerPp_EjectToFront() {
+    public void ejectCommand_EjectPowerUp_EjectToFront() {
         tank.pickupPowerUp(PowerUpType.AntiGrav);
 
         EjectPowerUpCommand ejectPowerUpCommand = new EjectPowerUpCommand(tank.getId());
