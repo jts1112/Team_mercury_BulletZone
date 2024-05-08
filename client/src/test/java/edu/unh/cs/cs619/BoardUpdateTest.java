@@ -66,6 +66,46 @@ public class BoardUpdateTest {
                 expected.getEntityResourceID(), testBoard[0][7][7].getEntityResourceID());
     }
 
+//    @Test
+//    public void GameData_DamageUpdates_UpdatesEachUnit() {
+//        GridCellImageMapper mapper = GridCellImageMapper.getInstance();
+//        UnitIds ids = UnitIds.getInstance();
+//
+//        int tankValue = 12220702;
+//        int tankPosition = 3 * 16 + 3;
+//        testBoard[0][3][3] = new GridCell(0, tankValue, 3, 3, 0);
+//        Integer[] tankResources = {mapper.getEntityImageResource(12221002), mapper.getEntityImageResource(12220502), mapper.getEntityImageResource(12220022)};
+//        ids.addTankId(222L, tankResources);
+//
+//        // Simulate damage to tank
+//        new DamageEvent(tankPosition, 12220602).applyTo(testBoard);
+//
+//        // Verify tank life update
+//        Assert.assertEquals("Tank life should be updated to 60", 60, gameData.getTankLife());
+//
+//        int minerValue = 20011000;
+//        int minerPosition = 3 * 16 + 3;
+//        testBoard[0][3][3] = new GridCell(0, minerValue, 3, 3, 0);
+//        Integer[] minerResources = {mapper.getEntityImageResource(minerValue)};
+//        ids.addMinerId(1L, minerResources);
+//
+//        // Simulate damage to miner
+//        new DamageEvent(minerPosition, 20010800).applyTo(testBoard);
+//
+//        // Verify miner life update
+//        Assert.assertEquals("Miner life should be updated to 80", 80, gameData.getMinerLife());
+//
+//        int dropshipValue = 30003000;
+//        int dropshipPosition = 3 * 16 + 3;
+//        testBoard[0][3][3] = new GridCell(0, dropshipValue, 3, 3, 0);
+//
+//        // Simulate damage to dropship
+//        new DamageEvent(dropshipPosition, 30002500).applyTo(testBoard);
+//
+//        // Verify dropship life update
+//        Assert.assertEquals("Dropship life should be updated to 250", 250, gameData.getDropshipLife());
+//    }
+
     @Test
     public void testSpawnEvent() {
 

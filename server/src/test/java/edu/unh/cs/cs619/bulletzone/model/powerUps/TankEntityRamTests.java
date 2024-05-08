@@ -93,7 +93,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(80, tank.getLife());
@@ -139,7 +139,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(100, tank.getLife());
@@ -185,7 +185,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(90, tank.getLife());
@@ -233,7 +233,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(80, tank.getLife());
@@ -279,7 +279,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(100, tank.getLife());
@@ -325,7 +325,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(90, tank.getLife());
@@ -381,7 +381,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(80, tank.getLife());
@@ -434,7 +434,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(100, tank.getLife());
@@ -490,7 +490,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(90, tank.getLife());
@@ -546,7 +546,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(80, tank.getLife());
@@ -601,7 +601,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(100, tank.getLife());
@@ -657,7 +657,7 @@ public class TankEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(tank.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(tank);
+        moveCommand.execute2(tank, game);
 
         // verify that the correct damage of miner was done
         assertEquals(90, tank.getLife());

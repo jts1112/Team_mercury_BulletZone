@@ -33,9 +33,12 @@ public class DamageEvent extends GameEvent {
     public void applyTo(GridCell[][][] board) {
         this.mapper = GridCellImageMapper.getInstance();
         GameData gameData = GameData.getInstance();
+
         int layerPos = position % 256;
         GridCell cell = board[position / 256][layerPos / 16][layerPos % 16];
+
         cell.setEntityResourceID(mapper.getEntityImageResource(rawServerValue));
+
         if (rawServerValue >= 10000000 && rawServerValue <= 20000000) {
             gameData.setTankLife(rawServerValue);
         } else if (rawServerValue >= 20000000 && rawServerValue <= 30000000) {

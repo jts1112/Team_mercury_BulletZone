@@ -76,7 +76,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1L, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -101,7 +101,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1L, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -119,7 +119,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -138,7 +138,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Right);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -158,7 +158,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -177,7 +177,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -196,7 +196,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -215,7 +215,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Left);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -235,7 +235,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -254,7 +254,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -273,7 +273,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -292,7 +292,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Up);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -312,7 +312,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -331,7 +331,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -350,7 +350,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -369,7 +369,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -392,13 +392,13 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
 
         try {
-            assertFalse(moveCommand.execute(dropship));
+            assertFalse(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }
@@ -419,7 +419,7 @@ public class MeadowTerrainDropshipMovementTest {
         MoveCommand moveCommand = new MoveCommand(1, Direction.Down);
 
         try {
-            assertTrue(moveCommand.execute(dropship));
+            assertTrue(moveCommand.execute2(dropship, game));
         } catch(EntityDoesNotExistException e) {
             fail();
         }

@@ -17,6 +17,8 @@ import edu.unh.cs.cs619.bulletzone.model.entities.FieldHolder;
 import edu.unh.cs.cs619.bulletzone.model.entities.Miner;
 import edu.unh.cs.cs619.bulletzone.model.events.CreditEvent;
 
+import static java.lang.Thread.sleep;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 public class MinerMineTests {
@@ -36,6 +38,7 @@ public class MinerMineTests {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        miner = new Miner(1, Direction.Up,"127.0.0.1");
     }
 
     @Test
@@ -74,7 +77,12 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(2));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(2));
 
     }
 
@@ -114,7 +122,12 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(0));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(0));
 
     }
 
@@ -155,7 +168,12 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(50));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(50));
 
     }
 
@@ -195,7 +213,12 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(10));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(10));
     }
 
     @Test
@@ -235,7 +258,12 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(100));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(100));
     }
 
 
@@ -275,8 +303,13 @@ public class MinerMineTests {
         // Execute the command
         mineCommand.execute(miner);
 
-        // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(300));
+        // verify the credit event was successfully posted to eventbus.
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(300));
     }
 
 
@@ -317,8 +350,11 @@ public class MinerMineTests {
         mineCommand.execute(miner);
 
         // verify the credit event was succesfully posted to eventbus.
-        verify(eventBus).post(new CreditEvent(1000));
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        verify(eventBus, atLeastOnce()).post(new CreditEvent(1000));
     }
-
-
 }

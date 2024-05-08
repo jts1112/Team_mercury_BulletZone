@@ -301,13 +301,18 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     public void create() {
-        if (instance != null || game != null) {
+        if (instance != null && game != null) {
             return;
         }
         synchronized (this.monitor) {
-            instance = new InMemoryGameRepository();
-            this.game = new Game();
-            game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameRepositoryInitialize().build());
+            if (instance == null) {
+                instance = new InMemoryGameRepository();
+            }
+            if (game == null) {
+                this.game = new Game();
+                game.getGameBoard().setBoard(new GameBoardBuilder(FIELD_DIM,monitor).inMemoryGameRepositoryInitialize().build());
+            }
+
             startRepairTimer();
             startPowerUpSpawnTimer();
         }

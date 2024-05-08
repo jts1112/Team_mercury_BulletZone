@@ -93,7 +93,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(95, miner.getLife());
@@ -139,7 +139,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(120, miner.getLife());
@@ -185,7 +185,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(108, miner.getLife());
@@ -233,7 +233,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(95, miner.getLife());
@@ -279,7 +279,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(120, miner.getLife());
@@ -325,7 +325,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(108, miner.getLife());
@@ -381,7 +381,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(95, miner.getLife());
@@ -434,7 +434,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(120, miner.getLife());
@@ -490,7 +490,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(108, miner.getLife());
@@ -546,7 +546,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(95, miner.getLife());
@@ -601,7 +601,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(120, miner.getLife());
@@ -657,7 +657,7 @@ public class MinerEntityRamTests {
         MoveCommand moveCommand = new MoveCommand(miner.getId(), Direction.Left);
 
         // Execute the command
-        moveCommand.execute(miner);
+        moveCommand.execute2(miner, game);
 
         // verify that the correct damage of miner was done
         assertEquals(108, miner.getLife());
